@@ -4,11 +4,6 @@
 // recieves message from networking
 // For now, input will be assumed to be a string
 void recieveMessage(std::string& message) {
-    if (isJSON(message)) {
-        // parseJSON(message)
-        return;
-    }
-
     try {
         performBusinessLogic(message);
     } catch (std::exception& e) {
