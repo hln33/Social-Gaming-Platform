@@ -1,15 +1,8 @@
 #include "handler.h"
 #include <iostream>
 
-// recieves message from networking
-// For now, input will be assumed to be a string
-void recieveMessage(std::string& message) {
-    try {
-        performBusinessLogic(message);
-    } catch (std::exception& e) {
-        log("call to business logic failed:");
-        log(e.what());
-    }
+void log(const std::string& text) {
+    std::cout << text << std::endl;
 }
 
 // checks if a given string is valid JSON
@@ -48,6 +41,13 @@ void performBusinessLogic(const std::string& message) {
     }
 }
 
-void log(const std::string& text) {
-    std::cout << text << std::endl;
+// recieves message from networking
+// For now, input will be assumed to be a string
+void recieveMessage(std::string& message) {
+    try {
+        performBusinessLogic(message);
+    } catch (std::exception& e) {
+        log("call to business logic failed:");
+        log(e.what());
+    }
 }
