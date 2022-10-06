@@ -1,5 +1,5 @@
 add_library(networking
-  # src/Server.cpp
+  src/Server.cpp
   src/Client.cpp
 )
 
