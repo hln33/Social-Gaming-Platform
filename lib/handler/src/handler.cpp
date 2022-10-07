@@ -1,14 +1,17 @@
 #include "handler.h"
 #include <glog/logging.h>
+#include <../json.hpp>
 #include <iostream>
 
+using json = nlohmann::json;
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
     // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
     // something like this:
     // return nlohmann::json::accept(text)
-
-    return false; //placeholder return statement
+    if(text)
+        return accept(text);
+    // return false; placeholder return statement
 }
 
 bool MessageContains(const std::string& string, const std::string& subString) {
