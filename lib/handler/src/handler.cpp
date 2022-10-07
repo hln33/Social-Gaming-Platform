@@ -2,10 +2,6 @@
 #include <glog/logging.h>
 #include <iostream>
 
-void log(const std::string& text) {
-    std::cout << text << std::endl;
-}
-
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
     // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
