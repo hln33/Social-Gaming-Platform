@@ -2,6 +2,8 @@ add_library(handler
   src/handler.cpp
 )
 
+find_package(glog 0.6.0 REQUIRED)
+
 target_include_directories(handler
   PUBLIC
     $<INSTALL_INTERFACE:include>
@@ -15,6 +17,8 @@ set_target_properties(handler
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
+
+target_link_libraries(handler glog::glog)
 
 install(TARGETS handler
   ARCHIVE DESTINATION lib

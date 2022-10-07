@@ -1,4 +1,5 @@
 #include "handler.h"
+#include <glog/logging.h>
 #include <iostream>
 
 void log(const std::string& text) {
@@ -23,20 +24,20 @@ void performBusinessLogic(const std::string& message) {
     if (MessageContains(message, "Player Left")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::removePlayer(playerName);
-        log("A player has left");
+        LOG(INFO) << "A player has left";
     } else if (MessageContains(message, "Player Joined")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::addPlayer(playerName);
-        log("A player has joined");
+        LOG(INFO) << "A player has joined";
     } else if (MessageContains(message, "Game Ended")) {
         // businesslogic::endGame();
-        log("A game has ended");
+        LOG(INFO) << "A game has ended";
     } else if (MessageContains(message, "Game Created")) {
         // Configuration config = parseJSON(message);
         // businesslogic::createGame(config);
-        log("A game has been created");
+        LOG(INFO) << "A game has been created";
     } else {
-        log("invalid message");
+        LOG(ERROR) << "invalid message";
         throw std::runtime_error("invalid message passed to handler");
     }
 }
@@ -44,10 +45,12 @@ void performBusinessLogic(const std::string& message) {
 // recieves message from networking
 // For now, input will be assumed to be a string
 void recieveMessage(std::string& message) {
+    google::InitGoogleLogging("Handler");
+
     try {
         performBusinessLogic(message);
     } catch (std::exception& e) {
-        log("call to business logic failed:");
-        log(e.what());
+        LOG(ERROR) << "call to business logic failed:";
+        LOG(ERROR) << e.what();
     }
 }
