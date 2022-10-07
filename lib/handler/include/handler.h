@@ -2,4 +2,4 @@
 
 #include <string>
 
-void recieveMessage(std::string message);
+void recieveMessage(std::string& message);
