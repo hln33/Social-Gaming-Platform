@@ -38,4 +38,13 @@ Class Rules{
         String setRuleToJason();
         String getRuleFromJason();
         bool checkRule();
+        bool checkRule(String rule);
+        bool checkRule(String rule, String message);
+        int getRuleCount();
+        String removeAllRule();
+        String removeRule(String rule);
+        String removeRule(int index);
+        String addRule(String rule);
+        String addRule(String rule, int index);
+        String getRule(int index);
 };
