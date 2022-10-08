@@ -3,7 +3,7 @@ add_library(networking
   src/Client.cpp
 )
 
-find_package(Boost 1.72 COMPONENTS system REQUIRED)
+find_package(Boost 1.72 COMPONENTS system random REQUIRED)
 
 target_include_directories(networking
   PUBLIC

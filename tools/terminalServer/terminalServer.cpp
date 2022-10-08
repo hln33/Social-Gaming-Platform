@@ -6,28 +6,48 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
+#include <nlohmann/json.hpp>
+#include <boost/random/random_device.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
+using json = nlohmann::json;
 using networking::Server;
 using networking::Connection;
 using networking::Message;
-
 
 std::vector<Connection> clients;
-
-
+json gameRules;
+std::string code = "";
 using networking::Server;
 using networking::Connection;
 using networking::Message;
 
-void
-onConnect(Connection c) {
-  std::cout << "New connection found: " << c.id << "\n";
-  clients.push_back(c);
+
+std::string randomCode(){
+  std::string chars(
+        "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "1234567890");
+
+
+    boost::random::random_device rng;
+    boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
+    std::string code = "";
+    for(int i = 0; i < 6; ++i) {
+        code.append(std::string(1,chars[index_dist(rng)]));
+    }
+
+    return code;
 }
 
 
-void
-onDisconnect(Connection c) {
+void onConnect(Connection c) {
+  std::cout << "New connection found: " << c.id << "\n";
+  //clients.push_back(c);
+}
+
+
+void onDisconnect(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
   auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
   clients.erase(eraseBegin, std::end(clients));
@@ -40,7 +60,7 @@ struct MessageResult {
 };
 
 std::deque<Message>
-buildOutgoing(const std::string& log) {
+buildOutgoing(const std::string& log, std::vector<Connection> clients) {
   std::deque<Message> outgoing;
   for (auto client : clients) {
     outgoing.push_back({client, log});
@@ -48,17 +68,41 @@ buildOutgoing(const std::string& log) {
   return outgoing;
 }
 
+json createJSONMessage(std::string type, std::string message){
+  json payload = json{{"type", type}, {"message", message}};
+  return payload;
+}
+
 MessageResult processMessages(Server& server, const std::deque<Message>& incoming) {
   std::ostringstream result;
   bool quit = false;
   for (auto& message : incoming) {
-    if (message.text == "quit") {
+    json data = json::parse(message.text);
+    if (data["type"] == "quit") {
       server.disconnect(message.connection);
-    } else if (message.text == "shutdown") {
+    } else if (data["type"]  == "shutdown") {
       std::cout << "Shutting down.\n";
-      quit = true;
-    } else {
-      result << message.connection.id << "> " << message.text << "\n";
+       quit = true;
+    }
+    else if(data["type"] == "join"){
+      std::deque<Message> outgoing;
+      if(code == data["message"]){
+        clients.push_back(message.connection);
+        json response = createJSONMessage("success", "successfully joined");
+        outgoing.push_back({message.connection, response.dump()});
+        server.send(outgoing);
+      }
+      else{
+        json response = createJSONMessage("error", "wrong code");
+        outgoing.push_back({message.connection, response.dump()});
+        server.send(outgoing);
+      }
+    }
+    else{
+      std::ostringstream s;
+      s << message.connection.id << "> " << data["message"];
+      json response = createJSONMessage("chat", s.str());
+      result << response.dump();
     }
   }
   return MessageResult{result.str(), quit};
@@ -79,14 +123,17 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 2) {
-    std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
+  if (argc < 4) {
+    std::cerr << "Usage:\n  " << argv[0] << " <port> <json> <html response>\n";
     return 1;
   }
-
+  std::ifstream f(argv[2]);
+  gameRules = json::parse(f);
+  code = randomCode();
   unsigned short port = std::stoi(argv[1]);
-  Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
-
+  Server server{port, getHTTPMessage(argv[3]),  onConnect, onDisconnect};
+  
+  std::cout << "Your Code: " << code << "\n";
   while (true) {
     bool errorWhileUpdating = false;
     try {
@@ -99,7 +146,7 @@ int main(int argc, char* argv[]) {
 
     auto incoming = server.receive();
     auto [log, shouldQuit] = processMessages(server, incoming);
-    auto outgoing = buildOutgoing(log);
+    auto outgoing = buildOutgoing(log, clients);
     server.send(outgoing);
 
     if (shouldQuit || errorWhileUpdating) {
