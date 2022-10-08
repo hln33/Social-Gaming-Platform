@@ -60,3 +60,8 @@ Class Rules{
         String spectateRule;
         String clientRule;
 };
+
+Class Player{
+    public:
+        
+};
