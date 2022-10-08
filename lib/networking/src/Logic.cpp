@@ -76,5 +76,16 @@ Class Player{
         void writeJason();
         void setPlayerInfos(String infos);
         void setPlayerInfos(String infos, String value);
-    
+
+    private:
+        String player;
+        String name;
+        String id;
+        String password;
+        String email;
+        String age;
+        String infos;
+        String value;
+        String ipaddress;
+        String port;
 };
