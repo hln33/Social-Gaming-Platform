@@ -1,9 +1,9 @@
 add_library(networking
-  src/Server.cpp
+  # src/Server.cpp
   src/Client.cpp
 )
 
-find_package(Boost 1.72 COMPONENTS system random REQUIRED)
+find_package(Boost 1.72 COMPONENTS system REQUIRED)
 
 target_include_directories(networking
   PUBLIC

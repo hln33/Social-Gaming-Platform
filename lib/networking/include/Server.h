@@ -124,7 +124,6 @@ public:
    */
   void disconnect(Connection connection);
 
-
 private:
   friend class ServerImpl;
 
