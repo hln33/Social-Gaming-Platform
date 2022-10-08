@@ -6,86 +6,52 @@
 
 #include "Logic.h"
 
-Class Logic{
+class Logic{
     public:
-        Logic();
-        ~Logic();
-        void run();
-        void stop();
-        void send(std::string message);
-        void receive(std::string message);
-        void connect(std::string address, std::string port);
-        void disconnect();
-        void setCallback(std::function<void(std::string)> callback);
+
+        Logic(){
+            // Constructor
+        };
+        ~Logic(){
+            // Destructor
+        };
+        void run(){
+            // Run the logic
+            // server.run();
+        };
+        void stop(){
+            // Stop the logic
+            // server.stop();
+        };
+        void send(std::string message){
+            std::string data;
+
+            // Send a message
+        };
+        void receive(std::string message){
+            std::string response = "Received: " + message;
+            //insert Jason reader here
+            // Receive a message
+        };
+        void connect(std::string address, std::string port){
+            // player.connect(address, port);
+            // Connect to a server
+        };
+        void disconnect(){
+            // Disconnect from a server
+            // player.disconnect();
+        };
+        void setCallback(std::function<void(std::string)> callback){
+            // player.setCallback(callback);
+            // Set the callback function
+        };
 
     private:
-        String logics;
-        String address;
-        String port;
-        String message;
-        String userinfos;
-        String serverinfos;
-        String clientinfos;
-};
-
-Class Rules{
-    public:
-        Rules();
-        ~Rules();
-        void run();
-        void stop();
-        string getJasonAsRules();
-        String setRuleToJason();
-        String getRuleFromJason();
-        bool checkRule();
-        bool checkRule(String rule);
-        bool checkRule(String rule, String message);
-        int getRuleCount();
-        String removeAllRule();
-        String removeRule(String rule);
-        String removeRule(int index);
-        String addRule(String rule);
-        String addRule(String rule, int index);
-        String getRule(int index);
-    private:
-        String rules;
-        String rule;
-        String message;
-        String userinfos;
-        String serverinfos;
-        String clientinfos;
-        String Infos;
-        String PlayerAssociated;
-        String PlayerNotAssociated;
-        String spectateRule;
-        String clientRule;
-};
-
-Class Player{
-    public:
-        Player();
-        ~Player();
-        void run();
-        void stop();
-        void setPlayerName(String name);
-        void setPlayerId(String id);
-        void setPlayerPassword(String password);
-        void setPlayerEmail(String email);
-        void setPlayerAge(int age);
-        void readJason();
-        void writeJason();
-        void setPlayerInfos(String infos);
-        void setPlayerInfos(String infos, String value);
-
-    private:
-        String player;
-        String name;
-        String id;
-        String password;
-        String email;
-        String age;
-        String infos;
-        String value;
-        String ipaddress;
-        String port;
+        std::string logics;
+        std::string address;
+        std::string port;
+        std::string message;
+        std::string userinfos;
+        std::string serverinfos;
+        std::string clientinfos;
 };
