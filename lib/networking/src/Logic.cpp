@@ -55,4 +55,8 @@ Class Rules{
         String serverinfos;
         String clientinfos;
         String Infos;
+        String PlayerAssociated;
+        String PlayerNotAssociated;
+        String spectateRule;
+        String clientRule;
 };
