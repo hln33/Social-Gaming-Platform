@@ -47,4 +47,12 @@ Class Rules{
         String addRule(String rule);
         String addRule(String rule, int index);
         String getRule(int index);
+    private:
+        String rules;
+        String rule;
+        String message;
+        String userinfos;
+        String serverinfos;
+        String clientinfos;
+        String Infos;
 };
