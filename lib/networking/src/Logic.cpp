@@ -28,3 +28,6 @@ Class Logic{
         String clientinfos;
 };
 
+Class Rules{
+
+};
