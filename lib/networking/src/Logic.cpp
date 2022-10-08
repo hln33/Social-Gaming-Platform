@@ -63,5 +63,14 @@ Class Rules{
 
 Class Player{
     public:
-        
+        Player();
+        ~Player();
+        void run();
+        void stop();
+        void setPlayerName(String name);
+        void setPlayerId(String id);
+        void setPlayerPassword(String password);
+        void setPlayerEmail(String email);
+        void setPlayerAge(int age);
+        void set
 };
