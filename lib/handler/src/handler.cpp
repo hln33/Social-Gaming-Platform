@@ -3,15 +3,42 @@
 #include <../json.hpp>
 #include <iostream>
 
+enum class parse_event_t : std:: uint8_t{
+    object_start,
+    object_end,
+    array_start,
+    array_end,
+    key,
+    value
+};
+
 using json = nlohmann::json;
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
     // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
     // something like this:
     // return nlohmann::json::accept(text)
-    if(text)
-        return accept(text);
+    return json::accept(text);
     // return false; placeholder return statement
+}
+
+//function used to parse an inputted JSON file
+//for now this is using a string to be consistent with the above check
+//will have to wait for a test file/test info to run this code
+json completeParse(const std::string& text){
+    try{
+        json j_complete = json::parse(text);
+    }
+    catch (json::parse_error& e){
+        std::cout << "message " << e.what() << '\n'
+                  << "exception id: " << e.id << '\n'
+                  << "byte postion of error: " << e.byte <<std:endl;
+    }
+    //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
+    json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+        //this can be used to sort through the parser elements after reading
+        return NULL;
+    }
 }
 
 bool MessageContains(const std::string& string, const std::string& subString) {
