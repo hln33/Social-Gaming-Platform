@@ -4,9 +4,16 @@
 // This file contains the implementation of the business logic layer
 /////////////////////////////////////////////////////////////////////////////
 
-#include "Logic.h"
+#include <deque>
+#include <functional>
+#include <memory>
+#include <unordered_map>
+#include <memory>
+#include <string>
 
-Class Logic{
+
+
+class Logic{
     public:
         Logic();
         ~Logic();
@@ -19,74 +26,74 @@ Class Logic{
         void setCallback(std::function<void(std::string)> callback);
 
     private:
-        String logics;
-        String address;
-        String port;
-        String message;
-        String userinfos;
-        String serverinfos;
-        String clientinfos;
+        std::string logics;
+        std::string address;
+        std::string port;
+        std::string message;
+        std::string userinfos;
+        std::string serverinfos;
+        std::string clientinfos;
 };
 
-Class Rules{
+class Rules{
     public:
         Rules();
         ~Rules();
         void run();
         void stop();
-        string getJasonAsRules();
-        String setRuleToJason();
-        String getRuleFromJason();
+        std::string getJasonAsRules();
+        std::string setRuleToJason();
+        std::string getRuleFromJason();
         bool checkRule();
-        bool checkRule(String rule);
-        bool checkRule(String rule, String message);
+        bool checkRule(std::string rule);
+        bool checkRule(std::string rule, std::string message);
         int getRuleCount();
-        String removeAllRule();
-        String removeRule(String rule);
-        String removeRule(int index);
-        String addRule(String rule);
-        String addRule(String rule, int index);
-        String getRule(int index);
+        std::string removeAllRule();
+        std::string removeRule(std::string rule);
+        std::string removeRule(int index);
+        std::string addRule(std::string rule);
+        std::string addRule(std::string rule, int index);
+        std::string getRule(int index);
     private:
-        String rules;
-        String rule;
-        String message;
-        String userinfos;
-        String serverinfos;
-        String clientinfos;
-        String Infos;
-        String PlayerAssociated;
-        String PlayerNotAssociated;
-        String spectateRule;
-        String clientRule;
+        std::string rules;
+        std::string rule;
+        std::string message;
+        std::string userinfos;
+        std::string serverinfos;
+        std::string clientinfos;
+        std::string Infos;
+        std::string PlayerAssociated;
+        std::string PlayerNotAssociated;
+        std::string spectateRule;
+        std::string clientRule;
 };
 
-Class Player{
+class Player{
     public:
         Player();
         ~Player();
         void run();
         void stop();
-        void setPlayerName(String name);
-        void setPlayerId(String id);
-        void setPlayerPassword(String password);
-        void setPlayerEmail(String email);
+        void setPlayerName(std::string name);
+        void setPlayerId(std::string id);
+        void setPlayerPassword(std::string password);
+        void setPlayerEmail(std::string email);
         void setPlayerAge(int age);
         void readJason();
         void writeJason();
-        void setPlayerInfos(String infos);
-        void setPlayerInfos(String infos, String value);
+        void setPlayerInfos(std::string infos);
+        void setPlayerInfos(std::string infos, std::string value);
 
     private:
-        String player;
-        String name;
-        String id;
-        String password;
-        String email;
-        String age;
-        String infos;
-        String value;
-        String ipaddress;
-        String port;
+        std::string player;
+        std::string name;
+        std::string id;
+        std::string password;
+        std::string email;
+        std::string age;
+        std::string infos;
+        std::string value;
+        std::string ipaddress;
+        std::string port;
         
 };
