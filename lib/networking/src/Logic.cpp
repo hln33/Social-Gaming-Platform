@@ -29,5 +29,13 @@ Class Logic{
 };
 
 Class Rules{
-
+    public:
+        Rules();
+        ~Rules();
+        void run();
+        void stop();
+        string getJasonAsRules();
+        String setRuleToJason();
+        String getRuleFromJason();
+        bool checkRule();
 };
