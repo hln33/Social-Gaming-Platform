@@ -10,7 +10,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
-
+#include <iostream>
 
 #include <deque>
 #include <sstream>
