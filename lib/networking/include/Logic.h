@@ -68,32 +68,32 @@ class Rules{
         std::string clientRule;
 };
 
-class Player{
-    public:
-        Player();
-        ~Player();
-        void run();
-        void stop();
-        void setPlayerName(std::string name);
-        void setPlayerId(std::string id);
-        void setPlayerPassword(std::string password);
-        void setPlayerEmail(std::string email);
-        void setPlayerAge(int age);
-        void readJason();
-        void writeJason();
-        void setPlayerInfos(std::string infos);
-        void setPlayerInfos(std::string infos, std::string value);
+// class Player{
+//     public:
+//         Player();
+//         ~Player();
+//         void run();
+//         void stop();
+//         void setPlayerName(std::string name);
+//         void setPlayerId(std::string id);
+//         void setPlayerPassword(std::string password);
+//         void setPlayerEmail(std::string email);
+//         void setPlayerAge(int age);
+//         void readJason();
+//         void writeJason();
+//         void setPlayerInfos(std::string infos);
+//         void setPlayerInfos(std::string infos, std::string value);
 
-    private:
-        std::string player;
-        std::string name;
-        std::string id;
-        std::string password;
-        std::string email;
-        std::string age;
-        std::string infos;
-        std::string value;
-        std::string ipaddress;
-        std::string port;
+//     private:
+//         std::string player;
+//         std::string name;
+//         std::string id;
+//         std::string password;
+//         std::string email;
+//         std::string age;
+//         std::string infos;
+//         std::string value;
+//         std::string ipaddress;
+//         std::string port;
         
-};
+// };
