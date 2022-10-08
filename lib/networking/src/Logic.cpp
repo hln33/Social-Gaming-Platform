@@ -18,6 +18,13 @@ Class Logic{
         void disconnect();
         void setCallback(std::function<void(std::string)> callback);
 
-    
+    private:
+        String logics;
+        String address;
+        String port;
+        String message;
+        String userinfos;
+        String serverinfos;
+        String clientinfos;
 };
 
