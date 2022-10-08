@@ -388,10 +388,10 @@ Server::send(const std::deque<Message>& messages) {
     auto found = impl->channels.find(message.connection);
     if (impl->channels.end() != found) {
       found->second->send(message.text);
+      found->first;
     }
   }
 }
-
 
 void
 Server::disconnect(Connection connection) {
