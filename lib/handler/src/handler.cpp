@@ -26,6 +26,7 @@ bool isJSON(const std::string& text) {
 //for now this is using a string to be consistent with the above check
 //will have to wait for a test file/test info to run this code
 json completeParse(const std::string& text){
+    //we need to make sure things are parsed correctly
     try{
         json j_complete = json::parse(text);
     }
