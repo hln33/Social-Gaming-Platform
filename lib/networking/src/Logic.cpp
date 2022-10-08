@@ -72,5 +72,9 @@ Class Player{
         void setPlayerPassword(String password);
         void setPlayerEmail(String email);
         void setPlayerAge(int age);
-        void set
+        void readJason();
+        void writeJason();
+        void setPlayerInfos(String infos);
+        void setPlayerInfos(String infos, String value);
+    
 };
