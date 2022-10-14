@@ -41,3 +41,7 @@ _deps
 *.exe
 *.out
 *.app
+
+# miscellaneous
+*.vscode
+*.DS_Store
