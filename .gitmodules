@@ -1,0 +1,6 @@
+[submodule "lib/external/glog"]
+	path = lib/external/glog
+	url = https://github.com/google/glog.git
+[submodule "lib/external/json"]
+	path = lib/external/json
+	url = https://github.com/nlohmann/json.git
