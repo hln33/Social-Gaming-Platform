@@ -33,13 +33,13 @@ json completeParse(const std::string& text){
     catch (json::parse_error& e){
         std::cout << "message " << e.what() << '\n'
                   << "exception id: " << e.id << '\n'
-                  << "byte postion of error: " << e.byte <<std:endl;
+                  << "byte postion of error: " << e.byte <<std::endl;
     }
     //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
     json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
         //this can be used to sort through the parser elements after reading
         return NULL;
-    }
+    };
 }
 
 bool MessageContains(const std::string& string, const std::string& subString) {
