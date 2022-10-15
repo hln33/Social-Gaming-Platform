@@ -12,12 +12,14 @@ class Player {
         int id;
         int highScore;
         int currentScore;
+        bool audience;
 
     public:
-        Player(String name, int highScore, int currentScore);
-        Player(String name, int currentScore);
-        Player(String name);
+        Player(String name, bool audience, int highScore, int currentScore);
+        Player(String name, bool audience, int currentScore);
+        Player(String name, bool audience);
 
+        Player(&Player other);
         String getName();
         void setName(String name);
 
@@ -29,6 +31,9 @@ class Player {
 
         int getId();
         void setId(int id);
+
+        bool getAudience();
+        void setAudience(bool audience);
 };
 
 
