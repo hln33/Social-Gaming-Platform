@@ -1,6 +1,8 @@
 add_library(networking
   src/Server.cpp
   src/Client.cpp
+  src/NetworkingHelper.cpp
+  include/NetworkMessage.h
 )
 
 find_package(Boost 1.72 COMPONENTS system random REQUIRED)
@@ -14,7 +16,8 @@ target_include_directories(networking
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(networking
+target_link_libraries(
+  networking
   PRIVATE
     ${Boost_LIBRARIES}
 )
