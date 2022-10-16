@@ -1,5 +1,6 @@
 #include "Server.h"
-
+#include "NetworkMessage.h"
+#include "NetworkingHelper.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -7,8 +8,8 @@
 #include <unistd.h>
 #include <vector>
 #include <nlohmann/json.hpp>
-#include <boost/random/random_device.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
+// #include <boost/random/random_device.hpp>
+// #include <boost/random/uniform_int_distribution.hpp>
 
 using json = nlohmann::json;
 using networking::Server;
@@ -16,29 +17,11 @@ using networking::Connection;
 using networking::Message;
 
 std::vector<Connection> clients;
+//Clients From Room Code
+std::map<std::string, std::vector<Connection>>  rooms;
+//Client Info from ID
+std::map<uintptr_t, std::string> clientInfo;  
 json gameRules;
-std::string code = "";
-using networking::Server;
-using networking::Connection;
-using networking::Message;
-
-
-std::string randomCode(){
-  std::string chars(
-        "abcdefghijklmnopqrstuvwxyz"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "1234567890");
-
-
-    boost::random::random_device rng;
-    boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
-    std::string code = "";
-    for(int i = 0; i < 6; ++i) {
-        code.append(std::string(1,chars[index_dist(rng)]));
-    }
-
-    return code;
-}
 
 
 void onConnect(Connection c) {
@@ -51,11 +34,33 @@ void onDisconnect(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
   auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
   clients.erase(eraseBegin, std::end(clients));
+  auto roomLoc = rooms.find(clientInfo.find(c.id)->second);
+  std::vector<Connection> &roomClients = roomLoc->second;
+  std::cout << roomClients.size() << "\n";
+  auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), [&c](const Connection client)
+                              { return client.id == c.id; });
+  roomClients.erase(removeLoc, roomClients.end());
+  
+  auto it = clientInfo.find(c.id);
+  clientInfo.erase(it);
+  
+  std::cout << roomClients.size() << "\n";
+  if(roomClients.size() == 0){
+    rooms.erase(roomLoc);
+  }
+  for(auto it = rooms.cbegin(); it != rooms.cend(); ++it){
+      std::cout << it->first << "\n";
+  }
+  for(auto it = clientInfo.cbegin(); it != clientInfo.cend(); ++it){
+      std::cout << it->first << "\n";
+  } 
+  
 }
 
 
 struct MessageResult {
   std::string result;
+  std::vector<Connection> sendTo;
   bool shouldShutdown;
 };
 
@@ -75,37 +80,62 @@ json createJSONMessage(std::string type, std::string message){
 
 MessageResult processMessages(Server& server, const std::deque<Message>& incoming) {
   std::ostringstream result;
+  std::deque<Message> outgoing;
+  std::vector<Connection> sendTo;
   bool quit = false;
   for (auto& message : incoming) {
     json data = json::parse(message.text);
-    if (data["type"] == "quit") {
+    if (data["type"] == messageType_to_string(Quit)) {
       server.disconnect(message.connection);
     } else if (data["type"]  == "shutdown") {
       std::cout << "Shutting down.\n";
        quit = true;
     }
-    else if(data["type"] == "join"){
-      std::deque<Message> outgoing;
-      if(code == data["message"]){
-        clients.push_back(message.connection);
-        json response = createJSONMessage("success", "successfully joined");
-        outgoing.push_back({message.connection, response.dump()});
-        server.send(outgoing);
+    else if(data["type"] == messageType_to_string(Join)){
+      const std::string roomCode = data["message"];
+      auto roomClients = rooms.find(roomCode);
+      if(roomClients  == rooms.end()){
+        json response = createJSONMessage("Error", "wrong code");
+        sendTo.push_back(message.connection);
+        result << response.dump(); 
       }
       else{
-        json response = createJSONMessage("error", "wrong code");
-        outgoing.push_back({message.connection, response.dump()});
-        server.send(outgoing);
+        roomClients->second.push_back(message.connection);
+        clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
+        json response = createJSONMessage("Success", "successfully joined");
+        sendTo.push_back(message.connection);
+        result << response.dump();    
       }
+    }
+    else if(data["type"] == messageType_to_string(Create)){
+      // pass json data to handler here
+      
+      std::string gameRules = data["message"];
+      std::cout << gameRules;
+      std::string roomCode = randomCode();
+      std::vector<Connection> roomClients;
+      roomClients.push_back(message.connection);
+      rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
+      clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
+      json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
+      sendTo.push_back(message.connection);
+      result << response.dump();
+
     }
     else{
       std::ostringstream s;
+      std::string roomCode = clientInfo.at(message.connection.id);
+      sendTo = rooms.at(roomCode);   
       s << message.connection.id << "> " << data["message"];
       json response = createJSONMessage("chat", s.str());
+      std::cout << s.str() << "\n";
       result << response.dump();
     }
+
   }
-  return MessageResult{result.str(), quit};
+  
+  
+  return MessageResult{result.str(), sendTo, quit};
 }
 
 std::string
@@ -123,17 +153,14 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 4) {
-    std::cerr << "Usage:\n  " << argv[0] << " <port> <json> <html response>\n";
+  if (argc < 3) {
+    std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
     return 1;
   }
-  std::ifstream f(argv[2]);
-  gameRules = json::parse(f);
-  code = randomCode();
+
   unsigned short port = std::stoi(argv[1]);
-  Server server{port, getHTTPMessage(argv[3]),  onConnect, onDisconnect};
+  Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
   
-  std::cout << "Your Code: " << code << "\n";
   while (true) {
     bool errorWhileUpdating = false;
     try {
@@ -145,8 +172,8 @@ int main(int argc, char* argv[]) {
     }
 
     auto incoming = server.receive();
-    auto [log, shouldQuit] = processMessages(server, incoming);
-    auto outgoing = buildOutgoing(log, clients);
+    auto [log, roomClients, shouldQuit] = processMessages(server, incoming);
+    auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
 
     if (shouldQuit || errorWhileUpdating) {
