@@ -2,8 +2,7 @@ add_library(handler
   src/handler.cpp
 )
 
-find_package(glog 0.6.0 REQUIRED
-             nlohmann_json 3.2.0 REQUIRED)
+find_package(glog 0.4.0 REQUIRED)
 
 target_include_directories(handler
   PUBLIC
@@ -21,7 +20,7 @@ set_target_properties(handler
 
 target_link_libraries(handler 
                       glog::glog
-                      PRIVATE nlohmann_json::nlohmann_json)
+                      nlohmann_json::nlohmann_json)
 
 install(TARGETS handler
   ARCHIVE DESTINATION lib
