@@ -2,6 +2,8 @@ CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
+/lib/external/
+/.vscode/
 Testingunion bindings large
 Makefileride bindings largesnowboard mens bib
 cmake_install.cmake
