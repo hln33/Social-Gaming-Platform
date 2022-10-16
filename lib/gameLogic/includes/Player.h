@@ -1,27 +1,27 @@
 //
 // Created by mcgir on 10/6/2022.
 //
-
+#include <string>
 #ifndef SOCIAL_GAMING_PLAYER_H
 #define SOCIAL_GAMING_PLAYER_H
 
-
+using namespace std;
 class Player {
     private:
-        String name;
+        string name;
         int id;
         int highScore;
         int currentScore;
         bool audience;
 
     public:
-        Player(String name, bool audience, int highScore, int currentScore);
-        Player(String name, bool audience, int currentScore);
-        Player(String name, bool audience);
+        Player(string name, bool audience, int highScore, int currentScore);
+        Player(string name, bool audience, int currentScore);
+        Player(string name, bool audience);
 
-        Player(&Player other);
-        String getName();
-        void setName(String name);
+        Player(Player& other);
+        string getName();
+        void setName(string name);
 
         int getHighScore();
         void setHighScore(int highScore);

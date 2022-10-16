@@ -8,7 +8,7 @@
 #endif //INC_373PROJECT_GAMERULES_H
 
 //-------------------------Control-Structures-------------------------//
-void foreach(<T> list, <T> function);
+// void foreach(<T> list, <T> function);
 
 void loop();
 
@@ -16,7 +16,7 @@ void inparallel();
 
 void parallelfor();
 
-void switch(<T> list, <T> value);
+// void switch(<T> list, <T> value);
 
 void when();
 
@@ -41,16 +41,16 @@ void timer();
 
 //-----------Human-Input-----------//
 
-void input-choice();
+void input_choice();
 
-void input-text();
+void input_text();
 
-void input-vote();
+void input_vote();
 
 //-----------Output-----------//
 void message();
 
-void global-message();
+void global_message();
 
 void scores();
 

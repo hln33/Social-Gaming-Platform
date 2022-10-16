@@ -2,40 +2,40 @@
 // Created by mcgir on 10/6/2022.
 //
 
-#include "includes/Player.h"
+#include "../includes/Player.h"
 #include <iostream>
 #include <cstdlib>
 
-Player::Player(String name, bool audience, int highScore, int currentScore) {
+Player::Player(string name, bool audience, int highScore, int currentScore) {
     name = name;
     audience = audience;
     highScore = highScore;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience, int currentScore) {
+Player::Player(string name, bool audience, int currentScore) {
     name = name;
     audience = audience;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience) {
+Player::Player(string name, bool audience) {
     name = name;
     audience = audience;
 }
 
-Player::Player(&Player other) {
+Player::Player(Player& other) {
     name = other.name;
     audience = other.audience;
     highScore = other.highScore;
     currentScore = other.currentScore;
 }
 
-int Player::getName() {
+string Player::getName() {
     return name;
 }
 
-void Player::setName(int name) {
+void Player::setName(string name) {
     name = name;
 }
 

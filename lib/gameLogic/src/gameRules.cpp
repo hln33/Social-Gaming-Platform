@@ -1,14 +1,15 @@
+#include "../includes/GameObject.h"
 //
 // Created by mcgir on 10/14/2022.
 //
 
 
 //-------------------------Control-Structures-------------------------//
-void foreach(<T> list, <T> function) {
-    for (int i = 0; i < list.length; i++) {
-        function(list[i]);
-    }
-}
+// void foreach(<T> list, <T> function) {
+//     for (int i = 0; i < list.length; i++) {
+//         function(list[i]);
+//     }
+// }
 
 void loop(){}
 
@@ -17,15 +18,15 @@ void inparallel(){}
 void parallelfor(){}
 
 
-void switch(<T> list, <T> value){
-    for (int i = 0; i < list.length; i++) {
-        if (list[i] == value) {
-            //do the meat of the operation
-            return i;
-        }
-    }
-    return -1;
-}
+// void switch(<T> list, <T> value){
+//     for (int i = 0; i < list.length; i++) {
+//         if (list[i] == value) {
+//             //do the meat of the operation
+//             return i;
+//         }
+//     }
+//     return -1;
+// }
 
 void when(){}
 
@@ -51,16 +52,16 @@ void add(){}
 void timer(){}
 
 //-----------Human-Input-----------//
-void input-choice(){}
+void input_choice(){}
 
-void input-text(){}
+void input_text(){}
 
-void input-vote(){}
+void input_vote(){}
 
 //-----------Output-----------//
 void message(){}
 
-void global-message(){}
+void global_smessage(){}
 
 void scores(){}
 

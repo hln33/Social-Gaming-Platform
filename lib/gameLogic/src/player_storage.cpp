@@ -1,7 +1,7 @@
 #include <unordered_map>
 
-#include "unique_id.h"
-#include "player_storage.h"
+#include "../includes/unique_id.h"
+#include "../includes/player_storage.h"
 
 void PlayerStorage::addPlayerRecord(IPlayer &p) {
     this->players.insert(std::make_pair(p.getPublicId(), p));

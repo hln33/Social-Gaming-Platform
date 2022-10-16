@@ -1,8 +1,8 @@
 #include <string>
 
-#include "player_storage.h"
-#include "unique_id.h"
-#include "room.h"
+#include "../includes/player_storage.h"
+#include "../includes/unique_id.h"
+#include "../includes/room.h"
 
 Room::Room(IRoomConfig rc, IPlayerStorage ps) : 
     config{rc}, players{ps} {

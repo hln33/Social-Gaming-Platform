@@ -5,19 +5,21 @@
 #ifndef INC_373PROJECT_GAMEOBJECT_H
 #define INC_373PROJECT_GAMEOBJECT_H
 
+#include<string>
+using namespace std;
 
 class GameObject {
-    String name;
-    GameObject beats;
+    string name;
+    // GameObject beats;
     public:
-        GameObject(String name);
-        GameObject(&GameObject other);
+        GameObject(string name);
+        GameObject(GameObject& other);
 
         void setBeats(GameObject beats);
         GameObject getBeats();
 
-        String getName();
-        void setName(String name);
+        string getName();
+        void setName(string name);
 };
 
 
