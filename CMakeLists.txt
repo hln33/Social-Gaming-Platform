@@ -34,9 +34,6 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 
 # check submodules
-if(NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/external/glog/CMakeLists.txt")
-    message(FATAL_ERROR "The glog library was not downloaded. Please update submodules.")
-endif()
 if (NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/external/json/CMakeLists.txt")
     message(FATAL_ERROR "The json library was not downloaded. Please update submodules.")
 endif()
