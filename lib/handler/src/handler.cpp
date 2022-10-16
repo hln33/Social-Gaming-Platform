@@ -1,18 +1,5 @@
-#include "handler.h"
-#include <glog/logging.h>
-#include <nlohmann/json.hpp>
-#include <iostream>
+#include "../include/handler.h"
 
-enum class parse_event_t : std:: uint8_t{
-    object_start,
-    object_end,
-    array_start,
-    array_end,
-    key,
-    value
-};
-
-using json = nlohmann::json;
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
     // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
@@ -81,3 +68,4 @@ void recieveMessage(std::string& message) {
         LOG(ERROR) << e.what();
     }
 }
+
