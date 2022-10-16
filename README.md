@@ -1,5 +1,7 @@
 # Social Gaming
 
+Currently, you may have multiple rooms and only ones with the same code can type to each other. 
+
 Run server
     bin/chatserver 4000 ../web-socket-networking/webchat.html
 
