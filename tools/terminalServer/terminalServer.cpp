@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include <vector>
 #include <nlohmann/json.hpp>
-// #include <boost/random/random_device.hpp>
-// #include <boost/random/uniform_int_distribution.hpp>
 
 using json = nlohmann::json;
 using networking::Server;
