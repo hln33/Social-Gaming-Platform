@@ -10,6 +10,7 @@ In separate terminals, run multiple instances of the chat client using:
     bin/chatclient localhost 4000
 
 once Client is loaded:
+
 ------MENU------- 
 - 1 - Create 
 - 2 - Join 
