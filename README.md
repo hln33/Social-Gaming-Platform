@@ -4,7 +4,7 @@ Currently, you may have multiple rooms and only ones with the same code can type
 
 Run server
 
-    bin/terminalClient 4000 ../web-socket-networking/webchat.html
+    bin/terminalServer 4000 tools/terminalServer/webchat.html
 
 In separate terminals, run multiple instances of the chat client using:
 
