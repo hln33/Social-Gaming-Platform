@@ -1,4 +1,5 @@
-#include <unique_id.h>
+#pragma once
+#include "unique_id.h"
 
 class IUniqueIdBuilder {
 public:

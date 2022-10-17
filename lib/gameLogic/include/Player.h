@@ -1,10 +1,10 @@
 //
 // Created by mcgir on 10/6/2022.
 //
-#include <string>
+
 #ifndef SOCIAL_GAMING_PLAYER_H
 #define SOCIAL_GAMING_PLAYER_H
-
+#include <string>
 using namespace std;
 class Player {
     private:

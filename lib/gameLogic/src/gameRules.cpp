@@ -1,4 +1,4 @@
-#include "../includes/GameObject.h"
+#include "../include/GameObject.h"
 //
 // Created by mcgir on 10/14/2022.
 //

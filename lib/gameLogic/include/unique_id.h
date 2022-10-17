@@ -1,4 +1,4 @@
-
+#pragma once
 #include <string>
 
 // unique id for anything
