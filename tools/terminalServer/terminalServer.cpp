@@ -14,7 +14,10 @@ using networking::Server;
 using networking::Connection;
 using networking::Message;
 
+
 std::vector<Connection> clients;
+std::vector<Connection> hosts; //Holds all hosts so that when they send close the game ends
+
 //Clients From Room Code
 std::map<std::string, std::vector<Connection>>  rooms;
 //Client Info from ID
@@ -83,6 +86,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   bool quit = false;
   for (auto& message : incoming) {
     json data = json::parse(message.text);
+
     if (data["type"] == messageType_to_string(Quit)) {
       server.disconnect(message.connection);
     } else if (data["type"]  == "shutdown") {
@@ -113,6 +117,9 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       std::string roomCode = randomCode();
       std::vector<Connection> roomClients;
       roomClients.push_back(message.connection);
+      
+      hosts.push_back(message.connection);
+
       rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
       clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
       json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
@@ -128,6 +135,27 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       json response = createJSONMessage("chat", s.str());
       std::cout << s.str() << "\n";
       result << response.dump();
+
+      //To handle close request by host
+      if (data["message"] == "close game") {
+        bool closeRoom = false;
+
+        for(auto host : hosts) {
+          if (host.id == message.connection.id) {
+            closeRoom = true;
+          }
+        }
+
+        if (closeRoom) {
+          std::string roomCode = clientInfo.at(message.connection.id);
+          auto roomClients = rooms.at(roomCode);
+
+          for(auto client: roomClients) 
+              server.disconnect(client);
+
+          server.disconnect(message.connection);
+        }
+      }
     }
 
   }
