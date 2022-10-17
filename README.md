@@ -3,11 +3,12 @@
 Currently, you may have multiple rooms and only ones with the same code can type to each other. 
 
 Run server
-    bin/chatserver 4000 ../web-socket-networking/webchat.html
+
+    bin/terminalServer 4000 tools/terminalServer/webchat.html
 
 In separate terminals, run multiple instances of the chat client using:
 
-    bin/chatclient localhost 4000
+    bin/terminalClient localhost 4000
 
 once Client is loaded:
 
