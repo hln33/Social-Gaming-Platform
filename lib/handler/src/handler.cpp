@@ -2,7 +2,7 @@
 #include <glog/logging.h>
 #include <nlohmann/json.hpp>
 #include <iostream>
-#include "../../gameLogic/business_logic_interface.h"
+// #include "../../gameLogic/business_logic_interface.h"
 
 enum class parse_event_t : std:: uint8_t{
     object_start,
@@ -23,6 +23,14 @@ bool isJSON(const std::string& text) {
     // return false; placeholder return statement
 }
 
+bool isString(const json j_value){
+    return (j_value.is_string());
+}
+
+bool isInt(const json j_value){
+    return (j_value.is_number_integer());
+}
+
 //function used to parse an inputted JSON file
 //for now this is using a string to be consistent with the above check
 //will have to wait for a test file/test info to run this code
@@ -30,6 +38,7 @@ json completeParse(const std::string& text){
     //we need to make sure things are parsed correctly
     try{
         json j_complete = json::parse(text);
+        return j_complete;
     }
     catch (json::parse_error& e){
         std::cout << "message " << e.what() << '\n'
@@ -47,9 +56,38 @@ bool MessageContains(const std::string& string, const std::string& subString) {
     return string.find(subString) != std::string::npos;
 }
 
+void handleConfig(const json j_complete){
+
+    std::string roomName = j_complete["configuration"]["name"];
+    int minPlayers = j_complete["configuration"]["player count"]["min"];
+    int maxPlayers = j_complete["configuration"]["player count"]["max"];
+
+    /* print room info */
+
+    std::cout << "Get here 3"
+              << "\n";
+    std::cout << "Print room info: "
+              << "\n";
+    std::cout << "RoomName: " << roomName << "\n";
+    std::cout << "Min, max player : " << minPlayers << ", " << maxPlayers << "\n";
+
+    // calling business interface from here, wait for room.h to be fixed 
+    // IRoomConfig config_obj = createRoomConfigBuilder()
+    // IRoom room = createRoom(config_obj)
+}
+
 // comments below contain pseudo-code
 void performBusinessLogic(const std::string& message) {
-    if (MessageContains(message, "Player Left")) {
+    json j_complete = completeParse(message);
+    if (j_complete.contains("configuration")){
+        handleConfig(j_complete);
+    }
+
+
+    if (MessageContains(message, "configuration")){
+        LOG(INFO) << "A new room has been created";
+    }
+    else if (MessageContains(message, "Player Left")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::removePlayer(playerName);
         LOG(INFO) << "A player has left";
