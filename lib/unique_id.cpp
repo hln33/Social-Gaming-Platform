@@ -2,6 +2,6 @@
 
 #include "unique_id.h"
 
-std::string UniqueId::getValue() const {
+std::string_view UniqueId::getValue() const {
     return this->value;
 }
