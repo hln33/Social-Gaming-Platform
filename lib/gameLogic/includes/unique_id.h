@@ -1,17 +1,20 @@
+#pragma once
 
-#include <string>
+#include <string_view>
 
 // unique id for anything
 class IUniqueId {
 public:
-    virtual std::string getValue() const;
+    virtual std::string_view getValue() const;
 };
 
 class UniqueId : public IUniqueId {
 public:
-    virtual std::string getValue() const override;
+    UniqueId(std::string_view s) : value(s) { }
+
+    std::string_view getValue() const override;
 
 private:
-    std::string value;
+    std::string_view value;
 };
 
