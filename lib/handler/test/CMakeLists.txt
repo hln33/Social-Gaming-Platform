@@ -1,10 +1,12 @@
-add_executable(exampleTests exampleTests.cpp)
+set(This exampleTests)
 
-target_link_libraries(exampleTests
+add_executable(${This} exampleTests.cpp)
+
+target_link_libraries(${This}
     GTest::gtest_main
 )
 
 add_test(
-    NAME exampleTests
-    COMMAND exampleTests
+    NAME ${This}
+    COMMAND ${This}
 )
