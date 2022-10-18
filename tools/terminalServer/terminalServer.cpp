@@ -158,6 +158,8 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
               server.disconnect(client);
 
           server.disconnect(message.connection);
+
+          rooms.erase(roomCode);
         }
       }
     }
