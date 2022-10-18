@@ -86,14 +86,18 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   bool quit = false;
   for (auto& message : incoming) {
     json data = json::parse(message.text);
+<<<<<<< Updated upstream
 
     if (data["type"] == messageType_to_string(Quit)) {
+=======
+    if (data["type"] == messageType.QUIT) {
+>>>>>>> Stashed changes
       server.disconnect(message.connection);
     } else if (data["type"]  == "shutdown") {
       std::cout << "Shutting down.\n";
        quit = true;
     }
-    else if(data["type"] == messageType_to_string(Join)){
+    else if(data["type"] == messageType.JOIN){
       const std::string roomCode = data["message"];
       auto roomClients = rooms.find(roomCode);
       if(roomClients  == rooms.end()){
@@ -109,7 +113,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         result << response.dump();    
       }
     }
-    else if(data["type"] == messageType_to_string(Create)){
+    else if(data["type"] == messageType.CREATE){
       // pass json data to handler here
       
       std::string gameRules = data["message"];
@@ -137,7 +141,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       result << response.dump();
 
       //To handle close request by host
-      if (data["message"] == "close game") {
+      if (data["message"] == messageType.CLOSE_GAME) {
         bool closeRoom = false;
 
         for(auto host : hosts) {

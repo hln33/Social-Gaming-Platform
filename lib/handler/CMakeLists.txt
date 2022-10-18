@@ -2,7 +2,7 @@ add_library(handler
   src/handler.cpp
 )
 
-find_package(glog 0.4.0 REQUIRED)
+# find_package(glog 0.4.0 REQUIRED)
 
 target_include_directories(handler
   PUBLIC
@@ -19,7 +19,7 @@ set_target_properties(handler
 )
 
 target_link_libraries(handler 
-                      glog::glog
+                      glog
                       nlohmann_json::nlohmann_json)
 
 install(TARGETS handler
