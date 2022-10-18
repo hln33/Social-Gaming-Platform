@@ -2,6 +2,7 @@
 #include <glog/logging.h>
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include "../../gameLogic/business_logic_interface.h"
 
 enum class parse_event_t : std:: uint8_t{
     object_start,

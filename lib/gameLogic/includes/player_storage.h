@@ -3,6 +3,14 @@
 #include "unique_id.h"
 
 // default hash
+
+class IPlayer {
+public:
+    virtual void setPublicId(IUniqueId);
+
+    virtual IUniqueId getPublicId() const;
+};
+
 namespace std {
     template<>
     struct hash<IPlayer> {
@@ -11,6 +19,9 @@ namespace std {
         }
     };
 }
+
+
+
 
 class IPlayerStorage {
 public:
@@ -31,12 +42,5 @@ public:
 
 private:
     std::unordered_map<IUniqueId, IPlayer> players;
-};
-
-class IPlayer {
-public:
-    virtual void setPublicId(IUniqueId);
-
-    virtual IUniqueId getPublicId() const;
 };
 
