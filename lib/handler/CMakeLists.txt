@@ -23,7 +23,6 @@ set_target_properties(${This}
 target_link_libraries(${This}
                       glog::glog
                       nlohmann_json::nlohmann_json
-                      GTest::gtest_main
 )
 
 install(TARGETS ${This}
