@@ -1,5 +1,5 @@
 #include "handler.h"
-#include <glog/logging.h>
+// #include <glog/logging.h>
 #include <../json.hpp>
 #include <iostream>
 
@@ -19,7 +19,6 @@ bool isJSON(const std::string& text) {
     // something like this:
     // return nlohmann::json::accept(text)
     return json::accept(text);
-    // return false; placeholder return statement
 }
 
 //function used to parse an inputted JSON file
@@ -33,13 +32,13 @@ json completeParse(const std::string& text){
     catch (json::parse_error& e){
         std::cout << "message " << e.what() << '\n'
                   << "exception id: " << e.id << '\n'
-                  << "byte postion of error: " << e.byte <<std:endl;
-    }
+                  << "byte postion of error: " << e.byte <<std::endl;
+    };
     //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
     json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
         //this can be used to sort through the parser elements after reading
         return NULL;
-    }
+    };
 }
 
 bool MessageContains(const std::string& string, const std::string& subString) {
@@ -51,20 +50,25 @@ void performBusinessLogic(const std::string& message) {
     if (MessageContains(message, "Player Left")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::removePlayer(playerName);
-        LOG(INFO) << "A player has left";
+        // LOG(INFO) << "A player has left";
+        std::cout << "A player has left";
     } else if (MessageContains(message, "Player Joined")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::addPlayer(playerName);
-        LOG(INFO) << "A player has joined";
+        // LOG(INFO) << "A player has joined";
+        std::cout << "A player has joined";
     } else if (MessageContains(message, "Game Ended")) {
         // businesslogic::endGame();
-        LOG(INFO) << "A game has ended";
+        // LOG(INFO) << "A game has ended";
+        std::cout << "A game has ended";
     } else if (MessageContains(message, "Game Created")) {
         // Configuration config = parseJSON(message);
         // businesslogic::createGame(config);
-        LOG(INFO) << "A game has been created";
+        // LOG(INFO) << "A game has been created";
+        std::cout << "A game has been created";
     } else {
-        LOG(ERROR) << "invalid message";
+        // LOG(ERROR) << "invalid message";
+        std::cout << "invalid message";
         throw std::runtime_error("invalid message passed to handler");
     }
 }
@@ -72,12 +76,13 @@ void performBusinessLogic(const std::string& message) {
 // recieves message from networking
 // For now, input will be assumed to be a string
 void recieveMessage(std::string& message) {
-    google::InitGoogleLogging("Handler");
+    // google::InitGoogleLogging("Handler");
 
     try {
         performBusinessLogic(message);
     } catch (std::exception& e) {
-        LOG(ERROR) << "call to business logic failed:";
-        LOG(ERROR) << e.what();
+        // LOG(ERROR) << "call to business logic failed:";
+        std::cout << "call to business logic failed:";
+        // LOG(ERROR) << e.what();
     }
 }
