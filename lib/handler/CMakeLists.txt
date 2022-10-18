@@ -20,11 +20,17 @@ set_target_properties(handler
 
 target_link_libraries(handler 
                       glog::glog
-                      nlohmann_json::nlohmann_json)
+                      nlohmann_json::nlohmann_json
+                      GTest::gtest_main
+)
 
 install(TARGETS handler
   ARCHIVE DESTINATION lib
 )
+
+# comment out to disable unit testing
+enable_testing()
+add_subdirectory(test)
 
 
 # creates a handler-test executable that I (Harry) used to test the handler code
