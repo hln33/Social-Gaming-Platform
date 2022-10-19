@@ -14,6 +14,8 @@ enum class parse_event_t : std:: uint8_t{
 
 using json = nlohmann::json;
 
+void initLogging();
+
 void recieveMessage(std::string& message);
 
 bool isJSON(const std::string& text);

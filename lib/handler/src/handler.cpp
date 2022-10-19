@@ -6,6 +6,10 @@
 
 using json = nlohmann::json;
 
+void initLogging() {
+    google::InitGoogleLogging("Handler");
+}
+
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
     return json::accept(text);
@@ -40,15 +44,18 @@ void performBusinessLogic(const std::string& message) {
     if (MessageContains(message, "Player Left")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::removePlayer(playerName);
+        std::cout << "A player has left" << std::endl;
         LOG(INFO) << "A player has left";
     } else if (MessageContains(message, "Player Joined")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::addPlayer(playerName);
+        std::cout << "A player has joined" << std::endl;
         LOG(INFO) << "A player has joined";
     } else if (MessageContains(message, "Game Ended")) {
         // businesslogic::endGame();
+        std::cout << "A game has ended" << std::endl;
         LOG(INFO) << "A game has ended";
-    } else if (MessageContains(message, "Success")) {
+    } else if (MessageContains(message, "Game Created")) {
         // Configuration config = parseJSON(message);
         // businesslogic::createGame(config);
         std::cout << "A game has been created" << std::endl;
@@ -62,7 +69,6 @@ void performBusinessLogic(const std::string& message) {
 // recieves message from networking
 // For now, input will be assumed to be a string
 void recieveMessage(std::string& message) {
-    google::InitGoogleLogging("Handler");
 
     try {
         performBusinessLogic(message);

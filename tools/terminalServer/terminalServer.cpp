@@ -88,6 +88,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
     json data = json::parse(message.text);
     if (data["type"] == messageType_to_string(Quit)) {
       server.disconnect(message.connection);
+
     } else if (data["type"]  == "shutdown") {
       std::cout << "Shutting down.\n";
        quit = true;
@@ -97,6 +98,8 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       auto roomClients = rooms.find(roomCode);
       if(roomClients  == rooms.end()){
         json response = createJSONMessage("Error", "wrong code");
+
+
         sendTo.push_back(message.connection);
         result << response.dump(); 
       }
@@ -105,7 +108,11 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
         json response = createJSONMessage("Success", "successfully joined");
         sendTo.push_back(message.connection);
-        result << response.dump();    
+        result << response.dump();   
+
+        //Tell handler that a player joined
+        std::string playerJoined = std::string("Player Joined");
+        recieveMessage(playerJoined);
       }
     }
     else if(data["type"] == messageType_to_string(Create)){
@@ -148,8 +155,8 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         sendTo.push_back(message.connection);
         result << response.dump();
 
-        //Send info to handler that new game is created
-        std::string gameCreatedHandler = std::string(response["type"]);
+        //Tell handler that new game is created
+        std::string gameCreatedHandler = std::string("Game Created");
         recieveMessage(gameCreatedHandler);
       }
 
@@ -163,28 +170,39 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       std::cout << s.str() << "\n";
       result << response.dump();
 
-              //To handle close request by host
-        if (data["message"] == "close game") {
-          bool closeRoom = false;
 
-          for(auto host : hosts) {
-            if (host.id == message.connection.id) {
-              closeRoom = true;
-            }
-          }
+      // //Tell handler that a player is leaving the game
+      // if (data["messgae"] == "exit" || data["message"] == "quit") {
+      //   std::string playerDisconnected = std::string("Player Left");
+      //   recieveMessage(playerDisconnected);
+      // }
 
-          if (closeRoom) {
-            std::string roomCode = clientInfo.at(message.connection.id);
-            auto roomClients = rooms.at(roomCode);
+      //To handle close request by host
+      if (data["message"] == "close game") {
+        bool closeRoom = false;
 
-            for(auto client: roomClients) 
-                server.disconnect(client);
-
-            server.disconnect(message.connection);
-
-            rooms.erase(roomCode);
+        for(auto host : hosts) {
+          if (host.id == message.connection.id) {
+            closeRoom = true;
           }
         }
+
+        if (closeRoom) {
+          std::string roomCode = clientInfo.at(message.connection.id);
+          auto roomClients = rooms.at(roomCode);
+
+          for(auto client: roomClients) 
+              server.disconnect(client);
+
+          server.disconnect(message.connection);
+
+          rooms.erase(roomCode);
+
+          //Tell handler that a game ended
+          std::string gameEnded = std::string("Game Ended");
+          recieveMessage(gameEnded);
+        }
+      }
     }
 
   }
@@ -208,6 +226,10 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
+
+  //Initialize google logging
+  initLogging();
+
   if (argc < 3) {
     std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
     return 1;
