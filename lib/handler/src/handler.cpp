@@ -28,6 +28,7 @@ json completeParse(const std::string& text){
     //we need to make sure things are parsed correctly
     try{
         json j_complete = json::parse(text);
+        return j_complete;
     }
     catch (json::parse_error& e){
         std::cout << "message " << e.what() << '\n'
