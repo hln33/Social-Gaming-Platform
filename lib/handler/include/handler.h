@@ -2,7 +2,18 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
+enum class parse_event_t : std:: uint8_t{
+    object_start,
+    object_end,
+    array_start,
+    array_end,
+    key,
+    value
+};
+
 using json = nlohmann::json;
+
+void initLogging();
 
 bool isJSON(const std::string& text);
 

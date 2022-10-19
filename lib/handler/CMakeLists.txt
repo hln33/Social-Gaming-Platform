@@ -4,7 +4,7 @@ add_library(${This}
   src/handler.cpp
 )
 
-find_package(glog 0.4.0 REQUIRED)
+# find_package(glog 0.4.0 REQUIRED)
 
 target_include_directories(${This}
   PUBLIC

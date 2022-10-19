@@ -7,16 +7,12 @@
 #include <vector>
 // #include "../../gameLogic/business_logic_interface.h"
 
-enum class parse_event_t : std:: uint8_t{
-    object_start,
-    object_end,
-    array_start,
-    array_end,
-    key,
-    value
-};
 
 using json = nlohmann::json;
+
+void initLogging() {
+    google::InitGoogleLogging("Handler");
+}
 
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {

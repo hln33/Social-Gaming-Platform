@@ -171,3 +171,7 @@ bool
 Client::isDisconnected() const noexcept {
   return impl->isClosed;
 }
+
+void Client::disconnect() {
+  impl->disconnect();
+}

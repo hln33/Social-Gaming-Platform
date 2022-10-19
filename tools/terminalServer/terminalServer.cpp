@@ -8,13 +8,17 @@
 #include <unistd.h>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include "handler.h"
 
 using json = nlohmann::json;
 using networking::Server;
 using networking::Connection;
 using networking::Message;
 
+
 std::vector<Connection> clients;
+std::vector<Connection> hosts; //Holds all hosts so that when they send close the game ends
+
 //Clients From Room Code
 std::map<std::string, std::vector<Connection>>  rooms;
 //Client Info from ID
@@ -83,17 +87,20 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   bool quit = false;
   for (auto& message : incoming) {
     json data = json::parse(message.text);
-    if (data["type"] == messageType_to_string(Quit)) {
+    if (data["type"] == messageType.QUIT) {
       server.disconnect(message.connection);
+
     } else if (data["type"]  == "shutdown") {
       std::cout << "Shutting down.\n";
        quit = true;
     }
-    else if(data["type"] == messageType_to_string(Join)){
+    else if(data["type"] == messageType.JOIN){
       const std::string roomCode = data["message"];
       auto roomClients = rooms.find(roomCode);
       if(roomClients  == rooms.end()){
         json response = createJSONMessage("Error", "wrong code");
+
+
         sendTo.push_back(message.connection);
         result << response.dump(); 
       }
@@ -102,22 +109,57 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
         json response = createJSONMessage("Success", "successfully joined");
         sendTo.push_back(message.connection);
-        result << response.dump();    
+        result << response.dump();   
+
+        //Tell handler that a player joined
+        std::string playerJoined = std::string("Player Joined");
+        recieveMessage(playerJoined);
       }
     }
-    else if(data["type"] == messageType_to_string(Create)){
+    else if(data["type"] == messageType.CREATE){
       // pass json data to handler here
       
       std::string gameRules = data["message"];
-      std::cout << gameRules;
-      std::string roomCode = randomCode();
-      std::vector<Connection> roomClients;
-      roomClients.push_back(message.connection);
-      rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
-      clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
-      json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
-      sendTo.push_back(message.connection);
-      result << response.dump();
+      // std::cout << gameRules;
+
+      //Check if game rules are in valid json format
+      if (!isJSON(gameRules)) {
+        std::string error = "Error: Game rules are not in valid json format...";
+        std::cout << error << std::endl;
+        sendTo.push_back(message.connection);
+        json response = createJSONMessage("Error", error);
+
+        result << response.dump();
+      }
+
+      else {
+        std::cout << "Game rules are valid JSON" << std::endl;
+
+        json gamerule = completeParse(gameRules); //Send this json object to lower layers (when completed)
+
+        // //Printing game rules keys to see if everything is parsed correctly when function is complete
+        // std::cout << "Printing keys for game rules..." << std::endl;
+        // for (auto it = gamerule.begin(); it != gamerule.end(); ++it)
+        // {
+        //     std::cout << "key: " << it.key() << '\n';
+        // }
+
+        hosts.push_back(message.connection);
+
+
+        std::vector<Connection> roomClients;
+        roomClients.push_back(message.connection);
+        std::string roomCode = randomCode();
+        rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
+        clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
+        json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
+        sendTo.push_back(message.connection);
+        result << response.dump();
+
+        //Tell handler that new game is created
+        std::string gameCreatedHandler = std::string("Game Created");
+        recieveMessage(gameCreatedHandler);
+      }
 
     }
     else{
@@ -128,6 +170,39 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       json response = createJSONMessage("chat", s.str());
       std::cout << s.str() << "\n";
       result << response.dump();
+
+
+      // //Tell handler that a player is leaving the game
+      // if (data["messgae"] == "exit" || data["message"] == "quit") {
+      //   std::string playerDisconnected = std::string("Player Left");
+      //   recieveMessage(playerDisconnected);
+      // }
+      //To handle close request by host
+      if (data["message"] == messageType.CLOSE_GAME) {
+        bool closeRoom = false;
+
+        for(auto host : hosts) {
+          if (host.id == message.connection.id) {
+            closeRoom = true;
+          }
+        }
+
+        if (closeRoom) {
+          std::string roomCode = clientInfo.at(message.connection.id);
+          auto roomClients = rooms.at(roomCode);
+
+          for(auto client: roomClients) 
+              server.disconnect(client);
+
+          server.disconnect(message.connection);
+
+          rooms.erase(roomCode);
+
+          //Tell handler that a game ended
+          std::string gameEnded = std::string("Game Ended");
+          recieveMessage(gameEnded);
+        }
+      }
     }
 
   }
@@ -151,6 +226,10 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
+
+  //Initialize google logging
+  initLogging();
+
   if (argc < 3) {
     std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
     return 1;

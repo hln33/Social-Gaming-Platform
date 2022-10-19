@@ -13,6 +13,7 @@ find_package(Threads REQUIRED)
 
 target_link_libraries(terminalServer
   networking
+  handler
   nlohmann_json
   ${CMAKE_THREAD_LIBS_INIT}
 )
