@@ -16,10 +16,8 @@ target_include_directories(networking
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(
-  networking
-  PRIVATE
-    ${Boost_LIBRARIES}
+target_link_libraries( networking
+                      ${Boost_LIBRARIES}
 )
 
 set_target_properties(networking
