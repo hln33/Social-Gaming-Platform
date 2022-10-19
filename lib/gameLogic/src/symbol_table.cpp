@@ -3,7 +3,7 @@
 #include <list>
 #include <utility>
 
-#include "symbol_table.h"
+#include "../includes/symbol_table.h"
 
 /**
  * 
