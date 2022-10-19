@@ -22,15 +22,8 @@ target_include_directories(networking
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-<<<<<<< HEAD
 target_link_libraries( networking
                       ${Boost_LIBRARIES}
-=======
-target_link_libraries(
-  networking
-  PRIVATE
-    ${Boost_Libraries}
->>>>>>> boost
 )
 
 set_target_properties(networking
