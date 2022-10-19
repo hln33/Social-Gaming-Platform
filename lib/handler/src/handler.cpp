@@ -1,5 +1,7 @@
+// #include <glog/logging.h>
+#include <iostream>
 #include "handler.h"
-#include <glog/logging.h>
+// #include <glog/logging.h>S
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <vector>
@@ -49,11 +51,6 @@ json completeParse(const std::string& text){
         std::cout << "message " << e.what() << '\n'
                   << "exception id: " << e.id << '\n'
                   << "byte postion of error: " << e.byte <<std::endl;
-    }
-    //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
-    json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
-        //this can be used to sort through the parser elements after reading
-        return NULL;
     };
 }
 
@@ -132,7 +129,7 @@ void handleRules(const json j_complete){
 void performBusinessLogic(const std::string& message) {
     
     if (!isJSON(message)){
-        LOG(ERROR) << "sent message is not JSON";
+        // LOG(ERROR) << "sent message is not JSON";
         throw std::invalid_argument("sent message is not JSON");
     }
 
@@ -149,25 +146,30 @@ void performBusinessLogic(const std::string& message) {
 
 
     if (MessageContains(message, "configuration")){
-        LOG(INFO) << "A new room has been created";
+        // LOG(INFO) << "A new room has been created";
     }
     else if (MessageContains(message, "Player Left")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::removePlayer(playerName);
-        LOG(INFO) << "A player has left";
+        // LOG(INFO) << "A player has left";
+        std::cout << "A player has left";
     } else if (MessageContains(message, "Player Joined")) {
         // std::string playerName = getPlayerName(message);
         // businesslogic::addPlayer(playerName);
-        LOG(INFO) << "A player has joined";
+        // LOG(INFO) << "A player has joined";
+        std::cout << "A player has joined";
     } else if (MessageContains(message, "Game Ended")) {
         // businesslogic::endGame();
-        LOG(INFO) << "A game has ended";
+        // LOG(INFO) << "A game has ended";
+        std::cout << "A game has ended";
     } else if (MessageContains(message, "Game Created")) {
         // Configuration config = parseJSON(message);
         // businesslogic::createGame(config);
-        LOG(INFO) << "A game has been created";
+        // LOG(INFO) << "A game has been created";
+        std::cout << "A game has been created";
     } else {
-        LOG(ERROR) << "invalid message";
+        // LOG(ERROR) << "invalid message";
+        std::cout << "invalid message";
         throw std::runtime_error("invalid message passed to handler");
     }
 }
@@ -175,12 +177,45 @@ void performBusinessLogic(const std::string& message) {
 // recieves message from networking
 // For now, input will be assumed to be a string
 void recieveMessage(std::string& message) {
-    google::InitGoogleLogging("Handler");
+    // google::InitGoogleLogging("Handler");
 
     try {
         performBusinessLogic(message);
     } catch (std::exception& e) {
-        LOG(ERROR) << "call to business logic failed:";
-        LOG(ERROR) << e.what();
+        // LOG(ERROR) << "call to business logic failed:";
+        std::cout << "call to business logic failed:";
+        // LOG(ERROR) << e.what();
     }
+}
+
+void storeParsedValues(json& text){
+    //this function will go through and store the values in correct spots
+    //this is a template, as we need to test things still
+    json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+        std::vector<json> keys;
+        std::vector<json> arrays;
+        std::vector<json> values;
+        if(event == json::parse_event_t::key)
+        {
+            keys.push_back(event);
+            return true;
+        }
+        else if(event == json::parse_event_t::array_end)
+        {   
+            arrays.push_back(event);
+            return true;
+        }
+        else if(event == json::parse_event_t::value)
+        {
+            values.push_back(event);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        //this will create 3 large vectors
+        //we need a way to store them in new vectors for each key value
+        return;
+    };
 }
