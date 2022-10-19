@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <../json.hpp>
+#include <nlohmann/json.hpp>
 
 // use this main function to test handler code for now. In the future we will probably use unit tests instead.
 int main() {
