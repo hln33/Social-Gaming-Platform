@@ -5,6 +5,7 @@
 #include "../includes/Player.h"
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
 Player::Player(String name, bool audience, int highScore, int currentScore) {
     name = name;
