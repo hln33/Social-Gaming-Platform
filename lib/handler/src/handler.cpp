@@ -15,13 +15,10 @@ enum class parse_event_t : std:: uint8_t{
 };
 
 using json = nlohmann::json;
+
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
-    // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
-    // something like this:
-    // return nlohmann::json::accept(text)
     return json::accept(text);
-    // return false; placeholder return statement
 }
 
 bool isString(const json j_value){

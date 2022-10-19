@@ -37,7 +37,9 @@ endif()
 if (NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/external/json/CMakeLists.txt")
     message(FATAL_ERROR "The json library was not downloaded. Please update submodules.")
 endif()
-
+if (NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/external/googletest/CMakeLists.txt")
+    message(FATAL_ERROR "The googletest library was not downloaded. Please update submodules.")
+endif()
 
 add_subdirectory(lib)
 add_subdirectory(tools)

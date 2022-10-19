@@ -5,7 +5,12 @@ add_library(networking
   include/NetworkMessage.h
 )
 
-find_package(Boost 1.72 COMPONENTS system random REQUIRED)
+set(Boost_Libraries
+    Boost::system 
+    Boost::asio 
+    Boost::random 
+    Boost::beast
+)
 
 target_include_directories(networking
   PUBLIC
@@ -13,13 +18,10 @@ target_include_directories(networking
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(
-  networking
-  PRIVATE
-    ${Boost_LIBRARIES}
+target_link_libraries( networking
+                      ${Boost_Libraries}
 )
 
 set_target_properties(networking

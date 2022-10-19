@@ -1,3 +1,9 @@
 [submodule "lib/external/json"]
 	path = lib/external/json
 	url = https://github.com/nlohmann/json.git
+[submodule "lib/external/googletest"]
+	path = lib/external/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lib/external/boost"]
+	path = lib/external/boost
+	url = https://github.com/boostorg/boost.git
