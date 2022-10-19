@@ -3,14 +3,6 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 
-enum class parse_event_t : std:: uint8_t{
-    object_start,
-    object_end,
-    array_start,
-    array_end,
-    key,
-    value
-};
 
 using json = nlohmann::json;
 
@@ -56,9 +48,10 @@ void performBusinessLogic(const std::string& message) {
     } else if (MessageContains(message, "Game Ended")) {
         // businesslogic::endGame();
         LOG(INFO) << "A game has ended";
-    } else if (MessageContains(message, "Game Created")) {
+    } else if (MessageContains(message, "Success")) {
         // Configuration config = parseJSON(message);
         // businesslogic::createGame(config);
+        std::cout << "A game has been created" << std::endl;
         LOG(INFO) << "A game has been created";
     } else {
         LOG(ERROR) << "invalid message";

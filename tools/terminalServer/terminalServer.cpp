@@ -127,6 +127,18 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       else {
         std::cout << "Game rules are valid JSON" << std::endl;
 
+        json gamerule = completeParse(gameRules); //Send this json object to lower layers (when completed)
+
+        // //Printing game rules keys to see if everything is parsed correctly when function is complete
+        // std::cout << "Printing keys for game rules..." << std::endl;
+        // for (auto it = gamerule.begin(); it != gamerule.end(); ++it)
+        // {
+        //     std::cout << "key: " << it.key() << '\n';
+        // }
+
+        hosts.push_back(message.connection);
+
+
         std::vector<Connection> roomClients;
         roomClients.push_back(message.connection);
         std::string roomCode = randomCode();
@@ -136,7 +148,22 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         sendTo.push_back(message.connection);
         result << response.dump();
 
-        //To handle close request by host
+        //Send info to handler that new game is created
+        std::string gameCreatedHandler = std::string(response["type"]);
+        recieveMessage(gameCreatedHandler);
+      }
+
+    }
+    else{
+      std::ostringstream s;
+      std::string roomCode = clientInfo.at(message.connection.id);
+      sendTo = rooms.at(roomCode);   
+      s << message.connection.id << "> " << data["message"];
+      json response = createJSONMessage("chat", s.str());
+      std::cout << s.str() << "\n";
+      result << response.dump();
+
+              //To handle close request by host
         if (data["message"] == "close game") {
           bool closeRoom = false;
 
@@ -158,18 +185,6 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
             rooms.erase(roomCode);
           }
         }
-
-      }
-
-    }
-    else{
-      std::ostringstream s;
-      std::string roomCode = clientInfo.at(message.connection.id);
-      sendTo = rooms.at(roomCode);   
-      s << message.connection.id << "> " << data["message"];
-      json response = createJSONMessage("chat", s.str());
-      std::cout << s.str() << "\n";
-      result << response.dump();
     }
 
   }
