@@ -90,6 +90,8 @@ main(int argc, char* argv[]) {
   
   ChatWindow chatWindow(onTextEntry);
   while (!done && !client.isDisconnected()) {
+    bool isError = false;
+
     try {
       client.update();
     } catch (std::exception& e) {
@@ -102,8 +104,19 @@ main(int argc, char* argv[]) {
       json data = json::parse(response);
       std::string message = data["message"];
       chatWindow.displayText(message + "\n");
+
+      if (data["type"] == "Error") {
+        isError = true;
+        chatWindow.displayText("Disconnecting...");
+      }
     }
     chatWindow.update();
+
+    //Disconnect client if game rules are not valid json
+    if (isError) {
+      sleep(2);
+      client.disconnect();
+    }
   }
 
   return 0;

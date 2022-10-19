@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include "handler.h"
 
 using json = nlohmann::json;
 using networking::Server;
@@ -15,6 +16,8 @@ using networking::Connection;
 using networking::Message;
 
 std::vector<Connection> clients;
+std::vector<Connection> hosts; //Holds all hosts so that when they send close the game ends
+
 //Clients From Room Code
 std::map<std::string, std::vector<Connection>>  rooms;
 //Client Info from ID
@@ -109,15 +112,54 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
       // pass json data to handler here
       
       std::string gameRules = data["message"];
-      std::cout << gameRules;
-      std::string roomCode = randomCode();
-      std::vector<Connection> roomClients;
-      roomClients.push_back(message.connection);
-      rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
-      clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
-      json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
-      sendTo.push_back(message.connection);
-      result << response.dump();
+      // std::cout << gameRules;
+
+      //Check if game rules are in valid json format
+      if (!isJSON(gameRules)) {
+        std::string error = "Error: Game rules are not in valid json format...";
+        std::cout << error << std::endl;
+        sendTo.push_back(message.connection);
+        json response = createJSONMessage("Error", error);
+
+        result << response.dump();
+      }
+
+      else {
+        std::cout << "Game rules are valid JSON" << std::endl;
+
+        std::vector<Connection> roomClients;
+        roomClients.push_back(message.connection);
+        std::string roomCode = randomCode();
+        rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
+        clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
+        json response = createJSONMessage("Success", "successfully created - code: " + roomCode);
+        sendTo.push_back(message.connection);
+        result << response.dump();
+
+        //To handle close request by host
+        if (data["message"] == "close game") {
+          bool closeRoom = false;
+
+          for(auto host : hosts) {
+            if (host.id == message.connection.id) {
+              closeRoom = true;
+            }
+          }
+
+          if (closeRoom) {
+            std::string roomCode = clientInfo.at(message.connection.id);
+            auto roomClients = rooms.at(roomCode);
+
+            for(auto client: roomClients) 
+                server.disconnect(client);
+
+            server.disconnect(message.connection);
+
+            rooms.erase(roomCode);
+          }
+        }
+
+      }
 
     }
     else{

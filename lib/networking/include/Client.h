@@ -63,10 +63,12 @@ public:
    */
   [[nodiscard]] bool isDisconnected() const noexcept;
 
+  void disconnect();
+
 private:
   class ClientImpl;
-
   std::unique_ptr<ClientImpl> impl;
+
 };
 
 
