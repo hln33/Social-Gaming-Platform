@@ -5,8 +5,6 @@ add_library(networking
   include/NetworkMessage.h
 )
 
-#find_package(Boost 1.72 COMPONENTS system random REQUIRED)
-
 set(Boost_Libraries
     Boost::system 
     Boost::asio 
