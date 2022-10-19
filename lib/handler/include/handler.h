@@ -12,3 +12,5 @@ json completeParse(const std::string& text);
 bool MessageContains(const std::string& string, const std::string& substring);
 
 void performBusinessLogic(const std::string& message);
+
+void storeParsedValues(json& text);

@@ -2,29 +2,33 @@
 // Created by mcgir on 10/6/2022.
 //
 
-#include "Player.h"
+#include "includes/Player.h"
 #include <iostream>
 #include <cstdlib>
 
-Player::Player(int name) {
+Player::Player(String name, bool audience, int highScore, int currentScore) {
     name = name;
-    highScore = 0;
-    currentScore = 0;
-    id = rand();
-}
-
-Player::Player(int name, int currentScore) {
-    name = name;
-    highScore = 0;
-    currentScore = currentScore;
-    id = rand();
-}
-
-Player::Player(int name, int highScore, int currentScore) {
-    name = name;
+    audience = audience;
     highScore = highScore;
     currentScore = currentScore;
-    id = rand();
+}
+
+Player::Player(String name, bool audience, int currentScore) {
+    name = name;
+    audience = audience;
+    currentScore = currentScore;
+}
+
+Player::Player(String name, bool audience) {
+    name = name;
+    audience = audience;
+}
+
+Player::Player(&Player other) {
+    name = other.name;
+    audience = other.audience;
+    highScore = other.highScore;
+    currentScore = other.currentScore;
 }
 
 int Player::getName() {
@@ -58,4 +62,12 @@ int Player::getId() {
 void Player::setId(int id) {
     //shouldn't be used as each user should have a unique id
     id = id;
+}
+
+bool Player::getAudience() {
+    return audience;
+}
+
+void Player::setAudience(bool audience) {
+    audience = audience;
 }

@@ -1,7 +1,9 @@
 // #include <glog/logging.h>
 #include <iostream>
 #include "handler.h"
+#include <glog/logging.h>
 #include <../json.hpp>
+#include <iostream>
 
 enum class parse_event_t : std:: uint8_t{
     object_start,
@@ -13,11 +15,9 @@ enum class parse_event_t : std:: uint8_t{
 };
 
 using json = nlohmann::json;
+
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
-    // this function can most likely just call https://json.nlohmann.me/api/basic_json/accept/. Just currently waiting on Bikram to integrate the library into the project
-    // something like this:
-    // return nlohmann::json::accept(text)
     return json::accept(text);
 }
 
@@ -96,7 +96,7 @@ void recieveMessage(std::string& message) {
     }
 }
 
-void storeParsedValues(json text){
+void storeParsedValues(json& text){
     std::vector<auto> keys;
     std::vector<auto> arrays;
     std::vector<auto> values;
@@ -124,5 +124,6 @@ void storeParsedValues(json text){
         }
         //this will create 3 large vectors
         //we need a way to store them in new vectors for each key value
+        return;
     };
 }
