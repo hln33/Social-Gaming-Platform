@@ -52,19 +52,6 @@ json completeParse(const std::string& text){
                   << "exception id: " << e.id << '\n'
                   << "byte postion of error: " << e.byte <<std::endl;
     };
-    //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
-    // json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
-    //     //this can be used to sort through the parser elements after reading
-    //     if(event == json::parse_event_t::key and parsed == json("setup"))
-    //     {
-    //         return false;
-    //     }
-    //     else
-    //     {
-    //         return true;
-    //     }
-    // };
-    // ^^This code should not be called with json::parse(text)
 }
 
 
