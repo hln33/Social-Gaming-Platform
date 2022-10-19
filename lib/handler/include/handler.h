@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include <../json.hpp>
+#include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 
 void recieveMessage(std::string& message);

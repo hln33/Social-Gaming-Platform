@@ -1,9 +1,10 @@
 // #include <glog/logging.h>
 #include <iostream>
 #include "handler.h"
-#include <glog/logging.h>
-#include <../json.hpp>
+// #include <glog/logging.h>S
+#include <nlohmann/json.hpp>
 #include <iostream>
+#include <vector>
 
 enum class parse_event_t : std:: uint8_t{
     object_start,
@@ -97,12 +98,12 @@ void recieveMessage(std::string& message) {
 }
 
 void storeParsedValues(json& text){
-    std::vector<auto> keys;
-    std::vector<auto> arrays;
-    std::vector<auto> values;
     //this function will go through and store the values in correct spots
     //this is a template, as we need to test things still
     json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+        std::vector<json> keys;
+        std::vector<json> arrays;
+        std::vector<json> values;
         if(event == json::parse_event_t::key)
         {
             keys.push_back(event);
