@@ -13,6 +13,7 @@
 #include "Client.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <sstream>
 
 using json = nlohmann::json;
 
