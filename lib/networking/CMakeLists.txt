@@ -21,7 +21,7 @@ target_include_directories(networking
 )
 
 target_link_libraries( networking
-                      ${Boost_LIBRARIES}
+                      ${Boost_Libraries}
 )
 
 set_target_properties(networking
