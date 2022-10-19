@@ -35,7 +35,6 @@ bool isInt(const json j_value){
 bool isArray(const json j_value){
     return (j_value.is_array());
 }
-
 bool isBoolean(const json j_value){
     return (j_value.is_boolean());
 }
@@ -100,6 +99,38 @@ void handleConstant(const json j_complete){
     // return beat_rules;
 }
 
+void handleRules(const json j_complete){
+    if (isArray(j_complete["rules"])){
+        json j_rule = j_complete["rules"];
+        // extract all rules into vector
+        std::vector<json> individual_rules = j_rule;
+        
+        // extract individual rule
+        for (auto r : individual_rules){
+            std::string rule_name = "empty";
+            std::string rule_element = "empty";
+            std::string rule_list = "empty";
+            std::string rule_value = "empty";
+            if (r.contains("rule")){
+                rule_name = r["rule"];
+            }
+            if (r.contains("element")){
+                rule_element = r["element"];
+            }
+            if (r.contains("list")){
+                rule_list = r["list"];
+            }
+            if (r.contains("value")){
+                rule_value = r["value"];
+            }
+            // wait for business interface for create rule objects 
+        }
+    }
+    else {
+        // std::cout << "rule is not array" << "\n";
+    }
+}
+
 // comments below contain pseudo-code
 void performBusinessLogic(const std::string& message) {
     
@@ -115,8 +146,11 @@ void performBusinessLogic(const std::string& message) {
     if (j_complete.contains("constants")){
         handleConstant(j_complete);
     }
+    if (j_complete.contains("rules")){
+        handleRules(j_complete);
+    }
 
-    
+
     if (MessageContains(message, "configuration")){
         LOG(INFO) << "A new room has been created";
     }

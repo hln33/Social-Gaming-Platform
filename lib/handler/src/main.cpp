@@ -35,7 +35,32 @@ int main() {
         },
         "per-player": {},
         "per-audience": {},
-        "rules": []
+        "rules": [
+            {
+               "rule":"global-message",
+               "value":"Round {round}. Choose your weapon!"
+            },
+            {
+               "rule":"parallelfor",
+               "list":"players",
+               "element":"player",
+               "rules":[
+                  {
+                     "rule":"input-choice",
+                     "to":"player",
+                     "prompt":"{player.name}, choose your weapon!",
+                     "choices":"weapons.name",
+                     "result":"player.weapon",
+                     "timeout":10
+                  }
+               ]
+            },
+            {
+               "rule":"discard",
+               "from":"winners",
+               "count":"winners.size"
+            }
+        ]
     }
     )";
     recieveMessage(simple_config);
