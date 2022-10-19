@@ -1,7 +1,7 @@
-#include "handler.h"
 // #include <glog/logging.h>
-#include <../json.hpp>
 #include <iostream>
+#include "handler.h"
+#include <../json.hpp>
 
 enum class parse_event_t : std:: uint8_t{
     object_start,
@@ -35,10 +35,18 @@ json completeParse(const std::string& text){
                   << "byte postion of error: " << e.byte <<std::endl;
     };
     //refer to json.nlohmann.me/api/basic_json/parse/ for breakdown of parse
-    json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
-        //this can be used to sort through the parser elements after reading
-        return NULL;
-    };
+    // json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+    //     //this can be used to sort through the parser elements after reading
+    //     if(event == json::parse_event_t::key and parsed == json("setup"))
+    //     {
+    //         return false;
+    //     }
+    //     else
+    //     {
+    //         return true;
+    //     }
+    // };
+    // ^^This code should not be called with json::parse(text)
 }
 
 bool MessageContains(const std::string& string, const std::string& subString) {
@@ -85,4 +93,35 @@ void recieveMessage(std::string& message) {
         std::cout << "call to business logic failed:";
         // LOG(ERROR) << e.what();
     }
+}
+
+void storeParsedValues(json text){
+    std::vector<auto> keys;
+    std::vector<auto> arrays;
+    std::vector<auto> values;
+    //this function will go through and store the values in correct spots
+    //this is a template, as we need to test things still
+    json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+        if(event == json::parse_event_t::key)
+        {
+            keys.push_back(event);
+            return true;
+        }
+        else if(event == json::parse_event_t::array_end)
+        {   
+            arrays.push_back(event);
+            return true;
+        }
+        else if(event == json::parse_event_t::value)
+        {
+            values.push_back(event);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        //this will create 3 large vectors
+        //we need a way to store them in new vectors for each key value
+    };
 }
