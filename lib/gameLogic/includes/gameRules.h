@@ -7,34 +7,35 @@
 
 #endif //INC_373PROJECT_GAMERULES_H
 
+using namespace std;
 //-------------------------Control-Structures-------------------------//
-void foreach(<T> list, <T> function);
+void foreach(vector<T> &list, void (*func)(T));
 
-void loop();
+void loop(vector<T> &list, void (*rule)(T), void (*condition)(T));
 
 void inparallel();
 
 void parallelfor();
 
-void switch(<T> list, <T> value);
+void switch(vector<T> &list, T value, void (*rule)(T));
 
 void when();
 
 //-----------List-Operators-----------//
-void extend();
+void extend(vector<T> &list, vector<T> &list2);
 
-void reverse();
+void reverse(vector<T> &list);
 
-void shuffle();
+void shuffle(vector<T> &list);
 
-void sort();
+void sort(vector<T> list);
 
-void deal();
+void deal(vector<T> &deck, vector<T> &hand, int numCards);
 
-void discard();
+void discard(vector<T> list, T value);
 
 //-----------Arithmetic-Operators-----------//
-void add();
+void add(int &a, int b);
 
 //-----------Timing-----------//
 void timer();

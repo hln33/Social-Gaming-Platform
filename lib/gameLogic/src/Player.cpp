@@ -2,9 +2,10 @@
 // Created by mcgir on 10/6/2022.
 //
 
-#include "includes/Player.h"
+#include "../includes/Player.h"
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
 Player::Player(String name, bool audience, int highScore, int currentScore) {
     name = name;

@@ -2,7 +2,7 @@
 // Created by mcgir on 10/14/2022.
 //
 
-#include "includes/GameObject.h"
+#include "../includes/GameObject.h"
 
 GameObject::GameObject(String name) {
     name = name;
