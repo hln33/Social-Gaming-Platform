@@ -15,7 +15,19 @@ int main() {
             "numbers": [1, 2, 3]
         }
     )";
+    // "configuration": {
+    // "name": "Rock, Paper, Scissors",
+    // "player count": {"min": 2, "max": 4},
+    // "audience": false,
+    // "setup": {
+    //   "Rounds": 10
+    // }
+    // ^ this is the next test case
 
     std::cout << std::boolalpha
-              << isJSON(valid_text);
+              << isJSON(valid_text)
+              << '\n';
+
+    std::cout << completeParse(valid_text)
+              << '\n\n';  
 }  
