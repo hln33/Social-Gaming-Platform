@@ -6,7 +6,7 @@ int main() {
     // std::string test;
     // recieveMessage(test);
    
-    std::string valid_config = R"(
+    std::string simple_config = R"(
     {
         "configuration": {
             "name": "Zen Game",
@@ -14,13 +14,30 @@ int main() {
             "audience": false,
             "setup": { }
         },
-        "constants": {},
-        "variables": {},
+        "constants": {
+             "weapons":[
+                {
+                    "name":"Rock",
+                    "beats":"Scissors"
+                },
+                {
+                    "name":"Paper",
+                    "beats":"Rock"
+                },
+                {
+                    "name":"Scissors",
+                    "beats":"Paper"
+                }
+            ]
+        },
+        "variables": {
+            "winners":[]
+        },
         "per-player": {},
         "per-audience": {},
-        "rules": {}
+        "rules": []
     }
     )";
-    recieveMessage(valid_config);
+    recieveMessage(simple_config);
 
 }
