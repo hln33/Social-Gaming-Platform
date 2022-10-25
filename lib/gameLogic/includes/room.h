@@ -1,4 +1,5 @@
 #include <string>
+#include <memory>
 
 #include "player_storage.h"
 
@@ -24,7 +25,7 @@ public:
 
 class Room : public IRoom {
 public:
-    Room(IRoomConfig, IPlayerStorage);
+    Room(std::unique_ptr<IRoomConfig>, std::unique_ptr<IPlayerStorage>);
 
     int getNumPlayers() const override;
 
@@ -35,13 +36,13 @@ public:
     IPlayer& getPlayer(IUniqueId&) const override;
 
 private:
-    IPlayerStorage players;
-    IRoomConfig config;
+    std::unique_ptr<IPlayerStorage> players;
+    std::unique_ptr<IRoomConfig> config;
 };
 
 class IRoomConfig {
 public:
-    virtual void setContext(Room&);
+    virtual void setContext(std::unique_ptr<IRoom>);
 
     virtual bool allow(IPlayer&) const;
 };
@@ -53,11 +54,11 @@ public:
 
     RoomConfig(JObject);
 
-    virtual void setContext(Room&) override;
+    virtual void setContext(std::unique_ptr<IRoom>) override;
     virtual bool allow(IPlayer&) const override;
 
 private:
-    Room &context;
+    std::unique_ptr<IRoom> context;
 
     void parseConfigRules(JObject);
 };
