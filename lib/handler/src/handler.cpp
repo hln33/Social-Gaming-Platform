@@ -1,7 +1,5 @@
-// #include <glog/logging.h>
 #include <iostream>
 #include "handler.h"
-// #include <glog/logging.h>S
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <vector>
@@ -11,7 +9,7 @@
 using json = nlohmann::json;
 
 void initLogging() {
-    google::InitGoogleLogging("Handler");
+    //google::InitGoogleLogging("Handler");
 }
 
 // checks if a given string is valid JSON
@@ -184,7 +182,7 @@ void recieveMessage(std::string& message) {
     }
 }
 
-void storeParsedValues(json& text){
+bool storeParsedValues(json& text){
     //this function will go through and store the values in correct spots
     //this is a template, as we need to test things still
     json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
@@ -212,6 +210,6 @@ void storeParsedValues(json& text){
         }
         //this will create 3 large vectors
         //we need a way to store them in new vectors for each key value
-        return;
+        return true;
     };
 }

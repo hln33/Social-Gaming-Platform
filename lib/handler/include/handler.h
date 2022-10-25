@@ -39,4 +39,4 @@ void performBusinessLogic(const std::string& message);
 
 void recieveMessage(std::string& message);
 
-void storeParsedValues(json& text);
+bool storeParsedValues(json& text);

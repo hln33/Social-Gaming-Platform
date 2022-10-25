@@ -84,17 +84,19 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   std::ostringstream result;
   std::deque<Message> outgoing;
   std::vector<Connection> sendTo;
+  messageType messageType;
+  
   bool quit = false;
   for (auto& message : incoming) {
     json data = json::parse(message.text);
     if (data["type"] == messageType.QUIT) {
       server.disconnect(message.connection);
 
-    } else if (data["type"]  == "shutdown") {
+    } else if (data["type"]  == messageType.SHUTDOWN) {
       std::cout << "Shutting down.\n";
        quit = true;
     }
-    else if(data["type"] == messageType.JOIN){
+    else if(data["type"] == messageType.JOIN) {
       const std::string roomCode = data["message"];
       auto roomClients = rooms.find(roomCode);
       if(roomClients  == rooms.end()){
@@ -116,7 +118,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         recieveMessage(playerJoined);
       }
     }
-    else if(data["type"] == messageType.CREATE){
+    else if(data["type"] == messageType.CREATE) {
       // pass json data to handler here
       
       std::string gameRules = data["message"];
@@ -204,9 +206,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         }
       }
     }
-
   }
-  
   
   return MessageResult{result.str(), sendTo, quit};
 }
