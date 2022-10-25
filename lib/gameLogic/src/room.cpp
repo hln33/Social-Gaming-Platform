@@ -1,23 +1,24 @@
 #include <string>
+#include <memory>
 
 #include "../includes/player_storage.h"
 #include "../includes/unique_id.h"
 #include "../includes/room.h"
 
-Room::Room(IRoomConfig rc, IPlayerStorage ps) : 
-    config{rc}, players{ps} {
+Room::Room(std::unique_ptr<IRoomConfig> rc, std::unique_ptr<IPlayerStorage> ps) : 
+    config{std::move(rc)}, players{std::move(ps)} {
 
 }
 
 int Room::getNumPlayers() const {
-    return this->players.getNumPlayerRecords();
+    return this->players->getNumPlayerRecords();
 }
 
 bool Room::addPlayer(IPlayer &p) {
 
-    if (this->config.allow(p)) {
+    if (this->config->allow(p)) {
 
-        this->players.addPlayerRecord(p);
+        this->players->addPlayerRecord(p);
 
         return true;
     }
@@ -25,22 +26,22 @@ bool Room::addPlayer(IPlayer &p) {
 }
 
 IPlayer& Room::getPlayer(IUniqueId &pId) const {
-    auto p = this->players.getPlayerRecord(pId);
+    auto p = this->players->getPlayerRecord(pId);
     return p;
 }
 
 void Room::removePlayer(IPlayer &p) {
     auto pId = p.getPublicId();
-    this->players.removePlayerRecord(pId);
+    this->players->removePlayerRecord(pId);
 }
 
 
-void RoomConfig::setContext(Room &r) {
-    this->context = r;
+void RoomConfig::setContext(std::unique_ptr<IRoom> r) {
+    this->context = std::move(r);
 }
 
 bool RoomConfig::allow(IPlayer &p) const {
-    return this->maxAllowedPlayers > this->context.getNumPlayers();
+    return this->maxAllowedPlayers > this->context->getNumPlayers();
 }
 
 void RoomConfig::parseConfigRules(JObject jsonRules) {
