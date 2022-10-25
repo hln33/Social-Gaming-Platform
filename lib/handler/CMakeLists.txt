@@ -21,7 +21,7 @@ set_target_properties(${This}
 )
 
 target_link_libraries(${This}
-                      glog::glog
+                      #glog::glog
                       nlohmann_json::nlohmann_json
 )
 
