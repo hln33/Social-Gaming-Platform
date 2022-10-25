@@ -206,9 +206,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
         }
       }
     }
-
   }
-  
   
   return MessageResult{result.str(), sendTo, quit};
 }

@@ -1,7 +1,5 @@
-// #include <glog/logging.h>
 #include <iostream>
 #include "handler.h"
-// #include <glog/logging.h>S
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <vector>
