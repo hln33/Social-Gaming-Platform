@@ -137,10 +137,11 @@ json createGame(const json& data, const auto& message, std::vector<Connection>& 
   } else {
       std::string error = "Error: Game rules are not in valid json format...";
       std::cout << error << std::endl;
-      sendTo.push_back(message.connection);
       response = createJSONMessage("Error", error);
+
+      sendTo.push_back(message.connection);
   }
-  
+
   return response;
 }
 
