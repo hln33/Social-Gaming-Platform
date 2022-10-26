@@ -173,12 +173,12 @@ void closeGame(Server& server, const Connection& connection) {
   }
 }
 
-json sendChat(std::string message, const Connection& connection, std::vector<Connection>& recipients) {
-  std::string roomCode = clientInfo.at(connection.id);
+json sendChat(std::string message, const uintptr_t& senderID, std::vector<Connection>& recipients) {
+  std::string roomCode = clientInfo.at(senderID);
   recipients = rooms.at(roomCode);
   
   std::ostringstream s;
-  s << connection.id << "> " << message;
+  s << senderID << "> " << message;
 
   json response = createJSONMessage("chat", s.str());
   std::cout << s.str() << std::endl;
@@ -219,7 +219,7 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
     }
     else {
       std::string message {data["message"]};
-      json response = sendChat(message, sender, recipients);
+      json response = sendChat(message, sender.id, recipients);
       result << response.dump();
     }
   }
