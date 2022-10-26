@@ -150,27 +150,24 @@ json createGame(std::string gameRules, const Connection& connection, std::vector
 }
 
 void closeGame(Server& server, const Connection& connection) {
-  bool messageSentbyHost = false;
-  for (auto& host : hosts) {
-    if (host.id == connection.id) {
-      messageSentbyHost = true;
-    }
+  auto isHost = [connection](const auto& host) { return connection.id == host.id; };
+  bool messageSentbyHost = std::find_if(hosts.begin(), hosts.end(), isHost) != hosts.end();
+  if (!messageSentbyHost) { 
+    return; 
   }
 
-  if (messageSentbyHost) {
-    std::string roomCode = clientInfo.at(connection.id);
-      auto roomClients = rooms.at(roomCode);
-      for(auto client: roomClients) {
-          server.disconnect(client);
-      }
-
-      server.disconnect(connection);
-      rooms.erase(roomCode);
-
-      //Tell handler that a game ended
-      std::string handlerInput = std::string("Game Ended");
-      recieveMessage(handlerInput);
+  std::string roomCode = clientInfo.at(connection.id);
+  auto roomClients = rooms.at(roomCode);
+  for (auto client: roomClients) {
+      server.disconnect(client);
   }
+
+  server.disconnect(connection);
+  rooms.erase(roomCode);
+
+  //Tell handler that a game ended
+  std::string handlerInput = std::string("Game Ended");
+  recieveMessage(handlerInput);
 }
 
 json sendChat(std::string message, const uintptr_t& senderID, std::vector<Connection>& recipients) {
