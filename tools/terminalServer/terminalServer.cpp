@@ -80,8 +80,7 @@ json createJSONMessage(std::string type, std::string message){
   return payload;
 }
 
-json joinGame(const json& data, const Connection& connection, std::vector<Connection>& recipients) {
-  const std::string roomCode = data["message"];
+json joinGame(const std::string roomCode, const Connection& connection, std::vector<Connection>& recipients) {
   auto roomClients = rooms.find(roomCode);
 
   json response = createJSONMessage("Error", "wrong code");
@@ -113,8 +112,7 @@ void shutdown() {
   std::cout << "Shutting down.\n";
 }
 
-json createGame(const json& data, const Connection& connection, std::vector<Connection>& recipients) {
-  std::string gameRules = data["message"];
+json createGame(std::string gameRules, const Connection& connection, std::vector<Connection>& recipients) {
   json response;
   if (isJSON(gameRules)) {
       std::cout << "Game rules are valid JSON" << std::endl;
@@ -175,12 +173,12 @@ void closeGame(Server& server, const Connection& connection) {
   }
 }
 
-json sendChat(const json& data, const Connection& connection, std::vector<Connection>& recipients) {
+json sendChat(std::string message, const Connection& connection, std::vector<Connection>& recipients) {
   std::string roomCode = clientInfo.at(connection.id);
   recipients = rooms.at(roomCode);
   
   std::ostringstream s;
-  s << connection.id << "> " << data["message"];
+  s << connection.id << "> " << message;
 
   json response = createJSONMessage("chat", s.str());
   std::cout << s.str() << std::endl;
@@ -197,27 +195,31 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   for (auto& message : incoming) {
     json data = json::parse(message.text);
     Connection sender = message.connection;
+    std::string command {data["type"]};
 
-    if (data["type"] == messageType.QUIT) {
+    if (command == messageType.QUIT) {
       quitGame(data, sender, recipients, server);
     } 
-    else if (data["type"]  == messageType.SHUTDOWN) {
+    else if (command == messageType.SHUTDOWN) {
       shutdown();
       quit = true;
     }
-    else if (data["type"] == messageType.JOIN) {
-      json response = joinGame(data, sender, recipients);
+    else if (command == messageType.JOIN) {
+      const std::string roomcode {data["message"]};
+      json response = joinGame(roomcode, sender, recipients);
       result << response.dump();
     }
-    else if (data["type"] == messageType.CREATE) {
-      json response = createGame(data, sender, recipients);
+    else if (command == messageType.CREATE) {
+      std::string gameRules {data["message"]};
+      json response = createGame(gameRules, sender, recipients);
       result << response.dump();
     }
-    else if (data["type"] == messageType.CLOSE_GAME) {
+    else if (command == messageType.CLOSE_GAME) {
       closeGame(server, message.connection);
     }
     else {
-      json response = sendChat(data, sender, recipients);
+      std::string message {data["message"]};
+      json response = sendChat(message, sender, recipients);
       result << response.dump();
     }
   }
