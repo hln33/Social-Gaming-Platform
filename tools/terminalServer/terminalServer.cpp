@@ -122,8 +122,6 @@ json createGame(const json& data, const auto& message, std::vector<Connection>& 
       hosts.push_back(message.connection);
 
       std::vector<Connection> roomClients {message.connection};
-      //roomClients.push_back(message.connection);
-
       std::string roomCode = randomCode();
       rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
       clientInfo.insert(std::pair<uintptr_t, std::string> (message.connection.id, roomCode));
@@ -145,6 +143,43 @@ json createGame(const json& data, const auto& message, std::vector<Connection>& 
   return response;
 }
 
+void closeGame(Server& server ,const auto& message) {
+  bool messageSentbyHost = false;
+  for (auto& host : hosts) {
+    if (host.id == message.connection.id) {
+      messageSentbyHost = true;
+    }
+  }
+
+  if (messageSentbyHost) {
+    std::string roomCode = clientInfo.at(message.connection.id);
+      auto roomClients = rooms.at(roomCode);
+      for(auto client: roomClients) {
+          server.disconnect(client);
+      }
+
+      server.disconnect(message.connection);
+      rooms.erase(roomCode);
+
+      //Tell handler that a game ended
+      std::string handlerInput = std::string("Game Ended");
+      recieveMessage(handlerInput);
+  }
+}
+
+json sendChat(const json& data, const auto& message, std::vector<Connection>& sendTo) {
+  std::string roomCode = clientInfo.at(message.connection.id);
+  sendTo = rooms.at(roomCode);
+  
+  std::ostringstream s;
+  s << message.connection.id << "> " << data["message"];
+
+  json response = createJSONMessage("chat", s.str());
+  std::cout << s.str() << std::endl;
+
+  return response;
+}
+
 MessageResult processMessages(Server& server, const std::deque<Message>& incoming) {
   std::ostringstream result;
   std::vector<Connection> sendTo;
@@ -154,63 +189,33 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   for (auto& message : incoming) {
     json data = json::parse(message.text);
 
-    std::cout << data["type"] << std::endl;
+    std::cout << data.dump() << std::endl;
 
     if (data["type"] == messageType.QUIT) {
       server.disconnect(message.connection);
-    } else if (data["type"]  == messageType.SHUTDOWN) {
-        shutdown();
-        quit = true;
+    } 
+    else if (data["type"]  == messageType.SHUTDOWN) {
+      shutdown();
+      quit = true;
     }
-    else if(data["type"] == messageType.JOIN) {
+    else if (data["type"] == messageType.JOIN) {
       json response = joinGame(data, message, sendTo);
       result << response.dump();
     }
-    else if(data["type"] == messageType.CREATE) {
+    else if (data["type"] == messageType.CREATE) {
       json response = createGame(data, message, sendTo);
       result << response.dump();
     }
-    else{
-      std::ostringstream s;
-      std::string roomCode = clientInfo.at(message.connection.id);
-      sendTo = rooms.at(roomCode);   
-      s << message.connection.id << "> " << data["message"];
-      json response = createJSONMessage("chat", s.str());
-      std::cout << s.str() << "\n";
-      result << response.dump();
-
-
-      // //Tell handler that a player is leaving the game
-      // if (data["messgae"] == "exit" || data["message"] == "quit") {
-      //   std::string playerDisconnected = std::string("Player Left");
+    else if (data["type"] == messageType.CLOSE_GAME) {
+      closeGame(server, message);
+    }
+    else if (data["type"] == messageType.QUIT) {
+      std::string playerDisconnected = std::string("Player Left");
       //   recieveMessage(playerDisconnected);
-      // }
-      //To handle close request by host
-      if (data["message"] == messageType.CLOSE_GAME) {
-        bool closeRoom = false;
-
-        for(auto host : hosts) {
-          if (host.id == message.connection.id) {
-            closeRoom = true;
-          }
-        }
-
-        if (closeRoom) {
-          std::string roomCode = clientInfo.at(message.connection.id);
-          auto roomClients = rooms.at(roomCode);
-
-          for(auto client: roomClients) 
-              server.disconnect(client);
-
-          server.disconnect(message.connection);
-
-          rooms.erase(roomCode);
-
-          //Tell handler that a game ended
-          std::string gameEnded = std::string("Game Ended");
-          recieveMessage(gameEnded);
-        }
-      }
+    }
+    else {
+      json response = sendChat(data, message, sendTo);
+      result << response.dump();
     }
   }
   
