@@ -100,6 +100,15 @@ json joinGame(const json& data, const auto& message, std::vector<Connection>& se
   return response;
 }
 
+json quitGame(const json& data, const auto& message, std::vector<Connection>& sendTo, Server& server) {
+  std::string playerDisconnected = std::string("Player Left");
+  //   recieveMessage(playerDisconnected);
+  server.disconnect(message.connection);
+
+  json response = createJSONMessage("Player Left", message.connection.id + ": Has left");
+  return response;
+}
+
 void shutdown() {
   std::cout << "Shutting down.\n";
 }
@@ -189,10 +198,8 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
   for (auto& message : incoming) {
     json data = json::parse(message.text);
 
-    std::cout << data.dump() << std::endl;
-
     if (data["type"] == messageType.QUIT) {
-      server.disconnect(message.connection);
+      quitGame(data, message, sendTo, server);
     } 
     else if (data["type"]  == messageType.SHUTDOWN) {
       shutdown();
@@ -208,10 +215,6 @@ MessageResult processMessages(Server& server, const std::deque<Message>& incomin
     }
     else if (data["type"] == messageType.CLOSE_GAME) {
       closeGame(server, message);
-    }
-    else if (data["type"] == messageType.QUIT) {
-      std::string playerDisconnected = std::string("Player Left");
-      //   recieveMessage(playerDisconnected);
     }
     else {
       json response = sendChat(data, message, sendTo);
