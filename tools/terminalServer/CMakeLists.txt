@@ -15,6 +15,7 @@ target_link_libraries(terminalServer
   networking
   handler
   nlohmann_json
+  spdlog::spdlog
   ${CMAKE_THREAD_LIBS_INIT}
 )
 

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 #include "handler.h"
 
 using json = nlohmann::json;
@@ -253,6 +254,9 @@ int main(int argc, char* argv[]) {
   
   while (true) {
     bool errorWhileUpdating = false;
+
+    spdlog::info("test log");
+    std::cout << "here" << std::endl;
 
     try {
       server.update();

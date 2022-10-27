@@ -7,3 +7,6 @@
 [submodule "lib/external/boost"]
 	path = lib/external/boost
 	url = https://github.com/boostorg/boost.git
+[submodule "lib/external/spdlog"]
+	path = lib/external/spdlog
+	url = https://github.com/gabime/spdlog.git
