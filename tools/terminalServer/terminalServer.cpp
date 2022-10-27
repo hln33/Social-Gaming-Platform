@@ -1,15 +1,17 @@
 #include "Server.h"
 #include "NetworkMessage.h"
 #include "NetworkingHelper.h"
+#include "handler.h"
+
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
-#include <nlohmann/json.hpp>
-#include <spdlog/spdlog.h>
-#include "handler.h"
 
 using json = nlohmann::json;
 using networking::Server;
