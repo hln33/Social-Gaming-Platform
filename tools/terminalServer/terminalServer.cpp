@@ -243,6 +243,7 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
+  spdlog::set_pattern("[%Y-%m-%d %H:%M] [Process: %P] [%^%l%$] %s:%# - %v");
   spdlog::info("starting program");
 
   if (argc < 3) {
