@@ -38,20 +38,20 @@ void discard(vector<T> list, T value);
 void add(int &a, int b);
 
 //-----------Timing-----------//
-void timer();
+void timer(int duration); //this needs to be expanded and idk how to do it
 
 //-----------Human-Input-----------//
 
-void input-choice();
+void input-choice(Player &player, string_view prompt, vector<T> &choices, vector<T> &result);
 
 void input-text();
 
 void input-vote();
 
 //-----------Output-----------//
-void message();
+void message(vector<Player> &players, string_view message);
 
-void global-message();
+void global-message(string_view message);
 
-void scores();
+void scores(vector<Player> &players, bool ascending);
 

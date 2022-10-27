@@ -2,6 +2,8 @@
 // Created by mcgir on 10/14/2022.
 //
 using namespace std;
+#include <boost/thread/thread.hpp>
+
 
 //-------------------------Control-Structures-------------------------//
 void foreach(vector<T> &list, void (*func)(T)) {
@@ -72,20 +74,48 @@ void add(int &a, int b) {
 
 //-----------Timing-----------//
 
-void timer(){}
+void timer(int duration){ //this needs to be expanded and idk how to do it
+    boost::this_thread::sleep_for(boost::chrono::seconds(duration));
+}
 
 //-----------Human-Input-----------//
-void input-choice(){}
+void input-choice(Player &player, string_view prompt, vector<T> &choices, vector<T> &result) {
+    message(player, prompt);
+    for (int i = 0; i < choices.length; i++) {
+        message(player, to_string(i) + ": " + choices[i]);
+    }
+
+    for (int i = 0; i < choices.length; i++) {
+        if (player.getInput() == to_string(i)) {
+            result.push_back(choices[i]);
+            return;
+        }
+    }
+}
 
 void input-text(){}
 
 void input-vote(){}
 
 //-----------Output-----------//
-void message(){}
+void message(vector<Player> &players, string_view message) {
+    for(auto &player: players){
+        player.message(message);
+    }
+}
 
-void global-message(){}
+void global-message(string_view message){
+    cout << message << endl;
+}
 
-void scores(){}
+void scores(vector<Player> &players, bool ascending) {
+    if (ascending) {
+        sort(players);
+    }
+
+    for (auto &player: players) {
+        global-message(player.getName() + ": " + player.getCurrentScore());
+    }
+}
 
 
