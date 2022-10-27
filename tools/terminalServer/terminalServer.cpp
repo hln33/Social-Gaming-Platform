@@ -240,9 +240,7 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 int main(int argc, char* argv[]) {
-
-  //Initialize google logging
-  //initLogging();
+  spdlog::info("starting program");
 
   if (argc < 3) {
     std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
@@ -255,7 +253,6 @@ int main(int argc, char* argv[]) {
   while (true) {
     bool errorWhileUpdating = false;
 
-    spdlog::info("test log");
     std::cout << "here" << std::endl;
 
     try {
