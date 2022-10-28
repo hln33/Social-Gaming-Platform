@@ -170,14 +170,16 @@ void performBusinessLogic(const std::string& message) {
 
 // recieves message from networking
 // For now, input will be assumed to be a string
-void recieveMessage(std::string& message) {
+bool recieveMessage(std::string& message) {
     // google::InitGoogleLogging("Handler");
 
     try {
         performBusinessLogic(message);
+        return true;
     } catch (std::exception& e) {
         // LOG(ERROR) << "call to business logic failed:";
         std::cout << "call to business logic failed:";
+        return false;
         // LOG(ERROR) << e.what();
     }
 }
