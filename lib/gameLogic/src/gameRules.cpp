@@ -18,7 +18,14 @@ void loop(vector<T> &list, void (*rule)(T), void (*condition)(T)) {
     }
 }
 
-void inparallel(){}
+void inparallel(vector<T> &list){
+    boost::thread_group threads;
+    for (auto &item: list) {
+        threads.create_thread(boost::bind(item));
+        cout << "Thread created" << endl;
+    }
+    threads.join_all(); //don't know if this is right, boost is kinda confusing. I think this makes it async?
+}
 
 void parallelfor(){}
 
@@ -31,7 +38,13 @@ void switch(vector<T> &list, T value, void (*rule)(T)) {
     }
 }
 
-void when(){}
+void when(vector<T> &list, void (*condition)(T), void (*rule)(T)) {
+    for (auto &item: list) {
+        if (condition(item)) {
+            rule(item);
+        }
+    }
+}
 
 //-----------List-Operators-----------//
 void extend(vector<T> &list, vector<T> &list2) {
@@ -93,9 +106,16 @@ void input-choice(Player &player, string_view prompt, vector<T> &choices, vector
     }
 }
 
-void input-text(){}
+void input-text(vector<Player> &players, string_view message){
+    for (auto &player: players) {
+        message(player, message);
+    }
+}
 
-void input-vote(){}
+void input-vote(vector<Player> &players){
+    //broadcaster and receiver may be the right way to do this
+    //but I'm not sure how to implement it
+}
 
 //-----------Output-----------//
 void message(vector<Player> &players, string_view message) {

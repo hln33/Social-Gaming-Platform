@@ -13,13 +13,13 @@ void foreach(vector<T> &list, void (*func)(T));
 
 void loop(vector<T> &list, void (*rule)(T), void (*condition)(T));
 
-void inparallel();
+void inparallel(vector<T> &list);
 
 void parallelfor();
 
 void switch(vector<T> &list, T value, void (*rule)(T));
 
-void when();
+void when(vector<T> &list, void (*condition)(T), void (*rule)(T));
 
 //-----------List-Operators-----------//
 void extend(vector<T> &list, vector<T> &list2);
@@ -44,9 +44,9 @@ void timer(int duration); //this needs to be expanded and idk how to do it
 
 void input-choice(Player &player, string_view prompt, vector<T> &choices, vector<T> &result);
 
-void input-text();
+void input-text(vector<Player> &players, string_view message);
 
-void input-vote();
+void input-vote(vector<Player> &players);
 
 //-----------Output-----------//
 void message(vector<Player> &players, string_view message);
