@@ -34,6 +34,8 @@ class Player {
 
         bool getAudience();
         void setAudience(bool audience);
+
+        void message(String message);
 };
 
 

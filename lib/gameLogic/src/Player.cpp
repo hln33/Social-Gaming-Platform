@@ -72,3 +72,7 @@ bool Player::getAudience() {
 void Player::setAudience(bool audience) {
     audience = audience;
 }
+
+void Player::message(String message) {
+    cout << message << endl;
+}

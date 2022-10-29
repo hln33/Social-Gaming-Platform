@@ -2,6 +2,8 @@
 // Created by mcgir on 10/14/2022.
 //
 using namespace std;
+#include <boost/thread/thread.hpp>
+
 
 //-------------------------Control-Structures-------------------------//
 void foreach(vector<T> &list, void (*func)(T)) {
@@ -16,7 +18,14 @@ void loop(vector<T> &list, void (*rule)(T), void (*condition)(T)) {
     }
 }
 
-void inparallel(){}
+void inparallel(vector<T> &list){
+    boost::thread_group threads;
+    for (auto &item: list) {
+        threads.create_thread(boost::bind(item));
+        cout << "Thread created" << endl;
+    }
+    threads.join_all(); //don't know if this is right, boost is kinda confusing. I think this makes it async?
+}
 
 void parallelfor(){}
 
@@ -29,7 +38,13 @@ void switch(vector<T> &list, T value, void (*rule)(T)) {
     }
 }
 
-void when(){}
+void when(vector<T> &list, void (*condition)(T), void (*rule)(T)) {
+    for (auto &item: list) {
+        if (condition(item)) {
+            rule(item);
+        }
+    }
+}
 
 //-----------List-Operators-----------//
 void extend(vector<T> &list, vector<T> &list2) {
@@ -72,20 +87,55 @@ void add(int &a, int b) {
 
 //-----------Timing-----------//
 
-void timer(){}
+void timer(int duration){ //this needs to be expanded and idk how to do it
+    boost::this_thread::sleep_for(boost::chrono::seconds(duration));
+}
 
 //-----------Human-Input-----------//
-void input-choice(){}
+void input-choice(Player &player, string_view prompt, vector<T> &choices, vector<T> &result) {
+    message(player, prompt);
+    for (int i = 0; i < choices.length; i++) {
+        message(player, to_string(i) + ": " + choices[i]);
+    }
 
-void input-text(){}
+    for (int i = 0; i < choices.length; i++) {
+        if (player.getInput() == to_string(i)) {
+            result.push_back(choices[i]);
+            return;
+        }
+    }
+}
 
-void input-vote(){}
+void input-text(vector<Player> &players, string_view message){
+    for (auto &player: players) {
+        message(player, message);
+    }
+}
+
+void input-vote(vector<Player> &players){
+    //broadcaster and receiver may be the right way to do this
+    //but I'm not sure how to implement it
+}
 
 //-----------Output-----------//
-void message(){}
+void message(vector<Player> &players, string_view message) {
+    for(auto &player: players){
+        player.message(message);
+    }
+}
 
-void global-message(){}
+void global-message(string_view message){
+    cout << message << endl;
+}
 
-void scores(){}
+void scores(vector<Player> &players, bool ascending) {
+    if (ascending) {
+        sort(players);
+    }
+
+    for (auto &player: players) {
+        global-message(player.getName() + ": " + player.getCurrentScore());
+    }
+}
 
 
