@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
-
+#include <fstream>
 #include <handler.h>
+
+
 
 TEST(exampleTests, DemonstrateGTestMacros) {
     EXPECT_TRUE(true);
@@ -9,62 +11,242 @@ TEST(exampleTests, DemonstrateGTestMacros) {
     std::string test;
     recieveMessage(test);
 }
+
+TEST(exampleTests, parseRockPaperScissorFromJSONFile) {
+
+    // example of parsing JSON from a file
+    // Source: https://github.com/nlohmann/json#read-json-from-a-file
+
+    // modify this path to yours path to read the file
+    std::ifstream file("/home/nhanvyn/sg/social-gaming/lib/handler/test/rock-paper-scissor.json");  
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string test = buffer.str();
+    bool result = recieveMessage(test);
+    EXPECT_TRUE(result);
+}
+
+TEST(exampleTests, storeParsedValuesTest) {
+    // modify this path to yours path to read the file
+    std::ifstream file("/home/nhanvyn/sg/social-gaming/lib/handler/test/rock-paper-scissor.json");  
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string test = buffer.str();
+    bool result = storeParsedValuesRevised(test);
+    
+    EXPECT_TRUE(result);
+}
+
+TEST(exampleTests, parseRockPaperScissorFromString) {
+    // example of parsing JSON directly from string
+    // copy from project description
+    std::string rock_paper_scissor = R"(
+    {
+        "configuration": {
+            "name": "Rock, Paper, Scissors",
+            "player count": {
+                "min": 2,
+                "max": 4
+            },
+            "audience": false,
+            "setup": {
+                "Rounds": 10
+            }
+        },
+
+        "constants": {
+            "weapons": [{
+                    "name": "Rock",
+                    "beats": "Scissors"
+                },
+                {
+                    "name": "Paper",
+                    "beats": "Rock"
+                },
+                {
+                    "name": "Scissors",
+                    "beats": "Paper"
+                }
+            ]
+        },
+
+        "variables": {
+            "winners": []
+        },
+
+        "per-player": {
+            "wins": 0
+        },
+
+        "per-audience": {},
+
+        "rules": [{
+                "rule": "foreach",
+                "list": "configuration.Rounds.upfrom(1) ",
+                "element": "round",
+                "rules": [
+
+                    {
+                        "rule": "global-message",
+                        "value": "Round {round}. Choose your weapon!"
+                    },
+
+                    {
+                        "rule": "parallelfor",
+                        "list": "players",
+                        "element": "player",
+                        "rules": [
+
+                            {
+                                "rule": "input-choice",
+                                "to": "player",
+                                "prompt": "{player.name}, choose your weapon!",
+                                "choices": "weapons.name",
+                                "result": "player.weapon",
+                                "timeout": 10
+                            }
+
+                        ]
+                    },
+
+                    {
+                        "rule": "discard",
+                        "from": "winners",
+                        "count": "winners.size"
+                    },
+
+                    {
+                        "rule": "foreach",
+                        "list": "weapons",
+                        "element": "weapon",
+                        "rules": [
+
+                            {
+                                "rule": "when",
+                                "cases": [{
+                                    "condition": "!players.elements.weapon.contains(weapon.name) ",
+                                    "rules": [
+
+                                        {
+                                            "rule": "extend",
+                                            "target": "winners",
+                                            "list": "players.elements.collect(player, player.weapon == weapon.beats) "
+                                        }
+
+                                    ]
+                                }]
+                            }
+
+                        ]
+                    },
+
+                    {
+                        "rule": "when",
+                        "cases": [{
+                                "condition": "winners.size == players.size",
+                                "rules": [{
+                                    "rule": "global-message",
+                                    "value": "Tie game!"
+                                }]
+                            },
+                            {
+                                "condition": "winners.size == 0",
+                                "rules": [{
+                                    "rule": "global-message",
+                                    "value": "Tie game!"
+                                }]
+                            },
+                            {
+                                "condition": true,
+                                "rules": [{
+                                        "rule": "global-message",
+                                        "value": "Winners: {winners.elements.name}"
+                                    },
+                                    {
+                                        "rule": "foreach",
+                                        "list": "winners",
+                                        "element": "winner",
+                                        "rules": [{
+                                            "rule": "add",
+                                            "to": "winner.wins",
+                                            "value": 1
+                                        }]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+                ]
+            },
+
+            {
+                "rule": "scores",
+                "score": "wins",
+                "ascending": false
+            }
+        ]
+    }
+    )";
+    bool result = recieveMessage(rock_paper_scissor);
+    EXPECT_TRUE(result);
+}
 /***
  * THESE TESTS WERE MOVED FROM MAIN.CPP TO HERE, AND THEN THE CODE IN MAIN.CPP WAS DELETED.
  * GENERAL RULE: DO NOT PUT TESTS IN MAIN.CPP. PUT THEM IN THE TEST FOLDER.
  */
 
 //the following code is used on a test JSON input to make sure handler functions are working as intended.
-auto valid_text = R"(
-    "configuration": {
-        "name": "Rock, Paper, Scissors",
-        "player count": {"min": 2, "max": 4},
-        "audience": false,
-        "setup": {
-      "Rounds": 10
-    }
-    )";
+// auto valid_text = R"(
+//     "configuration": {
+//         "name": "Rock, Paper, Scissors",
+//         "player count": {"min": 2, "max": 4},
+//         "audience": false,
+//         "setup": {
+//       "Rounds": 10
+//     }
+//     )";
 
-// ^ this is the next test case
+// // ^ this is the next test case
 
-std::cout << std::boolalpha
-<< isJSON(valid_text)
-<< '\n';
+// std::cout << std::boolalpha
+// << isJSON(valid_text)
+// << '\n';
 
-std::cout << completeParse(valid_text)
-<< '\n\n';
+// std::cout << completeParse(valid_text)
+// << '\n\n';
 
 
 
-json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
-    //this can be used to sort through the parser elements after reading
-    //in this case, we are trying to exclude the setup portion of the test input from the result
-    if(event == json::parse_event_t::key and parsed == json("setup"))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-};
+// json::parser_callback_t cb = [](int depth, json::parse_event_t event, json& parsed){
+//     //this can be used to sort through the parser elements after reading
+//     //in this case, we are trying to exclude the setup portion of the test input from the result
+//     if(event == json::parse_event_t::key and parsed == json("setup"))
+//     {
+//         return false;
+//     }
+//     else
+//     {
+//         return true;
+//     }
+// };
 
-//test case to exclude the rounds value to understand JSON parsing
-json::parser_callback_t cb2 = [](int depth, json::parse_event_t event, json& parsed){
-    if(event == json::parse_event_t::value and parsed == json("10"))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-};
+// //test case to exclude the rounds value to understand JSON parsing
+// json::parser_callback_t cb2 = [](int depth, json::parse_event_t event, json& parsed){
+//     if(event == json::parse_event_t::value and parsed == json("10"))
+//     {
+//         return false;
+//     }
+//     else
+//     {
+//         return true;
+//     }
+// };
 
-json filtered = json::parse(valid_text, cb);
-std::cout << filtered
-<< '\n';
+// json filtered = json::parse(valid_text, cb);
+// std::cout << filtered
+// << '\n';
 
-json filtered = json::parse(valid_text, cb2);
-std::cout << filtered
-<< '\n';
+// json filtered = json::parse(valid_text, cb2);
+// std::cout << filtered
+// << '\n';

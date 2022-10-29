@@ -122,7 +122,7 @@ void handleRules(const json j_complete){
 // comments below contain pseudo-code
 void performBusinessLogic(const std::string& message) {
     
-    if (!isJSON(message)){
+    if (!json::accept(message)){
         // LOG(ERROR) << "sent message is not JSON";
         throw std::invalid_argument("sent message is not JSON");
     }
@@ -138,7 +138,7 @@ void performBusinessLogic(const std::string& message) {
         handleRules(j_complete);
     }
 
-
+    
     if (MessageContains(message, "configuration")){
         // LOG(INFO) << "A new room has been created";
     }
@@ -170,17 +170,20 @@ void performBusinessLogic(const std::string& message) {
 
 // recieves message from networking
 // For now, input will be assumed to be a string
-void recieveMessage(std::string& message) {
+bool recieveMessage(std::string& message) {
     // google::InitGoogleLogging("Handler");
 
     try {
         performBusinessLogic(message);
+        return true;
     } catch (std::exception& e) {
         // LOG(ERROR) << "call to business logic failed:";
         std::cout << "call to business logic failed:";
+        return false;
         // LOG(ERROR) << e.what();
     }
 }
+
 
 bool storeParsedValues(json& text){
     //this function will go through and store the values in correct spots
@@ -212,4 +215,49 @@ bool storeParsedValues(json& text){
         //we need a way to store them in new vectors for each key value
         return true;
     };
+}
+
+
+
+// this is the original storedParsedValue() but modified last else statement 
+// to return true to fix a bug that callback cannot detect value event and array event
+bool storeParsedValuesRevised(std::string& message){
+    std::vector<json> keys;
+    std::vector<json> arrays;
+    std::vector<json> values;
+    if (!json::accept(message))
+        return false;
+    json j_complete = completeParse(message);
+
+    // define parser callback
+    json::parser_callback_t cb = [&keys, &arrays, &values](int depth, json::parse_event_t event, json & parsed)
+    {
+        if (event == json::parse_event_t::key)
+        {
+            keys.push_back(parsed);
+            std::cout << "Key Event: "<< parsed << "\n";
+            return true;
+        }
+        else if(event == json::parse_event_t::value)
+        {
+            values.push_back(parsed);
+            std::cout << "Value event:" << parsed << "\n";
+            
+            return true;
+        }
+        else if(event == json::parse_event_t::array_end)
+        {   
+            arrays.push_back(parsed);
+            std::cout << "Array event:" << parsed << "\n";
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    };
+
+    // parse (with callback) and serialize JSON
+    json j_filtered = json::parse(message, cb);
+    return true;
 }

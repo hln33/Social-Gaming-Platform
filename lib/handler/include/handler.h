@@ -37,6 +37,8 @@ void handleRules(const json j_complete);
 
 void performBusinessLogic(const std::string& message);
 
-void recieveMessage(std::string& message);
+bool recieveMessage(std::string& message);
 
 bool storeParsedValues(json& text);
+
+bool storeParsedValuesRevised(std::string& message);
