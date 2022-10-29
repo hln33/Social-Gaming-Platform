@@ -2,6 +2,7 @@
 #include <fstream>
 #include <handler.h>
 
+
 TEST(exampleTests, DemonstrateGTestMacros) {
     EXPECT_TRUE(true);
     EXPECT_TRUE(2 == 2);
@@ -24,9 +25,18 @@ TEST(exampleTests, parseRockPaperScissorFromJSONFile) {
     EXPECT_TRUE(result);
 }
 
+TEST(exampleTests, storeParsedValuesTest) {
+    // modify this path to yours path to read the file
+    std::ifstream file("/home/nhanvyn/sg/social-gaming/lib/handler/test/rock-paper-scissor.json");  
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string test = buffer.str();
+    bool result = storeParsedValuesRevised(test);
+    
+    EXPECT_TRUE(result);
+}
 
 TEST(exampleTests, parseRockPaperScissorFromString) {
-    
     // example of parsing JSON directly from string
     // copy from project description
     std::string rock_paper_scissor = R"(
