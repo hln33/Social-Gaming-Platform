@@ -1,5 +1,5 @@
 add_executable(terminalServer
-terminalServer.cpp
+src/terminalServer.cpp
 )
 
 add_custom_command(
@@ -30,3 +30,7 @@ install(TARGETS terminalServer
 )
 
 install(FILES ${CMAKE_SOURCE_DIR}/tools/terminalServer/webchat.html RUNTIME DESTINATION bin)
+
+# comment out to disable unit testing
+enable_testing()
+add_subdirectory(test)
