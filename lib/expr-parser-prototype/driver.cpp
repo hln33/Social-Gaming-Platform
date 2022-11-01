@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "bliniExpressionParser.h"
+#include "prettyPrintASTVisitor.h"
 
 int main() {
 
@@ -9,5 +10,11 @@ int main() {
 
     std::unique_ptr<BliniAST> ast = parser.parse();
 
-    ast->print();
+    // ast->print();
+
+    ASTVisitor& printer = PrettyPrinter{};
+
+    ast->evaluate(printer);
+
+    std::cout << "\n";
 }

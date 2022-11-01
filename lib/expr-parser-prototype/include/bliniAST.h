@@ -275,6 +275,7 @@ private:
 // method call
 class MethodArgs : public BliniAST {
 public:
+
     MethodArgs() { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -285,10 +286,13 @@ public:
         this->args.push_front(std::unique_ptr<BliniAST>(arg));
     }
 
-    // custom iterator?
+    using ArgsType = std::list<std::unique_ptr<BliniAST>>;
+
+    ArgsType::iterator begin() { return this->args.begin(); }
+    ArgsType::iterator end() { return this->args.end(); }
 
 private:
-    std::list<std::unique_ptr<BliniAST>> args;
+    ArgsType args;
 };
 
 class MethodCall : public BliniAST {

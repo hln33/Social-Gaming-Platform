@@ -56,9 +56,9 @@ bool_expression: bool_expression T_EQ bool_expression  { $$ = new EqExpression{$
                | bool_expression T_NEQ bool_expression { $$ = new NeqExpression{$1, $3}; }
                | T_NOT bool_expression %prec UnaryNot  { $$ = new NotExpression{$2};     }               
                | dot_expression T_GT dot_expression    { $$ = new GtExpression{$1, $3};  }
-               | dot_expression T_GEQ dot_expression   { $$ = new GtExpression{$1, $3};  }
-               | dot_expression T_LEQ dot_expression   { $$ = new GtExpression{$1, $3};  }
-               | dot_expression T_LT dot_expression    { $$ = new GtExpression{$1, $3};  }
+               | dot_expression T_GEQ dot_expression   { $$ = new GtExpression{$1, $3};  } // change this
+               | dot_expression T_LEQ dot_expression   { $$ = new GtExpression{$1, $3};  } // change this
+               | dot_expression T_LT dot_expression    { $$ = new GtExpression{$1, $3};  } // change this
                | dot_expression                        { $$ = $1;                        }
                ;
 
@@ -70,7 +70,7 @@ dot_expression: dot_expression T_DOT dot_expression_after { $$ = new DotExpressi
               ;
 
 
-dot_expression_after: method_call { $$ = $1;                   } // method calls
+dot_expression_after: method_call { $$ = $1;                  } // method calls
                     | T_ID        { $$ = new DotProperty{$1}; } // property names
                     ;
 
