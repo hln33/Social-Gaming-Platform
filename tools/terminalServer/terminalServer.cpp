@@ -39,10 +39,12 @@ void onDisconnect(Connection c) {
   auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
   clients.erase(eraseBegin, std::end(clients));
 
+  // find room client was in
   auto roomLoc = rooms.find(clientInfo.find(c.id)->second);
   std::vector<Connection> &roomClients = roomLoc->second;
   spdlog::info("Remaining Players in Room: {}", roomClients.size());
   
+  // remove client from room
   auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), 
                       [&c](const Connection& client) { return client.id == c.id; });
   roomClients.erase(removeLoc, roomClients.end());
