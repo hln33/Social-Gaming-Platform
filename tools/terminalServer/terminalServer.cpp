@@ -44,8 +44,8 @@ void onDisconnect(Connection c) {
   spdlog::info("Remaining Players in Room: {}", roomClients.size());
   
   auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), 
-                      [&c](const Connection client) { return client.id == c.id; });
-  //roomClients.erase(removeLoc, roomClients.end());
+                      [&c](const Connection& client) { return client.id == c.id; });
+  roomClients.erase(removeLoc, roomClients.end());
   
   auto it = clientInfo.find(c.id);
   if (it != clientInfo.end()) {
