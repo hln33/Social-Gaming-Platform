@@ -3,8 +3,16 @@
 Currently, you may have multiple rooms and only ones with the same code can type to each other. 
 
 Run server
+    - go to build folder where you build out of source
 
-    bin/terminalServer 4000 tools/terminalServer/webchat.html
+    cd bin
+
+    ./terminalServer 4000 ../tools/terminalServer/webchat.html
+
+    OR (newer version):
+
+    ./terminalServer 4000 webchat.html
+
 
 In separate terminals, run multiple instances of the chat client using:
 

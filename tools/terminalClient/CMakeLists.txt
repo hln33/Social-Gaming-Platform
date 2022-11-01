@@ -3,6 +3,12 @@ add_executable(terminalClient
   clientWindow.cpp
 )
 
+add_custom_command(
+        TARGET terminalClient POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_SOURCE_DIR}/tools/terminalClient/test.json 
+                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test.json )
+
 set_target_properties(terminalClient
                       PROPERTIES
                       LINKER_LANGUAGE CXX
