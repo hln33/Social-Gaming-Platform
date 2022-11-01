@@ -13,6 +13,7 @@ class GameObject {
     GameObject* beats;
     public:
         GameObject(std::string name);
+        GameObject(GameObject& other);
 
         void setBeats(GameObject* beats);
 

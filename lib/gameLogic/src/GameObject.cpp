@@ -10,6 +10,11 @@ GameObject::GameObject(std::string name) {
     beats = nullptr;
 }
 
+GameObject::GameObject(GameObject& other){
+    name = other.getName();
+    beats = &other.getBeats();
+}
+
 std::string GameObject::getName() {
     return name;
 }
