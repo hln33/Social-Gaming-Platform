@@ -1,14 +1,17 @@
 #include "Server.h"
 #include "NetworkMessage.h"
 #include "NetworkingHelper.h"
+#include "handler.h"
+
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
-#include <nlohmann/json.hpp>
-#include "handler.h"
 
 using json = nlohmann::json;
 using networking::Server;
@@ -23,29 +26,30 @@ std::vector<Connection> hosts; //Holds all hosts so that when they send close th
 std::map<std::string, std::vector<Connection>>  rooms;
 //Client Info from ID
 std::map<uintptr_t, std::string> clientInfo;  
-json gameRules;
 
 
 void onConnect(Connection c) {
-  std::cout << "New connection found: " << c.id << "\n";
+  spdlog::info("New Connection Found: {}", c.id);
   clients.push_back(c);
 }
 
-
 void onDisconnect(Connection c) {
-  std::cout << "Connection lost: " << c.id << "\n";
+  spdlog::info("Connection Lost: {}", c.id);
+
   auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
   clients.erase(eraseBegin, std::end(clients));
+
   auto roomLoc = rooms.find(clientInfo.find(c.id)->second);
   std::vector<Connection> &roomClients = roomLoc->second;
-  std::cout << roomClients.size() << "\n";
+  spdlog::info("Remaining Players in Room: {}", roomClients.size());
+  
   auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), [&c](const Connection client)
                               { return client.id == c.id; });
   roomClients.erase(removeLoc, roomClients.end());
   
   auto it = clientInfo.find(c.id);
   clientInfo.erase(it);
-  
+
   std::cout << roomClients.size() << "\n";
   if(roomClients.size() == 0){
     rooms.erase(roomLoc);
@@ -56,7 +60,6 @@ void onDisconnect(Connection c) {
   for(auto it = clientInfo.cbegin(); it != clientInfo.cend(); ++it){
       std::cout << it->first << "\n";
   } 
-  
 }
 
 
@@ -109,13 +112,13 @@ json quitGame(const json& data, const Connection& connection, std::vector<Connec
 }
 
 void shutdown() {
-  std::cout << "Shutting down.\n";
+  spdlog::info("Shutting Down");
 }
 
 json createGame(std::string gameRules, const Connection& connection, std::vector<Connection>& recipients) {
   json response;
   if (isJSON(gameRules)) {
-      std::cout << "Game rules are valid JSON" << std::endl;
+      spdlog::info("Game rules are valid JSON");
 
       json gamerule = completeParse(gameRules); //Send this json object to lower layers (when completed)
 
@@ -140,7 +143,7 @@ json createGame(std::string gameRules, const Connection& connection, std::vector
       recieveMessage(handlerInput);
   } else {
       std::string error = "Error: Game rules are not in valid json format...";
-      std::cout << error << std::endl;
+      spdlog::error(error);
       response = createJSONMessage("Error", error);
 
   }
@@ -178,7 +181,7 @@ json sendChat(std::string message, const uintptr_t& senderID, std::vector<Connec
   s << senderID << "> " << message;
 
   json response = createJSONMessage("chat", s.str());
-  std::cout << s.str() << std::endl;
+  spdlog::info(s.str());
 
   return response;
 }
@@ -232,16 +235,14 @@ getHTTPMessage(const char* htmlLocation) {
                        std::istreambuf_iterator<char>()};
 
   } else {
-    std::cerr << "Unable to open HTML index file:\n"
-              << htmlLocation << "\n";
+    spdlog::error("Unable to open HTML index file:\n{}\n", htmlLocation);
     std::exit(-1);
   }
 }
 
 int main(int argc, char* argv[]) {
-
-  //Initialize google logging
-  //initLogging();
+  spdlog::set_pattern("[%Y-%m-%d %H:%M] [Process: %P] [%^%l%$] %s:%# - %v");
+  spdlog::info("starting program");
 
   if (argc < 3) {
     std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
@@ -257,8 +258,7 @@ int main(int argc, char* argv[]) {
     try {
       server.update();
     } catch (std::exception& e) {
-      std::cerr << "Exception from Server update:\n"
-                << " " << e.what() << "\n\n";
+      spdlog::error("Exception from Server update:\n{}\n\n", e.what());
       errorWhileUpdating = true;
     }
 
