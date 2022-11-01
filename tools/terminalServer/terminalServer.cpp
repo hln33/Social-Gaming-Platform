@@ -43,15 +43,17 @@ void onDisconnect(Connection c) {
   std::vector<Connection> &roomClients = roomLoc->second;
   spdlog::info("Remaining Players in Room: {}", roomClients.size());
   
-  auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), [&c](const Connection client)
-                              { return client.id == c.id; });
-  roomClients.erase(removeLoc, roomClients.end());
+  auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), 
+                      [&c](const Connection client) { return client.id == c.id; });
+  //roomClients.erase(removeLoc, roomClients.end());
   
   auto it = clientInfo.find(c.id);
-  clientInfo.erase(it);
+  if (it != clientInfo.end()) {
+    clientInfo.erase(it);
+  }
 
   std::cout << roomClients.size() << "\n";
-  if(roomClients.size() == 0){
+  if(roomClients.size() == 0 && roomLoc != rooms.end()){
     rooms.erase(roomLoc);
   }
   for(auto it = rooms.cbegin(); it != rooms.cend(); ++it){
