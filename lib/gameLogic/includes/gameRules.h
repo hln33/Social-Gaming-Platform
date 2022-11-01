@@ -7,7 +7,7 @@
 
 #endif //INC_373PROJECT_GAMERULES_H
 
-using namespace std;
+using namespace std;    
 //-------------------------Control-Structures-------------------------//
 void foreach(vector<T> &list, void (*func)(T));
 

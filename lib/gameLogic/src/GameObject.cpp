@@ -4,26 +4,24 @@
 
 #include "../includes/GameObject.h"
 
-GameObject::GameObject(String name) {
+
+GameObject::GameObject(std::string name) {
     name = name;
+    beats = nullptr;
 }
 
-GameObject::GameObject(&GameObject other) {
-    name = other.name;
-}
-
-GameObject::getName() {
+std::string GameObject::getName() {
     return name;
 }
 
-GameObject::setName(String name) {
+void GameObject::setName(std::string name) {
     name = name;
 }
 
-GameObject::getBeats() {
-    return beats;
+GameObject GameObject::getBeats() {
+    return *beats;
 }
 
-GameObject::setBeats(GameObject beats) {
-    beats = beats;
+void GameObject::setBeats(GameObject* beats) {
+    this->beats = beats;
 }

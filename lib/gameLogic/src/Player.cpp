@@ -7,36 +7,36 @@
 #include <cstdlib>
 #include <vector>
 
-Player::Player(String name, bool audience, int highScore, int currentScore) {
+Player::Player(std::string name, bool audience, int highScore, int currentScore) {
     name = name;
     audience = audience;
     highScore = highScore;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience, int currentScore) {
+Player::Player(std::string name, bool audience, int currentScore) {
     name = name;
     audience = audience;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience) {
+Player::Player(std::string name, bool audience) {
     name = name;
     audience = audience;
 }
 
-Player::Player(&Player other) {
-    name = other.name;
-    audience = other.audience;
-    highScore = other.highScore;
-    currentScore = other.currentScore;
-}
+// Player::Player(&Player other) {
+//     name = other.name;
+//     audience = other.audience;
+//     highScore = other.highScore;
+//     currentScore = other.currentScore;
+// }
 
-int Player::getName() {
+std::string Player::getName() {
     return name;
 }
 
-void Player::setName(int name) {
+void Player::setName(std::string name) {
     name = name;
 }
 
@@ -73,6 +73,6 @@ void Player::setAudience(bool audience) {
     audience = audience;
 }
 
-void Player::message(String message) {
-    cout << message << endl;
-}
+// void Player::message(String message) {
+//     cout << message << endl;
+// }
