@@ -26,14 +26,12 @@ std::vector<Connection> hosts; //Holds all hosts so that when they send close th
 std::map<std::string, std::vector<Connection>>  rooms;
 //Client Info from ID
 std::map<uintptr_t, std::string> clientInfo;  
-json gameRules;
 
 
 void onConnect(Connection c) {
   spdlog::info("New Connection Found: {}", c.id);
   clients.push_back(c);
 }
-
 
 void onDisconnect(Connection c) {
   spdlog::info("Connection Lost: {}", c.id);
