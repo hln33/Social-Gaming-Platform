@@ -83,48 +83,6 @@ buildOutgoing(const std::string& log, std::vector<Connection> clients) {
   return outgoing;
 }
 
-
-// MessageResult processMessages(Server& server, const std::deque<Message>& incoming) {
-//   std::ostringstream result;
-//   std::vector<Connection> recipients;
-//   messageType messageType;
-  
-//   bool quit = false;
-//   for (auto& message : incoming) {
-//     json data = json::parse(message.text);
-//     Connection sender = message.connection;
-//     std::string command {data["type"]};
-
-//     if (command == messageType.QUIT) {
-//       ServerAction::quitGame(data, sender, recipients, server);
-//     } 
-//     else if (command == messageType.SHUTDOWN) {
-//       ServerAction::shutdown();
-//       quit = true;
-//     }
-//     else if (command == messageType.JOIN) {
-//       const std::string roomcode {data["message"]};
-//       json response = joinGame(roomcode, sender, recipients);
-//       result << response.dump();
-//     }
-//     else if (command == messageType.CREATE) {
-//       std::string gameRules {data["message"]};
-//       json response = createGame(gameRules, sender, recipients);
-//       result << response.dump();
-//     }
-//     else if (command == messageType.CLOSE_GAME) {
-//       closeGame(server, message.connection);
-//     }
-//     else {
-//       std::string message {data["message"]};
-//       json response = sendChat(message, sender.id, recipients);
-//       result << response.dump();
-//     }
-//   }
-  
-//   return MessageResult{result.str(), recipients, quit};
-// }
-
 std::string
 getHTTPMessage(const char* htmlLocation) {
   if (access(htmlLocation, R_OK ) != -1) {
