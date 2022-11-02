@@ -1,6 +1,9 @@
-#include <unordered_map>
+#pragma once
 
-#include "unique_id.h"
+#include <unordered_map>
+#include <string>
+
+#include "UniqueId.h"
 
 // default hash
 
@@ -10,17 +13,6 @@ public:
 
     virtual IUniqueId getPublicId() const;
 };
-
-namespace std {
-    template<>
-    struct hash<IPlayer> {
-        std::size_t operator()(IPlayer const& p) const noexcept {
-            return std::hash<std::string>{}(p.getPublicId().getValue());
-        }
-    };
-}
-
-
 
 
 class IPlayerStorage {
@@ -41,6 +33,6 @@ public:
     virtual int getNumPlayerRecords() const override;
 
 private:
-    std::unordered_map<IUniqueId, IPlayer> players;
+    std::unordered_map<std::string, IPlayer> players;
 };
 
