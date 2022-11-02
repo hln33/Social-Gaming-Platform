@@ -2,7 +2,7 @@
 #include "NetworkMessage.h"
 #include "NetworkingHelper.h"
 #include "handler.h"
-#include "serverActions.h"
+#include "ServerActions.h"
 
 #include <spdlog/spdlog.h>
 
@@ -17,6 +17,7 @@ using json = nlohmann::json;
 using networking::Server;
 using networking::Connection;
 using networking::Message;
+
 
 json createJSONMessage(std::string type, std::string message){
   json payload = json{{"type", type}, {"message", message}};
@@ -155,7 +156,7 @@ json sendChat(
   return response;
 }
 
-MessageResult processMessages(
+ServerAction::MessageResult ServerAction::processMessages(
     Server& server, 
     const std::deque<Message>& incoming,
     std::map<std::string, std::vector<Connection>>& rooms,
@@ -199,5 +200,5 @@ MessageResult processMessages(
     }
   }
   
-  return MessageResult{result.str(), recipients, quit};
+  return ServerAction::MessageResult{result.str(), recipients, quit};
 }

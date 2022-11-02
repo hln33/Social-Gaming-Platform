@@ -1,5 +1,7 @@
+add_subdirectory(Actions)
+
 add_executable(terminalServer
-src/terminalServer.cpp
+terminalServer.cpp
 )
 
 add_custom_command(
@@ -14,12 +16,12 @@ set_target_properties(terminalServer
                       CXX_STANDARD 17
                       PREFIX ""
 )
-
+ 
 find_package(Threads REQUIRED)
 
 target_link_libraries(terminalServer
   networking
-  handler
+  ServerActions
   nlohmann_json
   spdlog::spdlog
   ${CMAKE_THREAD_LIBS_INIT}
@@ -32,5 +34,5 @@ install(TARGETS terminalServer
 install(FILES ${CMAKE_SOURCE_DIR}/tools/terminalServer/webchat.html RUNTIME DESTINATION bin)
 
 # comment out to disable unit testing
-enable_testing()
-add_subdirectory(test)
+#enable_testing()
+#add_subdirectory(test)
