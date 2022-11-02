@@ -1,9 +1,9 @@
 #include <string>
 #include <memory>
 
-#include "../includes/PlayerStorage.h"
-#include "../includes/UniqueId.h"
-#include "../includes/Room.h"
+#include "../includes/player_storage.h"
+#include "../includes/unique_id.h"
+#include "../includes/room.h"
 
 Room::Room(std::unique_ptr<IRoomConfig> rc, std::unique_ptr<IPlayerStorage> ps) : 
     config{std::move(rc)}, players{std::move(ps)} {

@@ -1,23 +1,8 @@
 #include <gtest/gtest.h>
-#include <string>
-#include <string_view>
 #include <memory>
 #include <exception>
 
-#include "../includes/Room.h"
-
-class PlayerStub : public IPlayer {
-public:
-    void setPublicId(IUniqueId) override {
-        return;
-    }
-
-    IUniqueId getPublicId() const override {
-        return UniqueId("fake-id");
-    }
-};
-
-PlayerStub fakeplayer = PlayerStub{};
+#include "room.h"
 
 class PlayerStorageStub : public IPlayerStorage {
 public:
@@ -33,7 +18,7 @@ public:
         return;
     }
     const IPlayer& getPlayerRecord(IUniqueId& uid) const override {
-        return fakeplayer;
+        return nullptr;
     }
     int getNumPlayerRecords() const override {
         return this->records;
@@ -64,6 +49,17 @@ public:
 };
 
 
+class PlayerStub : public IPlayer {
+public:
+    void setPublicId(IUniqueId) override {
+        return;
+    }
+
+    IUniqueId getPublicId() const override {
+        return UniqueId("fake-id");
+    }
+};
+
 // get # of players
 TEST(RoomTests, HandlesNumPlayersEqualsZero) {
     Room room{
@@ -81,8 +77,7 @@ TEST(RoomTests, HandlesNumPlayersMoreThanZero) {
         std::make_unique<PlayerStorageStub>()
     };
 
-    auto p = PlayerStub{};
-    room.addPlayer(p);
+    room.addPlayer(PlayerStub{});
 
     EXPECT_EQ(1, room.getNumPlayers());
 }
@@ -94,8 +89,7 @@ TEST(RoomTests, HandlesManyManyPlayers) {
     };
 
     for (int i = 0; i < 1000; i++) {
-        auto p = PlayerStub{};
-        room.addPlayer(p);
+        room.addPlayer(PlayerStub{});
     }
 
     EXPECT_EQ(1000, room.getNumPlayers());
@@ -109,9 +103,8 @@ TEST(RoomTests, HandlesJoining) {
         std::make_unique<PlayerStorageStub>()
     };
 
-    auto p = PlayerStub{};
     EXPECT_EQ(0, room.getNumPlayers());
-    EXPECT_TRUE( room.addPlayer(p) );
+    EXPECT_TRUE( room.addPlayer(PlayerStub{}) );
     EXPECT_EQ(1, room.getNumPlayers());
 }
 
@@ -121,9 +114,8 @@ TEST(RoomTests, HandlesJoiningWithPolicy) {
         std::make_unique<PlayerStorageStub>()
     };
 
-    auto p = PlayerStub{};
     EXPECT_EQ(0, room.getNumPlayers());
-    EXPECT_FALSE( room.addPlayer(p) );
+    EXPECT_FALSE( room.addPlayer(PlayerStub{}) );
     EXPECT_EQ(0, room.getNumPlayers());
 }
 
@@ -170,11 +162,10 @@ TEST(RoomTests, HandlesGetPlayerWhenEmpty) {
     EXPECT_EQ(0, room.getNumPlayers());
 
     bool wasOk = false;
-    auto id = UniqueId{"fake-id"};
     try {
-        room.getPlayer(id);
+        room.getPlayer(UniqueId("fake-id"));
         wasOk = true;
-    } catch (std::exception&) { }
+    } catch (std::exception) { }
 
     EXPECT_FALSE(wasOk);
 }
@@ -186,17 +177,15 @@ TEST(RoomTests, HandlesGetPlayerWrongID) {
         std::make_unique<PlayerStorageStub>()
     };
 
-    auto p = PlayerStub{};
-    room.addPlayer(p);
+    room.addPlayer(PlayerStub{});
 
     EXPECT_EQ(1, room.getNumPlayers());
 
     bool wasOk = false;
-    auto id = UniqueId{"wrong-id"};
     try {
-        room.getPlayer(id);
+        room.getPlayer(UniqueId("wrong-id"));
         wasOk = true;
-    } catch (std::exception&) { }
+    } catch (std::exception) { }
 
     EXPECT_FALSE(wasOk);
 }
@@ -207,18 +196,15 @@ TEST(RoomTests, HandlesGetPlayerRightID) {
         std::make_unique<PlayerStorageStub>()
     };
 
-    auto p = PlayerStub{};
-    room.addPlayer(p);
+    room.addPlayer(PlayerStub{});
 
     EXPECT_EQ(1, room.getNumPlayers());
 
-
     bool wasOk = false;
-    auto id = UniqueId{"fake-id"};
     try {
-        room.getPlayer(id);
+        room.getPlayer(UniqueId("fake-id"));
         wasOk = true;
-    } catch (std::exception&) { }
+    } catch (std::exception) { }
 
     EXPECT_TRUE(wasOk);
 }
