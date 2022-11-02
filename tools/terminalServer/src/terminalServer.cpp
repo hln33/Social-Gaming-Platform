@@ -3,7 +3,6 @@
 #include "NetworkingHelper.h"
 #include "handler.h"
 
-#include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
 #include <fstream>
