@@ -6,37 +6,31 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <string>
 
-Player::Player(String name, bool audience, int highScore, int currentScore) {
+Player::Player(std::string_view name, bool audience, int highScore, int currentScore) {
     name = name;
     audience = audience;
     highScore = highScore;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience, int currentScore) {
+Player::Player(std::string_view name, bool audience, int currentScore) {
     name = name;
     audience = audience;
     currentScore = currentScore;
 }
 
-Player::Player(String name, bool audience) {
+Player::Player(std::string_view name, bool audience) {
     name = name;
     audience = audience;
 }
 
-Player::Player(&Player other) {
-    name = other.name;
-    audience = other.audience;
-    highScore = other.highScore;
-    currentScore = other.currentScore;
-}
-
-int Player::getName() {
+std::string_view Player::getName() {
     return name;
 }
 
-void Player::setName(int name) {
+void Player::setName(std::string_view name) {
     name = name;
 }
 
@@ -73,6 +67,6 @@ void Player::setAudience(bool audience) {
     audience = audience;
 }
 
-void Player::message(String message) {
-    cout << message << endl;
+void Player::message(std::string_view message) {
+    std::cout << message << std::endl;
 }

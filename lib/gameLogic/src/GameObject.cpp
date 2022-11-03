@@ -3,7 +3,7 @@
 //
 
 #include "../includes/GameObject.h"
-
+expected initializer before ‘-’ token
 GameObject::GameObject(String name) {
     name = name;
 }
