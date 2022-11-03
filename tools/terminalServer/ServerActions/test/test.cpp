@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <serverActions.h>
+#include <ServerActions.h>
 
 TEST(test, DemonstrateGTestMacros) {
     EXPECT_TRUE(true);
