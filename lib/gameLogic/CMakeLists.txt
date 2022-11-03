@@ -3,6 +3,10 @@ set(This gameLogic)
 add_library(${This}
         src/gameRules.cpp
         src/Player.cpp
+        src/unique_id.cpp
+        src/unique_id_builder.cpp
+        src/symbol_table.cpp
+        src/GameObject.cpp
         )
 
 target_include_directories(${This}

@@ -3,27 +3,16 @@
 //
 
 #include "../includes/GameObject.h"
-expected initializer before ‘-’ token
-GameObject::GameObject(String name) {
+#include <string>
+
+GameObject::GameObject(std::string_view name) {
     name = name;
 }
 
-GameObject::GameObject(&GameObject other) {
-    name = other.name;
-}
-
-GameObject::getName() {
+std::string_view GameObject::getName() {
     return name;
 }
 
-GameObject::setName(String name) {
+void GameObject::setName(std::string_view name) {
     name = name;
-}
-
-GameObject::getBeats() {
-    return beats;
-}
-
-GameObject::setBeats(GameObject beats) {
-    beats = beats;
 }
