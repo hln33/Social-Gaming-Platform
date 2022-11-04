@@ -16,12 +16,16 @@ struct MessageResult {
   bool shouldShutdown;
 };
 
+struct ServerDetails {
+  std::map<std::string, std::vector<Connection>>& rooms;
+  std::map<uintptr_t, std::string>& clientInfo;
+  std::vector<Connection>& hosts;
+};
+
 MessageResult processMessages(
     Server& server, 
     const std::deque<Message>& incoming,
-    std::map<std::string, std::vector<Connection>>& rooms,
-    std::map<uintptr_t, std::string>& clientInfo,
-    std::vector<Connection>& hosts
+    ServerDetails& details
 ); 
 
 }

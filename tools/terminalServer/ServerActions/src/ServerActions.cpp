@@ -45,12 +45,13 @@ json joinGame(
     const std::string& roomCode,
     const Connection& connection,
     std::vector<Connection>& recipients,
-    std::map<std::string, std::vector<Connection>>& rooms,
-    std::map<uintptr_t, std::string>& clientInfo) 
+    ServerAction::ServerDetails& serverDetails) 
 {
-  auto roomClients = rooms.find(roomCode);
+  auto clientInfo = serverDetails.clientInfo;
+  auto rooms = serverDetails.rooms;
 
-  json response = createJSONMessage("Error", "wrong code");
+  auto roomClients = rooms.find(roomCode);
+  json response;
   if (roomClients != rooms.end()) {
     roomClients->second.push_back(connection);
     clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
@@ -60,6 +61,8 @@ json joinGame(
     recieveMessage(handlerInput);
 
     response = createJSONMessage("Success", "successfully joined");
+  } else {
+    response = createJSONMessage("Error", "wrong code");
   }
 
   recipients.push_back(connection);
@@ -70,10 +73,12 @@ json createGame(
     std::string gameRules,
     const Connection& connection,
     std::vector<Connection>& recipients,
-    std::map<std::string, std::vector<Connection>>& rooms,
-    std::vector<Connection>& hosts,
-    std::map<uintptr_t, std::string>& clientInfo)
+    ServerAction::ServerDetails& serverDetails)
 {
+  auto hosts = serverDetails.hosts;
+  auto rooms = serverDetails.rooms;
+  auto clientInfo = serverDetails.clientInfo;
+
   json response;
   if (isJSON(gameRules)) {
       spdlog::info("Game rules are valid JSON");
@@ -113,14 +118,14 @@ json createGame(
 void closeGame(
     Server& server,
     const Connection& connection,
-    std::map<uintptr_t, std::string>& clientInfo,
-    std::vector<Connection>& hosts,
-    std::map<std::string, std::vector<Connection>>& rooms) 
+    ServerAction::ServerDetails& serverDetails) 
 {
+  auto [rooms, clientInfo, hosts] = serverDetails;
+
   auto isHost = [connection](const auto& host) { return connection.id == host.id; };
   bool messageSentbyHost = std::find_if(hosts.begin(), hosts.end(), isHost) != hosts.end();
   if (!messageSentbyHost) { 
-    return; 
+    return;  
   }
 
   std::string roomCode = clientInfo.at(connection.id);
@@ -141,9 +146,11 @@ json sendChat(
     std::string& message, 
     const uintptr_t& senderID, 
     std::vector<Connection>& recipients,
-    std::map<uintptr_t, std::string>& clientInfo,
-    std::map<std::string, std::vector<Connection>>& rooms) 
+    ServerAction::ServerDetails& serverDetails) 
 {
+  auto clientInfo = serverDetails.clientInfo;
+  auto rooms = serverDetails.rooms;
+
   std::string roomCode = clientInfo.at(senderID);
   recipients = rooms.at(roomCode);
   
@@ -159,9 +166,7 @@ json sendChat(
 ServerAction::MessageResult ServerAction::processMessages(
     Server& server, 
     const std::deque<Message>& incoming,
-    std::map<std::string, std::vector<Connection>>& rooms,
-    std::map<uintptr_t, std::string>& clientInfo,
-    std::vector<Connection>& hosts) 
+    ServerAction::ServerDetails& serverDetails) 
 {
   std::ostringstream result;
   std::vector<Connection> recipients;
@@ -182,20 +187,20 @@ ServerAction::MessageResult ServerAction::processMessages(
     }
     else if (command == messageType.JOIN) {
       const std::string roomcode {data["message"]};
-      json response = joinGame(roomcode, sender, recipients, rooms, clientInfo);
+      json response = joinGame(roomcode, sender, recipients, serverDetails);
       result << response.dump();
     }
     else if (command == messageType.CREATE) {
       std::string gameRules {data["message"]};
-      json response = createGame(gameRules, sender, recipients, rooms, hosts, clientInfo);
+      json response = createGame(gameRules, sender, recipients, serverDetails);
       result << response.dump();
     }
     else if (command == messageType.CLOSE_GAME) {
-      closeGame(server, message.connection, clientInfo, hosts, rooms);
+      closeGame(server, message.connection, serverDetails);
     }
     else {
       std::string message {data["message"]};
-      json response = sendChat(message, sender.id, recipients, clientInfo, rooms);
+      json response = sendChat(message, sender.id, recipients, serverDetails);
       result << response.dump();
     }
   }

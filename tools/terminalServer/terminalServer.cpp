@@ -67,13 +67,6 @@ void onDisconnect(Connection c) {
   } 
 }
 
-
-struct MessageResult {
-  std::string result;
-  std::vector<Connection> sendTo;
-  bool shouldShutdown;
-};
-
 std::deque<Message>
 buildOutgoing(const std::string& log, std::vector<Connection> clients) {
   std::deque<Message> outgoing;
@@ -119,7 +112,8 @@ int main(int argc, char* argv[]) {
     }
 
     auto incoming = server.receive();
-    auto [log, roomClients, shouldQuit] = ServerAction::processMessages(server, incoming, rooms, clientInfo, hosts);
+    auto serverDetails = ServerAction::ServerDetails{rooms, clientInfo, hosts};
+    auto [log, roomClients, shouldQuit] = ServerAction::processMessages(server, incoming, serverDetails);
     auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
 
