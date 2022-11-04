@@ -2,7 +2,9 @@
 #include "NetworkMessage.h"
 #include "NetworkingHelper.h"
 #include "handler.h"
+
 #include "ServerActions.h"
+#include "ServerActions_pi.h"
 
 #include <spdlog/spdlog.h>
 
@@ -24,16 +26,11 @@ json createJSONMessage(std::string type, std::string message){
   return payload;
 }
 
-json quitGame(const json& data,
-    const Connection& connection,
-    std::vector<Connection>& recipients,
-    Server& server) 
-{
+json quitGame(const Connection& connection) {
   std::string playerDisconnected = std::string("Player Left");
   //   recieveMessage(playerDisconnected);
-  server.disconnect(connection);
 
-  json response = createJSONMessage("Player Left", connection.id + ": Has left");
+  json response = createJSONMessage("Player Left", std::to_string(connection.id) + ": Has left");
   return response;
 }
 
@@ -70,7 +67,7 @@ json joinGame(
 }
 
 json createGame(
-    std::string gameRules,
+    std::string& gameRules,
     const Connection& connection,
     std::vector<Connection>& recipients,
     ServerAction::ServerDetails& serverDetails)
@@ -179,7 +176,8 @@ ServerAction::MessageResult ServerAction::processMessages(
     std::string command {data["type"]};
 
     if (command == messageType.QUIT) {
-      quitGame(data, sender, recipients, server);
+      quitGame(sender);
+      server.disconnect(sender);
     } 
     else if (command == messageType.SHUTDOWN) {
       shutdown();

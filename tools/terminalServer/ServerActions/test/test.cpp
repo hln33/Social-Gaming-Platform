@@ -1,9 +1,17 @@
 #include <gtest/gtest.h>
-#include <ServerActions.h>
+#include <spdlog/spdlog.h>
+#include <ServerActions_pi.h>
 
-TEST(test, DemonstrateGTestMacros) {
-    EXPECT_TRUE(true);
-    EXPECT_TRUE(2 == 2);
+TEST(create_json_message, create_basic_message) {
+    json response = createJSONMessage("type", "message");
 
-    std::string test;
+    EXPECT_TRUE(response["type"] == "type");
+    EXPECT_TRUE(response["message"] == "message");
+}
+
+TEST(quit_game, quit_game__Test) {
+    json response = quitGame(Connection{111});
+
+    EXPECT_TRUE(response["type"] == "Player Left");
+    EXPECT_TRUE(response["message"] == "111: Has left");
 }
