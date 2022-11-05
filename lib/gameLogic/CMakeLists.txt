@@ -1,4 +1,7 @@
-add_library(Core
+
+# testingEchoStringesting 
+# add Susu_subdirectory()tests;
+#e enable _testing()add_library(Core
   src/UniqueId.cpp
   src/PlayerStorage.cpp
   src/Room.cpp

@@ -3,72 +3,71 @@
 #include <string_view>
 #include <string>
 #include <memory>
-
+#include <nlohmann/json.hpp>
 #include "PlayerStorage.h"
 #include "UniqueId.h"
+#include "handler.h"
 
-class IRoomConfig;
+class RoomConfigInterface;
 
 // room.h
 // responsibilities:
 // - keep track of players
 // - store room info 
 // - has rules on which players can join
-class IRoom {
+class RoomInterface {
 public:
     virtual int getNumPlayers() const;
 
-    virtual bool addPlayer(IPlayer&);
+    virtual bool addPlayer(PlayerInterface&);
 
-    virtual void removePlayer(IPlayer&);
+    virtual void removePlayer(PlayerInterface&);
 
-    virtual IPlayer& getPlayer(IUniqueId&) const;
+    virtual PlayerInterface& getPlayer(UniqueIdInterface&) const;
 };
 
 
-class Room : public IRoom {
+class Room : public RoomInterface {
 public:
-    Room(std::unique_ptr<IRoomConfig>, std::unique_ptr<IPlayerStorage>);
+    Room(RoomConfigInterface* rc, PlayerStorageInterface* ps) :
+        config{std::unique_ptr<RoomConfigInterface>(rc)}, 
+        players{std::unique_ptr<PlayerStorageInterface>(ps)}
+    { }
 
     int getNumPlayers() const override;
 
-    bool addPlayer(IPlayer&) override;
+    bool addPlayer(PlayerInterface&) override;
 
-    void removePlayer(IPlayer&) override;
+    void removePlayer(PlayerInterface&) override;
 
-    IPlayer& getPlayer(IUniqueId&) const override;
+    PlayerInterface& getPlayer(UniqueIdInterface&) const override;
 
 private:
-    std::unique_ptr<IPlayerStorage> players;
-    std::unique_ptr<IRoomConfig> config;
+    std::unique_ptr<PlayerStorageInterface> players;
+    std::unique_ptr<RoomConfigInterface> config;
 };
+ 
 
-// fake json object
-class JObject {
+class RoomConfigInterface {
 public:
-    std::string get(std::string);
+    virtual void setContext(RoomInterface*);
+
+    virtual bool allow(PlayerInterface&) const;
 };
 
-
-class IRoomConfig {
-public:
-    virtual void setContext(std::unique_ptr<IRoom>);
-
-    virtual bool allow(IPlayer&) const;
-};
-
-class RoomConfig : public IRoomConfig {
+class RoomConfig : public RoomConfigInterface {
 public:
 
     int maxAllowedPlayers;
+    int minAllowedPlayers;
 
-    RoomConfig(JObject);
+    RoomConfig(Config);
 
-    virtual void setContext(std::unique_ptr<IRoom>) override;
-    virtual bool allow(IPlayer&) const override;
+    virtual void setContext(RoomInterface*) override;
+    virtual bool allow(PlayerInterface&) const override;
 
 private:
-    std::unique_ptr<IRoom> context;
+    std::unique_ptr<RoomInterface> context;
 
-    void parseConfigRules(JObject);
+    void parseConfigRules(Config);
 };

@@ -1,6 +1,5 @@
 #include "Server.h"
 #include "NetworkMessage.h"
-#include "NetworkingHelper.h"
 #include "handler.h"
 
 #include "ServerActions.h"
@@ -92,7 +91,6 @@ json createGame(
       hosts.push_back(connection);
 
       std::vector<Connection> roomClients {connection};
-      std::string roomCode = randomCode();
       rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
       clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
 

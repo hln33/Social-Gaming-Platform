@@ -3,6 +3,7 @@ set(This handler)
 add_library(${This}
   src/handler.cpp
   src/controller.cpp
+  src/handlerHelper.cpp
 )
 
 target_include_directories(${This}
