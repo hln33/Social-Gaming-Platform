@@ -2,7 +2,7 @@
 // Created by mcgir on 10/6/2022.
 //
 
-#include "../includes/Player.h"
+#include "../include/Player.h"
 #include <iostream>
 #include <cstdlib>
 #include <vector>

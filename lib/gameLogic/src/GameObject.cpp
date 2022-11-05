@@ -2,7 +2,7 @@
 // Created by mcgir on 10/14/2022.
 //
 
-#include "../includes/GameObject.h"
+#include "../include/GameObject.h"
 #include <string>
 
 GameObject::GameObject(std::string_view name) {

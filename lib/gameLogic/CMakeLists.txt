@@ -3,7 +3,6 @@ set(This gameLogic)
 add_library(${This}
         src/gameRules.cpp
         src/Player.cpp
-        src/unique_id.cpp
         src/GameObject.cpp
         src/UniqueId.cpp
         src/PlayerStorage.cpp
@@ -16,8 +15,8 @@ add_library(${This}
 
 target_include_directories(${This}
         PUBLIC
-        $<INSTALL_INTERFACE:includes>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
