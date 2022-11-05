@@ -4,9 +4,12 @@ add_library(${This}
         src/gameRules.cpp
         src/Player.cpp
         src/unique_id.cpp
-        src/unique_id_builder.cpp
-        src/symbol_table.cpp
         src/GameObject.cpp
+        src/unique_id.cpp
+        src/unique_id_builder.cpp
+        #these are broken
+        #src/room.cpp
+        #src/player_storage.cpp
         )
 
 target_include_directories(${This}
@@ -29,8 +32,6 @@ target_link_libraries(${This}
 
 install(TARGETS ${This}
         ARCHIVE DESTINATION lib
-        )
-
-# comment out to disable unit testing
+        )# comment out to disable unit testing
 #enable_testing()
 #add_subdirectory(test)
