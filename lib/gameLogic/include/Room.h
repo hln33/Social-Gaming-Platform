@@ -1,10 +1,13 @@
+#pragma once
+
+#include <string_view>
 #include <string>
 #include <memory>
 
-#include "player_storage.h"
+#include "PlayerStorage.h"
+#include "UniqueId.h"
 
-#include "unique_id.h"
-#include "unique_id_builder.h"
+class IRoomConfig;
 
 // room.h
 // responsibilities:
@@ -40,6 +43,13 @@ private:
     std::unique_ptr<IRoomConfig> config;
 };
 
+// fake json object
+class JObject {
+public:
+    std::string get(std::string);
+};
+
+
 class IRoomConfig {
 public:
     virtual void setContext(std::unique_ptr<IRoom>);
@@ -61,9 +71,4 @@ private:
     std::unique_ptr<IRoom> context;
 
     void parseConfigRules(JObject);
-};
-
-class JObject {
-public:
-    std::string get(std::string_view);
 };
