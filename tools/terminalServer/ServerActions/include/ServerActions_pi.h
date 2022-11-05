@@ -12,4 +12,11 @@ json joinGame(
     const Connection& connection,
     std::vector<Connection>& recipients,
     ServerAction::ServerDetails& serverDetails
-); 
+);
+
+json createGame(
+    std::string& gameRules,
+    const Connection& connection,
+    std::vector<Connection>& recipients,
+    ServerAction::ServerDetails& serverDetails
+);
