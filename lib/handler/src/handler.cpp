@@ -170,19 +170,19 @@ bool MessageContains(const std::string& string, const std::string& subString) {
 
 // recieves message from networking
 // For now, input will be assumed to be a string
-bool recieveMessage(std::string& message) {
-    // google::InitGoogleLogging("Handler");
+// bool recieveMessage(std::string& message) {
+//     // google::InitGoogleLogging("Handler");
 
-    try {
-        performBusinessLogic(message);
-        return true;
-    } catch (std::exception& e) {
-        // LOG(ERROR) << "call to business logic failed:";
-        std::cout << "call to business logic failed:";
-        return false;
-        // LOG(ERROR) << e.what();
-    }
-}
+//     try {
+//         //performBusinessLogic(message);
+//         return true;
+//     } catch (std::exception& e) {
+//         // LOG(ERROR) << "call to business logic failed:";
+//         std::cout << "call to business logic failed:";
+//         return false;
+//         // LOG(ERROR) << e.what();
+//     }
+// }
 
 
 // bool storeParsedValues(json& text){

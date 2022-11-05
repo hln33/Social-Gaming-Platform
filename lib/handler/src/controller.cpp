@@ -24,7 +24,7 @@ Response Controller::createRoom(json jsonFile, networking::Connection player){
         newRandomCode = randomCode();
     }
 
-    Room::Room newRoom(config, newHost, newRandomCode);
+    // Room::Room newRoom(config, newHost, newRandomCode);
 
 
     
@@ -40,12 +40,13 @@ RoomConfigInterface Controller::createRoomConfig(json jsonFile){
         // business do not need to handle json parsing
 
         // the argument should be struct
-        RoomConfig config(jsonFile["configuration"]);
+        Config c;
+        RoomConfig config(c);;
         return config;
     }
 }
 
-Response Controller::joinRoom(int roomCode, PlayerInterface& playerInfo) {
+Response Controller::joinRoom(std::string roomCode, PlayerInterface& playerInfo) {
     // 1. lookup the room in GameRoomLookup
     // 1.1 if could not find room send error response
     // 1.2 otherwise ask the room if player can join
@@ -71,7 +72,7 @@ Response Controller::joinRoom(int roomCode, PlayerInterface& playerInfo) {
     return Response{Status::FAIL, "Could not find room!"};
 }
 
-Response Controller::leaveRoom(int roomCode, PlayerInterface& playerInfo) {
+Response Controller::leaveRoom(std::string roomCode, PlayerInterface& playerInfo) {
     auto it = this->GameRoomLookUp.find(roomCode);
     if (it == this->GameRoomLookUp.end()) {
         return Response{Status::FAIL, "Could not find room!"};

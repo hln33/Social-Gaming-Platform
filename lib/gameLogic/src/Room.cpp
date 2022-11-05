@@ -45,6 +45,5 @@ bool RoomConfig::allow(PlayerInterface &p) const {
 }
 
 void RoomConfig::parseConfigRules(Config config) {
-    auto maxPlayers = config.maxPlayers;
-    this->maxAllowedPlayers = std::stoi(maxPlayers);
+    this->maxAllowedPlayers = config.maxPlayer;
 }

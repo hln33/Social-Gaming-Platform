@@ -22,6 +22,8 @@ set_target_properties(${This}
 
 target_link_libraries(${This}
                       nlohmann_json::nlohmann_json
+                      gameLogic
+                      networking
 )
 
 install(TARGETS ${This}

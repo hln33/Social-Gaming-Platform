@@ -54,7 +54,7 @@ json joinGame(
 
     // tell handler player joined
     std::string handlerInput ("Player Joined");
-    recieveMessage(handlerInput);
+    //recieveMessage(handlerInput);
 
     response = createJSONMessage("Success", "successfully joined");
   } else {
@@ -91,14 +91,14 @@ json createGame(
       hosts.push_back(connection);
 
       std::vector<Connection> roomClients {connection};
-      rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
-      clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
+      //rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
+      //clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
 
-      response = createJSONMessage("Success", "successfully created - code: " + roomCode);
+      //response = createJSONMessage("Success", "successfully created - code: " + roomCode);
       
       //Tell handler that new game is created
       std::string handlerInput = std::string("Game Created");
-      recieveMessage(handlerInput);
+      //recieveMessage(handlerInput);
   } else {
       std::string error = "Error: Game rules are not in valid json format...";
       spdlog::error(error);
@@ -134,7 +134,7 @@ void closeGame(
 
   //Tell handler that a game ended
   std::string handlerInput = std::string("Game Ended");
-  recieveMessage(handlerInput);
+  //recieveMessage(handlerInput);
 }
 
 json sendChat(

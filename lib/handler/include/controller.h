@@ -34,15 +34,15 @@ public:
     RoomConfigInterface createRoomConfig(json jsonFile);
 
 
-    Response joinRoom(int roomCode, PlayerInterface& playerInfo);
+    Response joinRoom(std::string roomCode, PlayerInterface& playerInfo);
 
-    Response leaveRoom(int roomCode, PlayerInterface& playerInfo);
+    Response leaveRoom(std::string roomCode, PlayerInterface& playerInfo);
 
     Response handleUserInput(json userInput);
 
     
 private:
-    void Controller::deleteRoom(std::string roomCode) {
-        this->GameRoomLookUp.erase(roomCode);
+    void deleteRoom(std::string roomCode) {
+        //this->GameRoomLookUp.erase(roomCode);
     }
 };

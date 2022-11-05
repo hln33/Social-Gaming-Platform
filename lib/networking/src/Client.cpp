@@ -135,7 +135,7 @@ Client::~Client() = default;
 
 void
 Client::update() {
-  impl->ioService.poll();  
+  impl->ioService.poll();   
 }
 
 

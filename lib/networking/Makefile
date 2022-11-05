@@ -200,30 +200,6 @@ src/Client.cpp.s:
 	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/networking/CMakeFiles/networking.dir/build.make lib/networking/CMakeFiles/networking.dir/src/Client.cpp.s
 .PHONY : src/Client.cpp.s
 
-src/NetworkingHelper.o: src/NetworkingHelper.cpp.o
-.PHONY : src/NetworkingHelper.o
-
-# target to build an object file
-src/NetworkingHelper.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/networking/CMakeFiles/networking.dir/build.make lib/networking/CMakeFiles/networking.dir/src/NetworkingHelper.cpp.o
-.PHONY : src/NetworkingHelper.cpp.o
-
-src/NetworkingHelper.i: src/NetworkingHelper.cpp.i
-.PHONY : src/NetworkingHelper.i
-
-# target to preprocess a source file
-src/NetworkingHelper.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/networking/CMakeFiles/networking.dir/build.make lib/networking/CMakeFiles/networking.dir/src/NetworkingHelper.cpp.i
-.PHONY : src/NetworkingHelper.cpp.i
-
-src/NetworkingHelper.s: src/NetworkingHelper.cpp.s
-.PHONY : src/NetworkingHelper.s
-
-# target to generate assembly for a file
-src/NetworkingHelper.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/networking/CMakeFiles/networking.dir/build.make lib/networking/CMakeFiles/networking.dir/src/NetworkingHelper.cpp.s
-.PHONY : src/NetworkingHelper.cpp.s
-
 src/Server.o: src/Server.cpp.o
 .PHONY : src/Server.o
 
@@ -264,9 +240,6 @@ help:
 	@echo "... src/Client.o"
 	@echo "... src/Client.i"
 	@echo "... src/Client.s"
-	@echo "... src/NetworkingHelper.o"
-	@echo "... src/NetworkingHelper.i"
-	@echo "... src/NetworkingHelper.s"
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"

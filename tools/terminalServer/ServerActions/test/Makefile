@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(CMAKE_COMMAND) -E cmake_progress_start /home/gordon/Desktop/social-gaming/dev/social-gaming/CMakeFiles /home/gordon/Desktop/social-gaming/dev/social-gaming/lib/handler//CMakeFiles/progress.marks
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/all
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(CMAKE_COMMAND) -E cmake_progress_start /home/gordon/Desktop/social-gaming/dev/social-gaming/CMakeFiles /home/gordon/Desktop/social-gaming/dev/social-gaming/tools/terminalServer/ServerActions/test//CMakeFiles/progress.marks
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tools/terminalServer/ServerActions/test/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/gordon/Desktop/social-gaming/dev/social-gaming/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/clean
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tools/terminalServer/ServerActions/test/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,12 +148,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/preinstall
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tools/terminalServer/ServerActions/test/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/preinstall
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tools/terminalServer/ServerActions/test/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
@@ -163,90 +163,42 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-lib/handler/CMakeFiles/handler.dir/rule:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/CMakeFiles/handler.dir/rule
-.PHONY : lib/handler/CMakeFiles/handler.dir/rule
+tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/rule:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/rule
+.PHONY : tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/rule
 
 # Convenience name for target.
-handler: lib/handler/CMakeFiles/handler.dir/rule
-.PHONY : handler
+test_terminalServer: tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/rule
+.PHONY : test_terminalServer
 
 # fast build rule for target.
-handler/fast:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/build
-.PHONY : handler/fast
+test_terminalServer/fast:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/build.make tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/build
+.PHONY : test_terminalServer/fast
 
-src/controller.o: src/controller.cpp.o
-.PHONY : src/controller.o
-
-# target to build an object file
-src/controller.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/controller.cpp.o
-.PHONY : src/controller.cpp.o
-
-src/controller.i: src/controller.cpp.i
-.PHONY : src/controller.i
-
-# target to preprocess a source file
-src/controller.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/controller.cpp.i
-.PHONY : src/controller.cpp.i
-
-src/controller.s: src/controller.cpp.s
-.PHONY : src/controller.s
-
-# target to generate assembly for a file
-src/controller.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/controller.cpp.s
-.PHONY : src/controller.cpp.s
-
-src/handler.o: src/handler.cpp.o
-.PHONY : src/handler.o
+test.o: test.cpp.o
+.PHONY : test.o
 
 # target to build an object file
-src/handler.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handler.cpp.o
-.PHONY : src/handler.cpp.o
+test.cpp.o:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/build.make tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/test.cpp.o
+.PHONY : test.cpp.o
 
-src/handler.i: src/handler.cpp.i
-.PHONY : src/handler.i
-
-# target to preprocess a source file
-src/handler.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handler.cpp.i
-.PHONY : src/handler.cpp.i
-
-src/handler.s: src/handler.cpp.s
-.PHONY : src/handler.s
-
-# target to generate assembly for a file
-src/handler.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handler.cpp.s
-.PHONY : src/handler.cpp.s
-
-src/handlerHelper.o: src/handlerHelper.cpp.o
-.PHONY : src/handlerHelper.o
-
-# target to build an object file
-src/handlerHelper.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handlerHelper.cpp.o
-.PHONY : src/handlerHelper.cpp.o
-
-src/handlerHelper.i: src/handlerHelper.cpp.i
-.PHONY : src/handlerHelper.i
+test.i: test.cpp.i
+.PHONY : test.i
 
 # target to preprocess a source file
-src/handlerHelper.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handlerHelper.cpp.i
-.PHONY : src/handlerHelper.cpp.i
+test.cpp.i:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/build.make tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/test.cpp.i
+.PHONY : test.cpp.i
 
-src/handlerHelper.s: src/handlerHelper.cpp.s
-.PHONY : src/handlerHelper.s
+test.s: test.cpp.s
+.PHONY : test.s
 
 # target to generate assembly for a file
-src/handlerHelper.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/CMakeFiles/handler.dir/build.make lib/handler/CMakeFiles/handler.dir/src/handlerHelper.cpp.s
-.PHONY : src/handlerHelper.cpp.s
+test.cpp.s:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/build.make tools/terminalServer/ServerActions/test/CMakeFiles/test_terminalServer.dir/test.cpp.s
+.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -260,16 +212,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... handler"
-	@echo "... src/controller.o"
-	@echo "... src/controller.i"
-	@echo "... src/controller.s"
-	@echo "... src/handler.o"
-	@echo "... src/handler.i"
-	@echo "... src/handler.s"
-	@echo "... src/handlerHelper.o"
-	@echo "... src/handlerHelper.i"
-	@echo "... src/handlerHelper.s"
+	@echo "... test_terminalServer"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

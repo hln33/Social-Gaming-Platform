@@ -162,44 +162,6 @@ depend:
 	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-# Convenience name for target.
-lib/handler/test/CMakeFiles/exampleTests.dir/rule:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/handler/test/CMakeFiles/exampleTests.dir/rule
-.PHONY : lib/handler/test/CMakeFiles/exampleTests.dir/rule
-
-# Convenience name for target.
-exampleTests: lib/handler/test/CMakeFiles/exampleTests.dir/rule
-.PHONY : exampleTests
-
-# fast build rule for target.
-exampleTests/fast:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/test/CMakeFiles/exampleTests.dir/build.make lib/handler/test/CMakeFiles/exampleTests.dir/build
-.PHONY : exampleTests/fast
-
-exampleTests.o: exampleTests.cpp.o
-.PHONY : exampleTests.o
-
-# target to build an object file
-exampleTests.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/test/CMakeFiles/exampleTests.dir/build.make lib/handler/test/CMakeFiles/exampleTests.dir/exampleTests.cpp.o
-.PHONY : exampleTests.cpp.o
-
-exampleTests.i: exampleTests.cpp.i
-.PHONY : exampleTests.i
-
-# target to preprocess a source file
-exampleTests.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/test/CMakeFiles/exampleTests.dir/build.make lib/handler/test/CMakeFiles/exampleTests.dir/exampleTests.cpp.i
-.PHONY : exampleTests.cpp.i
-
-exampleTests.s: exampleTests.cpp.s
-.PHONY : exampleTests.s
-
-# target to generate assembly for a file
-exampleTests.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/handler/test/CMakeFiles/exampleTests.dir/build.make lib/handler/test/CMakeFiles/exampleTests.dir/exampleTests.cpp.s
-.PHONY : exampleTests.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -212,10 +174,6 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... exampleTests"
-	@echo "... exampleTests.o"
-	@echo "... exampleTests.i"
-	@echo "... exampleTests.s"
 .PHONY : help
 
 

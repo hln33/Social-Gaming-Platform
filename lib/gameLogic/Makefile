@@ -163,25 +163,73 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-lib/gameLogic/CMakeFiles/Core.dir/rule:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/gameLogic/CMakeFiles/Core.dir/rule
-.PHONY : lib/gameLogic/CMakeFiles/Core.dir/rule
+lib/gameLogic/CMakeFiles/gameLogic.dir/rule:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/gameLogic/CMakeFiles/gameLogic.dir/rule
+.PHONY : lib/gameLogic/CMakeFiles/gameLogic.dir/rule
 
 # Convenience name for target.
-Core: lib/gameLogic/CMakeFiles/Core.dir/rule
-.PHONY : Core
+gameLogic: lib/gameLogic/CMakeFiles/gameLogic.dir/rule
+.PHONY : gameLogic
 
 # fast build rule for target.
-Core/fast:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/build
-.PHONY : Core/fast
+gameLogic/fast:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/build
+.PHONY : gameLogic/fast
+
+src/GameObject.o: src/GameObject.cpp.o
+.PHONY : src/GameObject.o
+
+# target to build an object file
+src/GameObject.cpp.o:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/GameObject.cpp.o
+.PHONY : src/GameObject.cpp.o
+
+src/GameObject.i: src/GameObject.cpp.i
+.PHONY : src/GameObject.i
+
+# target to preprocess a source file
+src/GameObject.cpp.i:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/GameObject.cpp.i
+.PHONY : src/GameObject.cpp.i
+
+src/GameObject.s: src/GameObject.cpp.s
+.PHONY : src/GameObject.s
+
+# target to generate assembly for a file
+src/GameObject.cpp.s:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/GameObject.cpp.s
+.PHONY : src/GameObject.cpp.s
+
+src/Player.o: src/Player.cpp.o
+.PHONY : src/Player.o
+
+# target to build an object file
+src/Player.cpp.o:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Player.cpp.o
+.PHONY : src/Player.cpp.o
+
+src/Player.i: src/Player.cpp.i
+.PHONY : src/Player.i
+
+# target to preprocess a source file
+src/Player.cpp.i:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Player.cpp.i
+.PHONY : src/Player.cpp.i
+
+src/Player.s: src/Player.cpp.s
+.PHONY : src/Player.s
+
+# target to generate assembly for a file
+src/Player.cpp.s:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Player.cpp.s
+.PHONY : src/Player.cpp.s
 
 src/PlayerStorage.o: src/PlayerStorage.cpp.o
 .PHONY : src/PlayerStorage.o
 
 # target to build an object file
 src/PlayerStorage.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/PlayerStorage.cpp.o
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/PlayerStorage.cpp.o
 .PHONY : src/PlayerStorage.cpp.o
 
 src/PlayerStorage.i: src/PlayerStorage.cpp.i
@@ -189,7 +237,7 @@ src/PlayerStorage.i: src/PlayerStorage.cpp.i
 
 # target to preprocess a source file
 src/PlayerStorage.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/PlayerStorage.cpp.i
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/PlayerStorage.cpp.i
 .PHONY : src/PlayerStorage.cpp.i
 
 src/PlayerStorage.s: src/PlayerStorage.cpp.s
@@ -197,7 +245,7 @@ src/PlayerStorage.s: src/PlayerStorage.cpp.s
 
 # target to generate assembly for a file
 src/PlayerStorage.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/PlayerStorage.cpp.s
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/PlayerStorage.cpp.s
 .PHONY : src/PlayerStorage.cpp.s
 
 src/Room.o: src/Room.cpp.o
@@ -205,7 +253,7 @@ src/Room.o: src/Room.cpp.o
 
 # target to build an object file
 src/Room.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/Room.cpp.o
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Room.cpp.o
 .PHONY : src/Room.cpp.o
 
 src/Room.i: src/Room.cpp.i
@@ -213,7 +261,7 @@ src/Room.i: src/Room.cpp.i
 
 # target to preprocess a source file
 src/Room.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/Room.cpp.i
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Room.cpp.i
 .PHONY : src/Room.cpp.i
 
 src/Room.s: src/Room.cpp.s
@@ -221,7 +269,7 @@ src/Room.s: src/Room.cpp.s
 
 # target to generate assembly for a file
 src/Room.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/Room.cpp.s
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/Room.cpp.s
 .PHONY : src/Room.cpp.s
 
 src/UniqueId.o: src/UniqueId.cpp.o
@@ -229,7 +277,7 @@ src/UniqueId.o: src/UniqueId.cpp.o
 
 # target to build an object file
 src/UniqueId.cpp.o:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/UniqueId.cpp.o
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/UniqueId.cpp.o
 .PHONY : src/UniqueId.cpp.o
 
 src/UniqueId.i: src/UniqueId.cpp.i
@@ -237,7 +285,7 @@ src/UniqueId.i: src/UniqueId.cpp.i
 
 # target to preprocess a source file
 src/UniqueId.cpp.i:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/UniqueId.cpp.i
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/UniqueId.cpp.i
 .PHONY : src/UniqueId.cpp.i
 
 src/UniqueId.s: src/UniqueId.cpp.s
@@ -245,8 +293,32 @@ src/UniqueId.s: src/UniqueId.cpp.s
 
 # target to generate assembly for a file
 src/UniqueId.cpp.s:
-	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/Core.dir/build.make lib/gameLogic/CMakeFiles/Core.dir/src/UniqueId.cpp.s
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/UniqueId.cpp.s
 .PHONY : src/UniqueId.cpp.s
+
+src/gameRules.o: src/gameRules.cpp.o
+.PHONY : src/gameRules.o
+
+# target to build an object file
+src/gameRules.cpp.o:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/gameRules.cpp.o
+.PHONY : src/gameRules.cpp.o
+
+src/gameRules.i: src/gameRules.cpp.i
+.PHONY : src/gameRules.i
+
+# target to preprocess a source file
+src/gameRules.cpp.i:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/gameRules.cpp.i
+.PHONY : src/gameRules.cpp.i
+
+src/gameRules.s: src/gameRules.cpp.s
+.PHONY : src/gameRules.s
+
+# target to generate assembly for a file
+src/gameRules.cpp.s:
+	cd /home/gordon/Desktop/social-gaming/dev/social-gaming && $(MAKE) $(MAKESILENT) -f lib/gameLogic/CMakeFiles/gameLogic.dir/build.make lib/gameLogic/CMakeFiles/gameLogic.dir/src/gameRules.cpp.s
+.PHONY : src/gameRules.cpp.s
 
 # Help Target
 help:
@@ -260,7 +332,13 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... Core"
+	@echo "... gameLogic"
+	@echo "... src/GameObject.o"
+	@echo "... src/GameObject.i"
+	@echo "... src/GameObject.s"
+	@echo "... src/Player.o"
+	@echo "... src/Player.i"
+	@echo "... src/Player.s"
 	@echo "... src/PlayerStorage.o"
 	@echo "... src/PlayerStorage.i"
 	@echo "... src/PlayerStorage.s"
@@ -270,6 +348,9 @@ help:
 	@echo "... src/UniqueId.o"
 	@echo "... src/UniqueId.i"
 	@echo "... src/UniqueId.s"
+	@echo "... src/gameRules.o"
+	@echo "... src/gameRules.i"
+	@echo "... src/gameRules.s"
 .PHONY : help
 
 
