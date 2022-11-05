@@ -2,6 +2,7 @@ set(This handler)
 
 add_library(${This}
   src/handler.cpp
+  src/controller.cpp
 )
 
 target_include_directories(${This}
