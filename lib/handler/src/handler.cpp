@@ -261,3 +261,60 @@ bool storeParsedValuesRevised(std::string& message){
     json j_filtered = json::parse(message, cb);
     return true;
 }
+
+Config extractConfig(json& text){
+    Config config;
+
+    std::string roomName = text["configuration"]["name"];
+    int minPlayers = text["configuration"]["player count"]["min"];
+    int maxPlayers = text["configuration"]["player count"]["max"];
+    config.setup["name"] = text["configuration"]["name"];
+    config.setup["min"] = std::to_string(minPlayers);
+    config.setup["max"] = std::to_string(maxPlayers);
+
+    return config;
+}
+
+Constant extractConstant(json& text){
+    Constant constant; 
+
+    for (auto keyValPair : text["constants"].items()){
+        Pool pool;
+        std::string constant_key = keyValPair.key();
+        std::string current_list_key = "";
+        // use of json call back function 
+        json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
+        {
+            if (event == json::parse_event_t::key)
+            {
+                current_list_key = parsed.dump();
+                return true;
+            }
+            else if(event == json::parse_event_t::value)
+            {
+                // init new vector if weapon key vector "names" or "beats" does not exist 
+                if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
+                    std::vector<std::string> weaponKeys;
+                    weaponKeys.push_back(parsed.dump());
+                    pool.weaponLookUp[current_list_key] = weaponKeys;
+                }
+                else{
+                    pool.weaponLookUp[current_list_key].push_back(parsed.dump());
+                }
+                return true;
+            }
+            else
+            {
+                return true;
+            }
+        };
+
+        json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
+
+        constant.lists[constant_key] = pool;
+    }
+    constant.printConstant();
+
+    return constant;
+    
+}
