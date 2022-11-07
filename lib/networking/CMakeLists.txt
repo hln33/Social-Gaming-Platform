@@ -1,7 +1,6 @@
 add_library(networking
   src/Server.cpp
   src/Client.cpp
-  include/NetworkMessage.h
 )
 
 set(Boost_Libraries

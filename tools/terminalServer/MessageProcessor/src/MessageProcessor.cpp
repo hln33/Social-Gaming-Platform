@@ -1,8 +1,6 @@
 #include "MessageProcessor.h"
 #include "MessageProcessor_pi.h"
 
-#include "controller.h"
-
 #include <spdlog/spdlog.h>
 
 using json = nlohmann::json;
