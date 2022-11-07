@@ -5,18 +5,18 @@
 
 json createJSONMessage(std::string type, std::string message);
 
-json quitGame(const Connection& connection); 
+json quitGame(const Connection& connection, Controller& roomManager); 
 
 json joinGame(
     const std::string& roomCode,
     const Connection& connection,
     std::vector<Connection>& recipients,
-    ServerAction::ServerDetails& serverDetails
+    Controller& roomManager
 );
 
 json createGame(
     std::string& gameRules,
-    const Connection& connection,
+    const Connection& connection, 
     std::vector<Connection>& recipients,
-    ServerAction::ServerDetails& serverDetails
+    Controller& roomManager
 );

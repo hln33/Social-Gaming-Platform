@@ -1,7 +1,6 @@
 #include "Server.h"
-#include "NetworkMessage.h"
-#include "handler.h"
 #include "ServerActions.h"
+#include "controller.h"
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
@@ -19,51 +18,12 @@ using networking::Connection;
 using networking::Message;
 
 
-std::vector<Connection> clients;
-std::vector<Connection> hosts; //Holds all hosts so that when they send close the game ends
-
-//Clients From Room Code
-std::map<std::string, std::vector<Connection>>  rooms;
-//Client Info from ID
-std::map<uintptr_t, std::string> clientInfo;  
-
-
 void onConnect(Connection c) {
   spdlog::info("New Connection Found: {}", c.id);
-  clients.push_back(c);
 }
 
 void onDisconnect(Connection c) {
   spdlog::info("Connection Lost: {}", c.id);
-
-  auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
-  clients.erase(eraseBegin, std::end(clients));
-
-  // find room client was in
-  auto roomLoc = rooms.find(clientInfo.find(c.id)->second);
-  std::vector<Connection> &roomClients = roomLoc->second;
-  spdlog::info("Remaining Players in Room: {}", roomClients.size());
-  
-  // remove client from room
-  auto removeLoc = std::remove_if(roomClients.begin(), roomClients.end(), 
-                      [&c](const Connection& client) { return client.id == c.id; });
-  roomClients.erase(removeLoc, roomClients.end());
-  
-  auto it = clientInfo.find(c.id);
-  if (it != clientInfo.end()) {
-    clientInfo.erase(it);
-  }
-
-  std::cout << roomClients.size() << "\n";
-  if(roomClients.size() == 0 && roomLoc != rooms.end()){
-    rooms.erase(roomLoc);
-  }
-  for(auto it = rooms.cbegin(); it != rooms.cend(); ++it){
-      std::cout << it->first << "\n";
-  }
-  for(auto it = clientInfo.cbegin(); it != clientInfo.cend(); ++it){
-      std::cout << it->first << "\n";
-  } 
 }
 
 std::deque<Message>
@@ -88,9 +48,13 @@ getHTTPMessage(const char* htmlLocation) {
   }
 }
 
-int main(int argc, char* argv[]) {
+void initLogging() {
   spdlog::set_pattern("[%Y-%m-%d %H:%M] [Process: %P] [%^%l%$] %s:%# - %v");
   spdlog::info("starting program");
+}
+
+int main(int argc, char* argv[]) {
+  initLogging();
 
   if (argc < 3) {
     std::cerr << "Usage:\n  " << argv[0] << " <port> <html response>\n";
@@ -99,26 +63,21 @@ int main(int argc, char* argv[]) {
 
   unsigned short port = std::stoi(argv[1]);
   Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
+  Controller roomManager;
   
-  while (true) {
-    bool errorWhileUpdating = false;
-
+  bool quit = false;
+  while (!quit) {
     try {
       server.update();
     } catch (std::exception& e) {
       spdlog::error("Exception from Server update:\n{}\n\n", e.what());
-      errorWhileUpdating = true;
+      quit = true;
     }
 
     auto incoming = server.receive();
-    auto serverDetails = ServerAction::ServerDetails{rooms, clientInfo, hosts};
-    auto [log, roomClients, shouldQuit] = ServerAction::processMessages(server, incoming, serverDetails);
+    auto [log, roomClients, quit] = ServerAction::processMessages(server, incoming, roomManager);
     auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
-
-    if (shouldQuit || errorWhileUpdating) {
-      break;
-    }
 
     sleep(1);
   }

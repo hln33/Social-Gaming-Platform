@@ -25,12 +25,9 @@ json createJSONMessage(std::string type, std::string message){
   return payload;
 }
 
-json quitGame(const Connection& connection) {
-  std::string playerDisconnected = std::string("Player Left");
-  //   recieveMessage(playerDisconnected);
-
-  json response = createJSONMessage("Player Left", std::to_string(connection.id) + ": Has left");
-  return response;
+json quitGame(const Connection& connection, Controller& roomManager) {
+  // roomCode = roomManager.getRoomCode(connection);
+  // roomManager.leaveRoom(roomCode, connection)
 }
 
 void shutdown() {
@@ -41,113 +38,46 @@ json joinGame(
     const std::string& roomCode,
     const Connection& connection,
     std::vector<Connection>& recipients,
-    ServerAction::ServerDetails& serverDetails) 
+    Controller& roomManager) 
 {
-  auto clientInfo = serverDetails.clientInfo;
-  auto rooms = serverDetails.rooms;
-
-  auto roomClients = rooms.find(roomCode);
-  json response;
-  if (roomClients != rooms.end()) {
-    roomClients->second.push_back(connection);
-    clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
-
-    // tell handler player joined
-    std::string handlerInput ("Player Joined");
-    //recieveMessage(handlerInput);
-
-    response = createJSONMessage("Success", "successfully joined");
-  } else {
-    response = createJSONMessage("Error", "wrong code");
-  }
-
-  recipients.push_back(connection);
-  return response;
+  //roomManager.joinRoom(roomCode, nullptr);
 }
 
 json createGame(
     std::string& gameRules,
-    const Connection& connection,
+    const Connection& host,
     std::vector<Connection>& recipients,
-    ServerAction::ServerDetails& serverDetails)
+    Controller& roomManager)
 {
-  auto hosts = serverDetails.hosts;
-  auto rooms = serverDetails.rooms;
-  auto clientInfo = serverDetails.clientInfo;
-
-  json response;
-  if (isJSON(gameRules)) {
-      spdlog::info("Game rules are valid JSON");
-
-      json gamerule = completeParse(gameRules); //Send this json object to lower layers (when completed)
-
-      // //Printing game rules keys to see if everything is parsed correctly when function is complete
-      // std::cout << "Printing keys for game rules..." << std::endl;
-      // for (auto it = gamerule.begin(); it != gamerule.end(); ++it)
-      // {
-      //     std::cout << "key: " << it.key() << '\n';
-      // }
-
-      hosts.push_back(connection);
-
-      std::vector<Connection> roomClients {connection};
-      //rooms.insert(std::pair<std::string, std::vector<Connection>> (roomCode, roomClients));
-      //clientInfo.insert(std::pair<uintptr_t, std::string> (connection.id, roomCode));
-
-      //response = createJSONMessage("Success", "successfully created - code: " + roomCode);
-      
-      //Tell handler that new game is created
-      std::string handlerInput = std::string("Game Created");
-      //recieveMessage(handlerInput);
-  } else {
-      std::string error = "Error: Game rules are not in valid json format...";
-      spdlog::error(error);
-      response = createJSONMessage("Error", error);
-
-  }
-  recipients.push_back(connection);
-
-  return response;
+  //roomManager.createRoom(gameRules, host);
 }
 
 void closeGame(
     Server& server,
     const Connection& connection,
-    ServerAction::ServerDetails& serverDetails) 
+    Controller& roomManager) 
 {
-  auto [rooms, clientInfo, hosts] = serverDetails;
+  // check if sender is allowed to end the game (i.e. if they are a host)
 
-  auto isHost = [connection](const auto& host) { return connection.id == host.id; };
-  bool messageSentbyHost = std::find_if(hosts.begin(), hosts.end(), isHost) != hosts.end();
-  if (!messageSentbyHost) { 
-    return;  
-  }
+  // if so, find all connections in their room and disconnect them
 
-  std::string roomCode = clientInfo.at(connection.id);
-  auto roomClients = rooms.at(roomCode);
-  for (auto client: roomClients) {
-      server.disconnect(client);
-  }
+    // for (auto client: roomClients) {
+    //     server.disconnect(client);
+    // }
 
-  server.disconnect(connection);
-  rooms.erase(roomCode);
-
-  //Tell handler that a game ended
-  std::string handlerInput = std::string("Game Ended");
-  //recieveMessage(handlerInput);
+  // remove the room from roomManager
+    // roomManager.removeRoom(roomCode)
 }
 
 json sendChat(
     std::string& message, 
     const uintptr_t& senderID, 
     std::vector<Connection>& recipients,
-    ServerAction::ServerDetails& serverDetails) 
+    Controller& roomManager) 
 {
-  auto clientInfo = serverDetails.clientInfo;
-  auto rooms = serverDetails.rooms;
-
-  std::string roomCode = clientInfo.at(senderID);
-  recipients = rooms.at(roomCode);
+  
+  // roomCode = roomManager.getRoomCode(sender);
+  // reciprients = roomManager.getPlayers(roomCode);
   
   std::ostringstream s;
   s << senderID << "> " << message;
@@ -161,7 +91,7 @@ json sendChat(
 ServerAction::MessageResult ServerAction::processMessages(
     Server& server, 
     const std::deque<Message>& incoming,
-    ServerAction::ServerDetails& serverDetails) 
+    Controller& roomManager) 
 {
   std::ostringstream result;
   std::vector<Connection> recipients;
@@ -174,7 +104,7 @@ ServerAction::MessageResult ServerAction::processMessages(
     std::string command {data["type"]};
 
     if (command == messageType.QUIT) {
-      quitGame(sender);
+      quitGame(sender, roomManager);
       server.disconnect(sender);
     } 
     else if (command == messageType.SHUTDOWN) {
@@ -183,20 +113,20 @@ ServerAction::MessageResult ServerAction::processMessages(
     }
     else if (command == messageType.JOIN) {
       const std::string roomcode {data["message"]};
-      json response = joinGame(roomcode, sender, recipients, serverDetails);
+      json response = joinGame(roomcode, sender, recipients, roomManager);
       result << response.dump();
     }
     else if (command == messageType.CREATE) {
       std::string gameRules {data["message"]};
-      json response = createGame(gameRules, sender, recipients, serverDetails);
+      json response = createGame(gameRules, sender, recipients, roomManager);
       result << response.dump();
     }
     else if (command == messageType.CLOSE_GAME) {
-      closeGame(server, message.connection, serverDetails);
+      closeGame(server, message.connection, roomManager);
     }
     else {
       std::string message {data["message"]};
-      json response = sendChat(message, sender.id, recipients, serverDetails);
+      json response = sendChat(message, sender.id, recipients, roomManager);
       result << response.dump();
     }
   }

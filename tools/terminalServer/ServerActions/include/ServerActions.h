@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Server.h"
+#include "controller.h"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -25,7 +26,7 @@ struct ServerDetails {
 MessageResult processMessages(
     Server& server, 
     const std::deque<Message>& incoming,
-    ServerDetails& details
+    Controller& roomManager
 ); 
 
 }

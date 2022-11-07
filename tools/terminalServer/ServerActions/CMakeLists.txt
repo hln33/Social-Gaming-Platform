@@ -30,5 +30,5 @@ install(TARGETS ${This}
 )
 
 # comment out to disable unit testing
-enable_testing()
-add_subdirectory(test)
+# enable_testing()
+# add_subdirectory(test)
