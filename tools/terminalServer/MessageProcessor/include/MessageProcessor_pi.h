@@ -1,7 +1,7 @@
 #pragma once
 
 // this file contains function declarations for test.cpp to call
-#include "ServerActions.h"
+#include "MessageProcessor.h"
 
 json createJSONMessage(std::string type, std::string message);
 

@@ -1,4 +1,4 @@
-add_subdirectory(ServerActions)
+add_subdirectory(MessageProcessor)
 
 add_executable(terminalServer
 terminalServer.cpp
@@ -21,7 +21,7 @@ find_package(Threads REQUIRED)
 
 target_link_libraries(terminalServer
   networking
-  ServerActions
+  MessageProcessor
   nlohmann_json
   spdlog::spdlog
   ${CMAKE_THREAD_LIBS_INIT}

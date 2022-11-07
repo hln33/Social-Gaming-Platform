@@ -1,5 +1,5 @@
 #include "Server.h"
-#include "ServerActions.h"
+#include "MessageProcessor.h"
 #include "controller.h"
 
 #include <nlohmann/json.hpp>
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
   unsigned short port = std::stoi(argv[1]);
   Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
-  Controller roomManager;
+  MessageProcessor MessageProcessor;
   
   bool quit = false;
   while (!quit) {
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     }
 
     auto incoming = server.receive();
-    auto [log, roomClients, quit] = ServerAction::processMessages(server, incoming, roomManager);
+    auto [log, roomClients, quit] = MessageProcessor.processMessages(incoming);
     auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
 

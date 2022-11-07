@@ -1,7 +1,7 @@
-set(This ServerActions)
+set(This MessageProcessor)
 
 add_library(${This}
-            src/ServerActions.cpp
+            src/MessageProcessor.cpp
 )
 
 target_include_directories(${This}
