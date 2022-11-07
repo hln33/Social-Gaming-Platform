@@ -1,9 +1,7 @@
-#include "Server.h"
-#include "NetworkMessage.h"
-#include "handler.h"
-
 #include "MessageProcessor.h"
 #include "MessageProcessor_pi.h"
+
+#include "controller.h"
 
 #include <spdlog/spdlog.h>
 
@@ -32,10 +30,14 @@ json MessageProcessor::shutdown() {
 
 json MessageProcessor::joinGame(const std::string& roomCode, const Connection& connection) {
   //roomManager.joinRoom(roomCode, nullptr);
+
+  return createJSONMessage("Player joined", "");
 }
 
 json MessageProcessor::createGame(std::string& gameRules, const Connection& host) {
   //roomManager.createRoom(gameRules, host);
+
+  return createJSONMessage("Game created", "");
 }
 
 json MessageProcessor::closeGame(const Connection& connection) {
@@ -69,7 +71,6 @@ json MessageProcessor::sendChat(std::string& message, const uintptr_t& senderID)
 
 Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) {
   std::ostringstream result;
-  messageType messageType;
   
   bool quit = false;
   clearRecipients();
@@ -78,6 +79,7 @@ Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) 
     Connection sender = message.connection;
     json response;
 
+    spdlog::info(data["type"]);
     GameAction command = commandToAction.at(data["type"]);
     switch(command) {
       case QUIT: {
@@ -106,6 +108,7 @@ Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) 
       case SEND_CHAT: {
         std::string message {data["message"]};
         response = sendChat(message, sender.id);
+        break;
       }
       default:
         spdlog::error("unknown command!");

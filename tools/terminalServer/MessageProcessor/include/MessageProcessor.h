@@ -9,12 +9,6 @@ using networking::Server;
 using networking::Connection;
 using networking::Message;
 
-struct Outgoing {
-  std::string result;
-  std::vector<Connection> sendTo;
-  bool shouldShutdown;
-};
-
 enum GameAction {
   QUIT,
   SHUTDOWN,
@@ -30,6 +24,12 @@ const std::unordered_map<std::string, GameAction> commandToAction = {
   {"Close game", CLOSE_GAME},
   {"Quit", QUIT},
   {"Send chat", SEND_CHAT}
+};
+
+struct Outgoing {
+  std::string result;
+  std::vector<Connection> sendTo;
+  bool shouldShutdown;
 };
 
 class MessageProcessor {
