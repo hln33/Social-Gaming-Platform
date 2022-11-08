@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 // #include "../../gameLogic/business_logic_interface.h"
-
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -35,7 +35,7 @@ bool isBoolean(const json j_value){
 //function used to parse an inputted JSON file
 //for now this is using a string to be consistent with the above check
 //will have to wait for a test file/test info to run this code
-json completeParse(const std::string& text){
+json getJsonFromString(const std::string& text){
     //we need to make sure things are parsed correctly
     try{
         json j_complete = json::parse(text);
@@ -227,7 +227,7 @@ bool storeParsedValuesRevised(std::string& message){
     std::vector<json> values;
     if (!json::accept(message))
         return false;
-    json j_complete = completeParse(message);
+    json j_complete = getJsonFromString(message);
 
     // define parser callback
     json::parser_callback_t cb = [&keys, &arrays, &values](int depth, json::parse_event_t event, json & parsed)
@@ -260,4 +260,71 @@ bool storeParsedValuesRevised(std::string& message){
     // parse (with callback) and serialize JSON
     json j_filtered = json::parse(message, cb);
     return true;
+}
+
+Config extractConfig(json& text){
+    Config config;
+
+    std::string roomName = text["configuration"]["name"];
+    int minPlayers = text["configuration"]["player count"]["min"];
+    int maxPlayers = text["configuration"]["player count"]["max"];
+    config.setup["name"] = text["configuration"]["name"];
+    config.setup["min"] = std::to_string(minPlayers);
+    config.setup["max"] = std::to_string(maxPlayers);
+
+    return config;
+}
+
+Constant extractConstant(json& text){
+    Constant constant; 
+
+    for (auto keyValPair : text["constants"].items()){
+        Pool pool;
+        std::string constant_key = keyValPair.key();
+        std::string current_list_key = "";
+        // use of json call back function 
+        json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
+        {
+            if (event == json::parse_event_t::key)
+            {
+                current_list_key = parsed.dump();
+                return true;
+            }
+            else if(event == json::parse_event_t::value)
+            {
+                // init new vector if weapon key vector "names" or "beats" does not exist 
+                if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
+                    std::vector<std::string> weaponKeys;
+                    weaponKeys.push_back(parsed.dump());
+                    pool.weaponLookUp[current_list_key] = weaponKeys;
+                }
+                else{
+                    pool.weaponLookUp[current_list_key].push_back(parsed.dump());
+                }
+                return true;
+            }
+            else
+            {
+                return true;
+            }
+        };
+
+        json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
+
+        constant.lists[constant_key] = pool;
+    }
+   
+    return constant;
+    
+}
+
+json getJsonFromFilePath(std::string file_path){
+    try{
+        std::ifstream file(file_path);
+        json jsonFile = json::parse(file); 
+        return jsonFile;
+    } catch(std::exception& e) {
+        std::cout << e.what() << "\n";
+    }
+    return json();
 }
