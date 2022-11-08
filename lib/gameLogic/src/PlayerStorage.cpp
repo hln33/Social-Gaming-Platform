@@ -3,19 +3,19 @@
 #include "UniqueId.h"
 #include "PlayerStorage.h"
 
-void PlayerStorage::addPlayerRecord(IPlayer &p) {
+void PlayerStorage::addPlayerRecord(PlayerInterface &p) {
     this->players.insert(std::make_pair(p.getPublicId().getValue(), p));
 }
 
-void PlayerStorage::updatePlayerRecord(IPlayer &p) {
-    this->players.insert_or_assign(p.getPublicId().getValue(), p);
+void PlayerStorage::updatePlayerRecord(PlayerInterface &p) {
+    this->players[p.getPublicId().getValue()] = p;
 }
 
-void PlayerStorage::removePlayerRecord(IUniqueId& key) {
+void PlayerStorage::removePlayerRecord(UniqueIdInterface& key) {
     this->players.erase(key.getValue());
 }
 
-const IPlayer& PlayerStorage::getPlayerRecord(IUniqueId& key) const {
+const PlayerInterface& PlayerStorage::getPlayerRecord(UniqueIdInterface& key) const {
     return this->players.at(key.getValue());
 }
 

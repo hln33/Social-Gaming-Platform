@@ -6,10 +6,10 @@ add_library(${This}
         src/GameObject.cpp
         src/UniqueId.cpp
         src/PlayerStorage.cpp
-        src/Room.cpp
-        src/unique_id_builder.cpp
+        src/Room.cpp    
+        # src/unique_id_builder.cpp
         #these are broken
-        #src/room.cpp
+        #src/room.cpp   
         #src/player_storage.cpp
         )
 
@@ -29,6 +29,7 @@ set_target_properties(${This}
 
 target_link_libraries(${This}
         nlohmann_json::nlohmann_json
+        handler
         )
 
 install(TARGETS ${This}

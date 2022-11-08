@@ -7,32 +7,32 @@
 
 // default hash
 
-class IPlayer {
+class PlayerInterface {
 public:
-    virtual void setPublicId(IUniqueId);
+    virtual void setPublicId(UniqueIdInterface);
 
-    virtual IUniqueId getPublicId() const;
+    virtual UniqueIdInterface getPublicId() const;
 };
 
 
-class IPlayerStorage {
+class PlayerStorageInterface {
 public:
-    virtual void addPlayerRecord(IPlayer&);
-    virtual void updatePlayerRecord(IPlayer&);
-    virtual void removePlayerRecord(IUniqueId&);
-    virtual const IPlayer& getPlayerRecord(IUniqueId&) const;
+    virtual void addPlayerRecord(PlayerInterface&);
+    virtual void updatePlayerRecord(PlayerInterface&);
+    virtual void removePlayerRecord(UniqueIdInterface&);
+    virtual const PlayerInterface& getPlayerRecord(UniqueIdInterface&) const;
     virtual int getNumPlayerRecords() const;
 };
 
-class PlayerStorage : public IPlayerStorage {
+class PlayerStorage : public PlayerStorageInterface {
 public:
-    virtual void addPlayerRecord(IPlayer&) override;
-    virtual void updatePlayerRecord(IPlayer&);
-    virtual void removePlayerRecord(IUniqueId&) override;
-    virtual const IPlayer& getPlayerRecord(IUniqueId&) const override;
+    virtual void addPlayerRecord(PlayerInterface&) override;
+    virtual void updatePlayerRecord(PlayerInterface&);
+    virtual void removePlayerRecord(UniqueIdInterface&) override;
+    virtual const PlayerInterface& getPlayerRecord(UniqueIdInterface&) const override;
     virtual int getNumPlayerRecords() const override;
 
 private:
-    std::unordered_map<std::string, IPlayer> players;
+    std::unordered_map<std::string, PlayerInterface> players;
 };
 

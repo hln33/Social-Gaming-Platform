@@ -1,3 +1,6 @@
+add_subdirectory(MessageProcessor)
+add_subdirectory(ActionHandler)
+
 add_executable(terminalServer
 terminalServer.cpp
 )
@@ -14,12 +17,12 @@ set_target_properties(terminalServer
                       CXX_STANDARD 17
                       PREFIX ""
 )
-
+ 
 find_package(Threads REQUIRED)
 
 target_link_libraries(terminalServer
   networking
-  handler
+  MessageProcessor
   nlohmann_json
   spdlog::spdlog
   ${CMAKE_THREAD_LIBS_INIT}
