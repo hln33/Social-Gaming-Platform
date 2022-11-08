@@ -5,18 +5,18 @@
 
 // unique id for anything
 class IUniqueId {
-public:
-    virtual std::string getValue() const;
+    public:
+        virtual std::string getValue() const;
 };
 
 class UniqueId : public IUniqueId {
-public:
-    UniqueId(std::string s) : value(s) { }
+    public:
+        UniqueId(std::string s) : value(s) { }
 
-    std::string getValue() const override;
+        std::string getValue() const override;
 
-private:
-    std::string value;
+    private:
+        std::string value;
 };
 
 
