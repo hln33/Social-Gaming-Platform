@@ -7,10 +7,10 @@
 
 TEST(UniqueID, UniqueIDHasValue) {
     UniqueID uniqueID;
-    ASSERT_TRUE(uniqueID.getValue().length() > 0);
+    EXPECT_TRUE(uniqueID.getValue().length() > 0);
 }
 
 TEST(UniqueIDBuilder, UniqueIDBuilderCreatesUniqueID) {
     UniqueIDBuilder uniqueIDBuilder;
-    ASSERT_TRUE(uniqueIDBuilder.createUniqueID().getValue().length() > 0);
+    EXPECT_TRUE(uniqueIDBuilder.createUniqueID().getValue().length() > 0);
 }
