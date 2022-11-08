@@ -1,7 +1,7 @@
-set(This MessageProcessor)
+set(This ActionHandler)
 
 add_library(${This}
-            src/MessageProcessor.cpp
+            src/ActionHandler.cpp
 )
 
 target_include_directories(${This}
@@ -20,16 +20,10 @@ set_target_properties(${This}
 
 target_link_libraries(${This}
                     networking
-                    handler
-                    spdlog::spdlog
                     nlohmann_json::nlohmann_json
-                    ActionHandler
+                    spdlog::spdlog
 )
 
 install(TARGETS ${This}
   ARCHIVE DESTINATION lib
 )
-
-# comment out to disable unit testing
-# enable_testing()
-# add_subdirectory(test)

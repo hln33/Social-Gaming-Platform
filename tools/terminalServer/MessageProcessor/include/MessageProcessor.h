@@ -53,5 +53,5 @@ class MessageProcessor {
     json joinGame(const std::string& roomCode, const Connection& connection);
     json quitGame(const Connection& connection);
     json shutdown();
-    json closeGame(const Connection& connection);
+    json closeGame(const Connection& connection); 
 };

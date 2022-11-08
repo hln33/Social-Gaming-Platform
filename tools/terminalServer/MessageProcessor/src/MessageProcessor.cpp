@@ -1,6 +1,8 @@
 #include "MessageProcessor.h"
 #include "MessageProcessor_pi.h"
 
+#include "ActionHandler.h"
+
 #include <spdlog/spdlog.h>
 
 using json = nlohmann::json;
@@ -28,6 +30,9 @@ json MessageProcessor::shutdown() {
 
 json MessageProcessor::joinGame(const std::string& roomCode, const Connection& connection) {
   //roomManager.joinRoom(roomCode, nullptr);
+
+  ActionHandler handler;
+  handler.executeAction(ActionType::join, createJSONMessage("", ""), connection);
 
   return createJSONMessage("Player joined", "");
 }

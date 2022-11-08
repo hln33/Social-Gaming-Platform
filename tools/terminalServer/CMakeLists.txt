@@ -1,4 +1,5 @@
 add_subdirectory(MessageProcessor)
+add_subdirectory(ActionHandler)
 
 add_executable(terminalServer
 terminalServer.cpp
