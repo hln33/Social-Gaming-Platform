@@ -7,10 +7,7 @@ add_library(${This}
         src/UniqueId.cpp
         src/PlayerStorage.cpp
         src/Room.cpp
-        src/unique_id_builder.cpp
-        #these are broken
-        #src/room.cpp
-        #src/player_storage.cpp
+        #src/unique_id_builder.cpp
         )
 
 target_include_directories(${This}

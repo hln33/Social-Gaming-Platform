@@ -1,38 +1,44 @@
 #pragma once
 
 #include <unordered_map>
+#include <memory>
 #include <string>
 
+#include "Player.h"
 #include "UniqueId.h"
 
 // default hash
 
-class IPlayer {
-public:
-    virtual void setPublicId(IUniqueId);
+// class IPlayer {
+// public:
+//     virtual void setPublicId(IUniqueId);
 
-    virtual IUniqueId getPublicId() const;
+//     virtual IUniqueId getPublicId() const;
+// };
+
+
+class PlayerStorageInterface {
+public:
+    virtual void addPlayerRecord(std::unique_ptr<Player>);
+    virtual void updatePlayerRecord(int, std::unique_ptr<Player>);
+    virtual void removePlayerRecord(int);
+    virtual const Player* getPlayerRecord(int) const;
+    virtual size_t getNumPlayerRecords() const;
 };
 
-
-class IPlayerStorage {
+class PlayerStorage : public PlayerStorageInterface {
 public:
-    virtual void addPlayerRecord(IPlayer&);
-    virtual void updatePlayerRecord(IPlayer&);
-    virtual void removePlayerRecord(IUniqueId&);
-    virtual const IPlayer& getPlayerRecord(IUniqueId&) const;
-    virtual int getNumPlayerRecords() const;
-};
-
-class PlayerStorage : public IPlayerStorage {
-public:
-    virtual void addPlayerRecord(IPlayer&) override;
-    virtual void updatePlayerRecord(IPlayer&);
-    virtual void removePlayerRecord(IUniqueId&) override;
-    virtual const IPlayer& getPlayerRecord(IUniqueId&) const override;
-    virtual int getNumPlayerRecords() const override;
-
+    void addPlayerRecord(std::unique_ptr<Player>) override;
+    void updatePlayerRecord(int, std::unique_ptr<Player>) override;
+    void removePlayerRecord(int) override;
+    const Player* getPlayerRecord(int) const override;
+    size_t getNumPlayerRecords() const override;
 private:
-    std::unordered_map<std::string, IPlayer> players;
+    std::unordered_map<int, std::unique_ptr<Player>> players;
 };
+
+
+std::unique_ptr<PlayerStorageInterface> buildPlayerStorage() {
+    return std::make_unique<PlayerStorage>();
+}
 

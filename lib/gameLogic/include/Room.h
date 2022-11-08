@@ -4,71 +4,49 @@
 #include <string>
 #include <memory>
 
+#include "RoomConfig.h"
+#include "Player.h"
 #include "PlayerStorage.h"
 #include "UniqueId.h"
 
-class IRoomConfig;
+class RoomConfig;
 
 // room.h
 // responsibilities:
 // - keep track of players
 // - store room info 
 // - has rules on which players can join
-class IRoom {
+// class IRoom {
+// public:
+//     virtual int getNumPlayers() const;
+
+//     virtual bool addPlayer(Player&);
+
+//     virtual void removePlayer(Player&);
+
+//     virtual Player& getPlayer(IUniqueId&) const;
+// };
+
+
+class Room {
 public:
-    virtual int getNumPlayers() const;
+    Room(std::unique_ptr<RoomConfig> roomConfig, std::unique_ptr<PlayerStorageInterface> playerStorage) : 
+        config{std::move(roomConfig)}, 
+        players{std::move(playerStorage)} 
+    { }
 
-    virtual bool addPlayer(IPlayer&);
+    int getNumPlayers() const;
 
-    virtual void removePlayer(IPlayer&);
+    bool addPlayer(Player&);
 
-    virtual IPlayer& getPlayer(IUniqueId&) const;
-};
+    void removePlayer(Player&);
 
+    const Player& getPlayer(int) const;
 
-class Room : public IRoom {
-public:
-    Room(std::unique_ptr<IRoomConfig>, std::unique_ptr<IPlayerStorage>);
-
-    int getNumPlayers() const override;
-
-    bool addPlayer(IPlayer&) override;
-
-    void removePlayer(IPlayer&) override;
-
-    IPlayer& getPlayer(IUniqueId&) const override;
+    void updatePlayer(int, Player&);
 
 private:
-    std::unique_ptr<IPlayerStorage> players;
-    std::unique_ptr<IRoomConfig> config;
+    std::unique_ptr<RoomConfig> config;
+    std::unique_ptr<PlayerStorageInterface> players;
 };
 
-// fake json object
-class JObject {
-public:
-    std::string get(std::string);
-};
-
-
-class IRoomConfig {
-public:
-    virtual void setContext(std::unique_ptr<IRoom>);
-
-    virtual bool allow(IPlayer&) const;
-};
-
-class RoomConfig : public IRoomConfig {
-public:
-
-    int maxAllowedPlayers;
-
-    RoomConfig(JObject);
-
-    virtual void setContext(std::unique_ptr<IRoom>) override;
-    virtual bool allow(IPlayer&) const override;
-
-private:
-    std::unique_ptr<IRoom> context;
-
-    void parseConfigRules(JObject);
-};
