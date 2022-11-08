@@ -10,7 +10,8 @@
 Response Controller::createRoom(json jsonFile, networking::Connection player){
 
     RoomConfigInterface config = createRoomConfig(jsonFile);
-    // Player::Player newHost()
+    
+    Player newHost = Player(playerTypeEnum::host);
     
     // steps:
     // 1. generate random code

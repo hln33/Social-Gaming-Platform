@@ -7,33 +7,42 @@
 
 #include <string>
 
+enum playerTypeEnum{
+    host,
+    player,
+    audience
+};
+
 class Player {
     private:
         std::string_view name;
         int id;
         int highScore;
         int currentScore;
-        bool audience;
+        playerTypeEnum playerType;
+
+        static int currentID;
 
     public:
-        Player(std::string_view name, bool audience, int highScore, int currentScore);
-        Player(std::string_view name, bool audience, int currentScore);
-        Player(std::string_view name, bool audience);
+        Player(playerTypeEnum playerType);
+        // Player(std::string_view name, bool audience, int highScore, int currentScore);
+        // Player(std::string_view name, bool audience, int currentScore);
+        // Player(std::string_view name, bool audience);
 
         std::string_view getName();
         void setName(std::string_view name);
 
-        int getHighScore();
-        void setHighScore(int highScore);
+        // int getHighScore();
+        // void setHighScore(int highScore);
 
-        int getCurrentScore();
-        void setCurrentScore(int currentScore);
+        // int getCurrentScore();
+        // void setCurrentScore(int currentScore);
 
         int getId();
         void setId(int id);
 
-        bool getAudience();
-        void setAudience(bool audience);
+        playerTypeEnum getplayerType();
+        void setplayerType(playerTypeEnum type);
 
         void message(std::string_view message);
 };
