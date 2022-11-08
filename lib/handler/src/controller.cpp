@@ -41,7 +41,9 @@ RoomConfigInterface Controller::createRoomConfig(json jsonFile){
 
         // the argument should be struct
         Config c;
-        RoomConfig config(c);;
+        RoomConfig config = extractConfig(jsonFile);
+
+
         return config;
     }
 }
