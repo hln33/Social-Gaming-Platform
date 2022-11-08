@@ -22,6 +22,7 @@ target_link_libraries(${This}
                     networking
                     nlohmann_json::nlohmann_json
                     spdlog::spdlog
+                    handler
 )
 
 install(TARGETS ${This}

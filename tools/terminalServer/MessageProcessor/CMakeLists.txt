@@ -20,7 +20,6 @@ set_target_properties(${This}
 
 target_link_libraries(${This}
                     networking
-                    handler
                     spdlog::spdlog
                     nlohmann_json::nlohmann_json
                     ActionHandler

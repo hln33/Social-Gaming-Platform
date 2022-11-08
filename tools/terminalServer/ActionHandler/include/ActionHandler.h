@@ -3,7 +3,9 @@
 #include <unordered_map>
 #include <memory>
 #include <nlohmann/json.hpp>
+
 #include "Server.h"
+#include "controller.h"
 
 using json = nlohmann::json;
 using networking::Connection;
@@ -44,6 +46,7 @@ class ActionHandler {
 
     private:
         std::unordered_map<ActionType, ActionPointer> actions;
+        Controller roomManager;
 
         void registerAction(ActionType action, std::unique_ptr<Action>);
         void init();
