@@ -1,9 +1,7 @@
-set(This handler)
+set(This MessageProcessor)
 
 add_library(${This}
-  src/handler.cpp
-  src/controller.cpp
-  src/handlerHelper.cpp
+            src/MessageProcessor.cpp
 )
 
 target_include_directories(${This}
@@ -21,9 +19,10 @@ set_target_properties(${This}
 )
 
 target_link_libraries(${This}
-                      nlohmann_json::nlohmann_json
-                      gameLogic
-                      networking
+                    networking
+                    spdlog::spdlog
+                    nlohmann_json::nlohmann_json
+                    ActionHandler
 )
 
 install(TARGETS ${This}
@@ -31,5 +30,5 @@ install(TARGETS ${This}
 )
 
 # comment out to disable unit testing
-enable_testing()
-add_subdirectory(test)
+# enable_testing()
+# add_subdirectory(test)

@@ -42,6 +42,8 @@ _deps
 *.out
 *.app
 
-# miscellaneous
+# miscellaneousgit
 *.vscode
 *.DS_Store
+
+Makefile

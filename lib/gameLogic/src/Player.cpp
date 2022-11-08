@@ -2,11 +2,11 @@
 // Created by mcgir on 10/6/2022.
 //
 
-#include "../include/Player.h"
+#include "Player.h"
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <string>
+#include <string_view>
 
 Player::Player(std::string_view name, bool audience, int highScore, int currentScore) {
     name = name;
