@@ -9,22 +9,22 @@
 
 Response Controller::createRoom(json jsonFile, networking::Connection player){
 
-    RoomConfigInterface config = createRoomConfig(jsonFile);
+    // void config = createRoomConfig(jsonFile);
     // Player::Player newHost()
     
     // steps:
     // 1. generate random code
     // 2. add the room into GameRoomLookup
     // 3. create the response object 
-    // 4. return the response
-    std::string newRandomCode = randomCode();
-    auto it = GameRoomLookUp.find(newRandomCode);
+    // // 4. return the response
+    // std::string newRandomCode = randomCode();
+    // auto it = GameRoomLookUp.find(newRandomCode);
 
-    while(it == GameRoomLookUp.end()){
-        newRandomCode = randomCode();
-    }
+    // while(it == GameRoomLookUp.end()){
+    //     newRandomCode = randomCode();
+    // }
 
-    // Room::Room newRoom(config, newHost, newRandomCode);
+    // // Room::Room newRoom(config, newHost, newRandomCode);
 
 
     
@@ -33,22 +33,24 @@ Response Controller::createRoom(json jsonFile, networking::Connection player){
 }
 
 
-RoomConfigInterface Controller::createRoomConfig(json jsonFile){
+Response Controller::createRoomConfig(json jsonFile){
     if (jsonFile.contains("configuration")){
 
         // we cannot pass json object to create config because that contradicts:
         // business do not need to handle json parsing
 
         // the argument should be struct
-        Config c;
-        RoomConfig config = extractConfig(jsonFile);
+        // Config c;
+        // RoomConfig config = extractConfig(jsonFile);
 
 
-        return config;
+        // return config;
     }
+    return Response{Status::SUCCESS, "RANDOM CODE"};
+
 }
 
-Response Controller::joinRoom(std::string roomCode, PlayerInterface& playerInfo) {
+Response Controller::joinRoom(std::string roomCode, Player& playerInfo) {
     // 1. lookup the room in GameRoomLookup
     // 1.1 if could not find room send error response
     // 1.2 otherwise ask the room if player can join
@@ -74,7 +76,7 @@ Response Controller::joinRoom(std::string roomCode, PlayerInterface& playerInfo)
     return Response{Status::FAIL, "Could not find room!"};
 }
 
-Response Controller::leaveRoom(std::string roomCode, PlayerInterface& playerInfo) {
+Response Controller::leaveRoom(std::string roomCode, Player& playerInfo) {
     auto it = this->GameRoomLookUp.find(roomCode);
     if (it == this->GameRoomLookUp.end()) {
         return Response{Status::FAIL, "Could not find room!"};
