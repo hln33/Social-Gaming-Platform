@@ -32,12 +32,12 @@ public:
     Response createRoom(json jsonFile, networking::Connection player);
     
 
-    RoomConfigInterface createRoomConfig(json jsonFile);
+    Response createRoomConfig(json jsonFile);
 
 
-    Response joinRoom(std::string roomCode, PlayerInterface& playerInfo);
+    Response joinRoom(std::string roomCode, Player& playerInfo);
 
-    Response leaveRoom(std::string roomCode, PlayerInterface& playerInfo);
+    Response leaveRoom(std::string roomCode, Player& playerInfo);
 
     Response handleUserInput(json userInput);
 
