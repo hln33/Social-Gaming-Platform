@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 // #include "../../gameLogic/business_logic_interface.h"
-
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -35,7 +35,7 @@ bool isBoolean(const json j_value){
 //function used to parse an inputted JSON file
 //for now this is using a string to be consistent with the above check
 //will have to wait for a test file/test info to run this code
-json completeParse(const std::string& text){
+json getJsonFromString(const std::string& text){
     //we need to make sure things are parsed correctly
     try{
         json j_complete = json::parse(text);
@@ -227,7 +227,7 @@ bool storeParsedValuesRevised(std::string& message){
     std::vector<json> values;
     if (!json::accept(message))
         return false;
-    json j_complete = completeParse(message);
+    json j_complete = getJsonFromString(message);
 
     // define parser callback
     json::parser_callback_t cb = [&keys, &arrays, &values](int depth, json::parse_event_t event, json & parsed)
@@ -313,8 +313,18 @@ Constant extractConstant(json& text){
 
         constant.lists[constant_key] = pool;
     }
-    constant.printConstant();
-
+   
     return constant;
     
+}
+
+json getJsonFromFilePath(std::string file_path){
+    try{
+        std::ifstream file(file_path);
+        json jsonFile = json::parse(file); 
+        return jsonFile;
+    } catch(std::exception& e) {
+        std::cout << e.what() << "\n";
+    }
+    return json();
 }

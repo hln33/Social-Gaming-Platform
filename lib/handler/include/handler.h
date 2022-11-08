@@ -97,7 +97,7 @@ bool isArray(const json j_value);
 
 bool isBoolean(const json j_value);
 
-json completeParse(const std::string& text);
+json getJsonFromString(const std::string& text);
 
 bool MessageContains(const std::string& string, const std::string& substring);
 
@@ -109,7 +109,7 @@ bool MessageContains(const std::string& string, const std::string& substring);
 
 //  void performBusinessLogic(const std::string& message);
 
-bool recieveMessage(std::string& message);
+// bool recieveMessage(std::string& message);
 
 // bool storeParsedValues(json& text);
 
@@ -118,3 +118,5 @@ bool storeParsedValuesRevised(std::string& message);
 Config extractConfig(json& text);
 
 Constant extractConstant(json& text);
+
+json getJsonFromFilePath(std::string file_path);
