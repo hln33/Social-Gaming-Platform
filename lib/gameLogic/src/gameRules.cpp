@@ -55,3 +55,42 @@ void globalmessage(){}
 
 void scores(){}
 
+//-----------Game-Logic-----------//
+void endgame(){}
+void endturn(){}
+void endround(){}
+void endphase(){}
+void endstep(){}
+void endturnstep(){}
+void endcombatstep(){}
+void endmainstep(){}
+void endcleanupstep(){}
+void endturncleanupstep(){}
+void endcombatcleanupstep(){}
+void endmaincleanupstep(){}
+void enddrawstep(){}
+void enddrawcleanupstep(){}
+void endupkeepstep(){}
+void endupkeepcleanupstep(){}
+void enduntapstep(){}
+void enduntapcleanupstep(){}
+void endprecombatmainstep(){}
+void endprecombatmaincleanupstep(){}
+
+
+//-----------Player-Actions-----------//
+void draw(){}
+void exile(){}
+void mill(){}
+void reveal(){}
+void scry(){}
+void surveil(){}
+void mulligan(){}
+void drawhand(){}
+void drawcard(){}
+void drawcards(){}
+void drawlibrary(){}
+void drawtop(){}
+void drawbottom(){}
+void drawrandom(){}
+void drawrandomhand(){}

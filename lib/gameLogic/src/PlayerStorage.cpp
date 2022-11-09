@@ -24,7 +24,13 @@ size_t PlayerStorage::getNumPlayerRecords() const {
     return this->players.size();
 }
 
-std::unique_ptr<PlayerStorageInterface> buildPlayerStorage() {
-    return std::make_unique<PlayerStorage>();
+std::vector<const Player*> PlayerStorage::getAllPlayerRecords() const {
+    std::vector<const Player*> result;
+    for (auto& [key, value] : this->players) {
+        result.push_back(value.get());
+    }
+    return result;
 }
+
+
 

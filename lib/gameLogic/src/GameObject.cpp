@@ -16,3 +16,21 @@ std::string_view GameObject::getName() {
 void GameObject::setName(std::string_view name) {
     name = name;
 }
+
+
+std::string_view GameObject::getSuffix() {
+    return suffix;
+}
+
+void GameObject::setSuffix(std::string_view suffix) {
+    suffix = suffix;
+}
+
+
+std::string_view return_value(std::string_view value) {
+    return value;
+}
+
+
+
+
