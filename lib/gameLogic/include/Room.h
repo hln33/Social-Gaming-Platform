@@ -2,10 +2,12 @@
 
 #include <string_view>
 #include <string>
-#include <memory>
+//#include <memory>
 #include <nlohmann/json.hpp>
+#include "Player.h"
 #include "PlayerStorage.h"
 #include "UniqueId.h"
+#include <vector>
 // #include "handler.h"
 
 #include "RoomConfig.h"
@@ -25,26 +27,29 @@
 //     virtual Player& getPlayer(IUniqueId&) const;
 // };
 
+enum RoomResponse {
+    Success,
+    Fail,
+};
 
 class Room {
 public:
-    Room(std::unique_ptr<RoomConfig> roomConfig, std::unique_ptr<PlayerStorageInterface> playerStorage) : 
-        config{std::move(roomConfig)}, 
-        players{std::move(playerStorage)} 
-    { }
+    Room(RoomConfigBuilderOptions roomConfig, Player host) { 
+        config = buildRoomConfig(roomConfig, players);
+        players.push_back(host);
+    }
 
-    int getNumPlayers() const;
+    // int getNumPlayers() const;
 
-    bool addPlayer(Player&);
+    RoomResponse addPlayer(Player);
 
-    void removePlayer(Player&);
+    void removePlayer(Player);
 
-    const Player& getPlayer(int) const;
+    // Player getPlayer(int) const;
 
-    void updatePlayer(int, Player&);
 
 private:
-    std::unique_ptr<RoomConfig> config;
-    std::unique_ptr<PlayerStorageInterface> players;
+    RoomConfig config;
+    std::vector<Player> players;
 };
 

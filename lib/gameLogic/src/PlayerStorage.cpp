@@ -23,3 +23,8 @@ const Player* PlayerStorage::getPlayerRecord(int key) const {
 size_t PlayerStorage::getNumPlayerRecords() const {
     return this->players.size();
 }
+
+std::unique_ptr<PlayerStorageInterface> buildPlayerStorage() {
+    return std::make_unique<PlayerStorage>();
+}
+

@@ -10,13 +10,6 @@ using networking::Server;
 using networking::Connection;
 using networking::Message;
 
-const std::unordered_map<std::string, ActionType> commandToAction = {
-  {"Join", ActionType::join},
-  {"Create", ActionType::create_game},
-  {"close game", ActionType::end_game},
-  {"Quit", ActionType::quit},
-  {"Send chat", ActionType::send_chat}
-};
 
 struct Outgoing {
   std::string result;
