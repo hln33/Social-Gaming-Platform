@@ -25,11 +25,21 @@ void extend(std::vector<T> &target, std::vector<T> &list) {
     target.insert(target.end(), list.begin(), list.end());
 }
 
-void reverse();
+template <typename T>
+void reverse(std::vector<T> &list) {
+    std::reverse(list.begin(), list.end());
+}
 
-void shuffle();
+template <typename T>
+void shuffle(std::vector<T> &list) {
+    std::random_shuffle(list.begin(), list.end());
+}
 
-void sort();
+//Still have to add functionality for list of maps
+template <typename T>
+void sort(std::vector<T> &list) {
+    std::sort(list.begin(), list.end());
+}
 
 void deal();
 
