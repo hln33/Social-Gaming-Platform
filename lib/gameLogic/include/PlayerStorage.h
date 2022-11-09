@@ -6,7 +6,7 @@
 
 #include "Player.h"
 #include "UniqueId.h"
-
+#include <vector>
 // default hash
 
 // class IPlayer {
@@ -33,6 +33,7 @@ public:
     void removePlayerRecord(int) override;
     const Player* getPlayerRecord(int) const override;
     size_t getNumPlayerRecords() const override;
+    std::vector<const Player*> getAllPlayerRecords() const;
 private:
     std::unordered_map<int, std::unique_ptr<Player>> players;
 };

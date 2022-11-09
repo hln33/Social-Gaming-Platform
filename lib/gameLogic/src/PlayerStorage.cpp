@@ -23,3 +23,14 @@ const Player* PlayerStorage::getPlayerRecord(int key) const {
 size_t PlayerStorage::getNumPlayerRecords() const {
     return this->players.size();
 }
+
+std::vector<const Player*> PlayerStorage::getAllPlayerRecords() const {
+    std::vector<const Player*> result;
+    for (auto& [key, value] : this->players) {
+        result.push_back(value.get());
+    }
+    return result;
+}
+
+
+
