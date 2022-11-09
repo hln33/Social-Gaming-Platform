@@ -1,0 +1,22 @@
+#include <gtest/gtest.h>
+#include <memory>
+#include <exception>
+
+#include "GameObject.h"
+
+TEST(GameObject, GameObjectHasNameVar) {
+    GameObject gameObject;
+    ASSERT_TRUE(gameObject.getName().length() >= 0);
+}
+
+TEST(GameObject, GameObjectHasNameSet) {
+    GameObject gameObject;
+    gameObject.setName("test");
+    ASSERT_TRUE(gameObject.getName() == "test");
+}
+
+TEST(GameObject, GameObjectGetName) {
+    GameObject gameObject;
+    GameObject.setname("test");
+    ASSERT_TRUE(gameObject.getName() == "test");
+}

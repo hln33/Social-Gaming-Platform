@@ -13,10 +13,10 @@ class UniqueId : public UniqueIdInterface {
 public:
     UniqueId(std::string s) : value(s) { }
 
-    std::string getValue() const override;
+        std::string getValue() const override;
 
-private:
-    std::string value;
+    private:
+        std::string value;
 };
 
 
