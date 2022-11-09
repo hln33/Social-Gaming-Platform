@@ -17,13 +17,6 @@ void GameObject::setName(std::string_view name) {
     name = name;
 }
 
-std::string_view GameObject::getPrefix() {
-    return prefix;
-}
-
-void GameObject::setPrefix(std::string_view prefix) {
-    prefix = prefix;
-}
 
 std::string_view GameObject::getSuffix() {
     return suffix;
