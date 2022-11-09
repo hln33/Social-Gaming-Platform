@@ -41,6 +41,10 @@ class Player {
         int getId();
         void setId(int id);
 
+        bool getAudience() {
+            return this->playerType == playerTypeEnum::audience;
+        }
+
         playerTypeEnum getplayerType();
         void setplayerType(playerTypeEnum type);
 

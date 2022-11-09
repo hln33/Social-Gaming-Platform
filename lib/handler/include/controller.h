@@ -26,18 +26,22 @@ public:
                                                           // might not need this
     std::unordered_map<std::string, Room> GameRoomLookUp;
     std::unordered_map<int, networking::Connection> playerLookUp;
+
+    // std::find_if(playerLookup.begin(), playerLookup.end(), [connection& conectee](const auto& pair){
+    //     return pair->second == conectee
+    // })
+
+    // if (it == playerLookup.end()) {
+
+    // }
     
     // create room from json file and host player connection
     //returns the random code to the room
-    Response createRoom(json jsonFile, networking::Connection player);
-    
+    Response createRoom(json jsonFile, networking::Connection connectionInfo);
 
-    RoomConfigInterface createRoomConfig(json jsonFile);
+    Response joinRoom(std::string roomCode, networking::Connection connectionInfo);
 
-
-    Response joinRoom(std::string roomCode, PlayerInterface& playerInfo);
-
-    Response leaveRoom(std::string roomCode, PlayerInterface& playerInfo);
+    Response leaveRoom(std::string roomCode, Player& playerInfo);
 
     Response handleUserInput(json userInput);
 

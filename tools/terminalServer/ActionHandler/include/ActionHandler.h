@@ -45,8 +45,7 @@ class ActionHandler {
         json executeAction(ActionType action, json data, Connection sender);
 
     private:
-        std::unordered_map<ActionType, ActionPointer> actions;
-        Controller roomManager;
+        Controller controller;
 
         void registerAction(ActionType action, std::unique_ptr<Action>);
         void init();

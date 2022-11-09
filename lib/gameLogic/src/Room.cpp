@@ -6,7 +6,7 @@
 #include "PlayerStorage.h"
 #include "UniqueId.h"
 #include "Room.h"
-#include "handler.h"
+// #include "handler.h"
 
 using json = nlohmann::json;
 
@@ -14,36 +14,27 @@ int Room::getNumPlayers() const {
     return this->players->getNumPlayerRecords();
 }
 
-bool Room::addPlayer(PlayerInterface &p) {
+bool Room::addPlayer(Player& p) {
 
-    if (this->config->allow(p)) {
+    if (this->config->satisfiesJoinPolicies(p)) {
 
-        this->players->addPlayerRecord(p);
+        this->players->addPlayerRecord(std::make_unique<Player>(p));
 
         return true;
     }
     return false;
 }
 
-PlayerInterface& Room::getPlayer(UniqueIdInterface &pId) const {
-    auto p = this->players->getPlayerRecord(pId);
-    return p;
+const Player& Room::getPlayer(int pId) const {
+    const Player* p = this->players->getPlayerRecord(pId);
+    return *p;
 }
 
-void Room::removePlayer(PlayerInterface &p) {
-    auto pId = p.getPublicId();
+void Room::updatePlayer(int pId, Player& player) {
+    this->players->updatePlayerRecord(pId, std::make_unique<Player>(player));
+}
+
+void Room::removePlayer(Player& p) {
+    auto pId = p.getId();
     this->players->removePlayerRecord(pId);
-}
-
-
-void RoomConfig::setContext(RoomInterface* r) {
-    this->context = std::unique_ptr<RoomInterface>(r);
-}
-
-bool RoomConfig::allow(PlayerInterface &p) const {
-    return this->maxAllowedPlayers > this->context->getNumPlayers();
-}
-
-void RoomConfig::parseConfigRules(Config config) {
-    this->maxAllowedPlayers = config.getMaxPlayer();
 }

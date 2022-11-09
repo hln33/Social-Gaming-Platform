@@ -1,24 +1,30 @@
 #include <unordered_map>
+#include <memory>
 
 #include "UniqueId.h"
 #include "PlayerStorage.h"
 
-void PlayerStorage::addPlayerRecord(PlayerInterface &p) {
-    this->players.insert(std::make_pair(p.getPublicId().getValue(), p));
+void PlayerStorage::addPlayerRecord(std::unique_ptr<Player> p) {
+    this->players.insert(std::make_pair(p->getId(), std::move(p)));
 }
 
-void PlayerStorage::updatePlayerRecord(PlayerInterface &p) {
-    this->players[p.getPublicId().getValue()] = p;
+void PlayerStorage::updatePlayerRecord(int id, std::unique_ptr<Player> p) {
+    this->players.insert_or_assign(id, std::move(p));
 }
 
-void PlayerStorage::removePlayerRecord(UniqueIdInterface& key) {
-    this->players.erase(key.getValue());
+void PlayerStorage::removePlayerRecord(int key) {
+    this->players.erase(key);
 }
 
-const PlayerInterface& PlayerStorage::getPlayerRecord(UniqueIdInterface& key) const {
-    return this->players.at(key.getValue());
+const Player* PlayerStorage::getPlayerRecord(int key) const {
+    return this->players.at(key).get();
 }
 
-int PlayerStorage::getNumPlayerRecords() const {
+size_t PlayerStorage::getNumPlayerRecords() const {
     return this->players.size();
 }
+
+std::unique_ptr<PlayerStorageInterface> buildPlayerStorage() {
+    return std::make_unique<PlayerStorage>();
+}
+
