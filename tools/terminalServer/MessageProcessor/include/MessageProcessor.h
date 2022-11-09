@@ -7,8 +7,9 @@
 
 using json = nlohmann::json;
 using networking::Server;
-using networking::Connecti{"Send chat", ActionType::send_chat}
-};
+using networking::Connection;
+using networking::Message;
+
 
 struct Outgoing {
   std::string result;

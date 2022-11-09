@@ -22,10 +22,8 @@ class Controller{
 
 public:
 
-    // std::unordered_map<std::string, int> randomCodeLookUp;// maps the random room code to room code -> 
-                                                          // might not need this
     std::unordered_map<std::string, Room> GameRoomLookUp;
-    std::unordered_map<int, networking::Connection> playerLookUp;
+    std::unordered_map<networking::Connection, int, networking::ConnectionHash> playerLookUp;
 
     // std::find_if(playerLookup.begin(), playerLookup.end(), [connection& conectee](const auto& pair){
     //     return pair->second == conectee

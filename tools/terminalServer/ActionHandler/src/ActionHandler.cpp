@@ -14,7 +14,10 @@ class JoinAction : public Action {
         json executeImpl(json data, Connection sender) override {
             SPDLOG_INFO("Join Action Detected");
 
-            controller.join();
+            //std::string placeholder_roomcode = "123";
+            std::string roomCode = data["code"];
+            controller.joingame(roomCode, sender);
+
             return createaJSONMessage("Player joined", "");
         }
 };
@@ -23,8 +26,11 @@ class QuitAction : public Action {
     private:
         json executeImpl(json data, Connection sender) override {
             SPDLOG_INFO("Quit Action Detected");
-            // roomCode = roomManager.getRoomCode(connection);
-            // roomManager.leaveRoom(roomCode, connection)
+
+            std::string placeholder_roomcode = "123";
+            std::string roomcode = (std::string) data;
+            controller.leaveRoom(roomcode, sender);
+
             return createaJSONMessage("Quit", "Player has left");
         }
 };
@@ -33,7 +39,9 @@ class CreateGameAction : public Action {
     private:
         json executeImpl(json data, Connection sender) override {
             SPDLOG_INFO("CreateGame Action Detected");
-            //roomManager.createRoom(gameRules, host);
+
+            controller.createRoom(data, sender);
+
             return createaJSONMessage("Game Created", "");
         }
 };
@@ -50,16 +58,6 @@ class EndGameAction : public Action {
     private:
         json executeImpl(json data, Connection sender) override {
             SPDLOG_INFO("End Game Action Detected");
-            // check if sender is allowed to end the game (i.e. if they are a host)
-
-            // if so, find all connections in their room and disconnect them
-
-                // for (auto client: roomClients) {
-                //     server.disconnect(client);
-                // }
-
-            // remove the room from roomManager
-                // this->roomManager.removeRoom(roomCode)
 
             return createaJSONMessage("close game", "game ended");
         }
@@ -82,7 +80,7 @@ json ActionHandler::executeAction(std::string type, json data, Connection sender
         return createaJSONMessage("Error", "No action found");
     }
 
-    return action->second->execute(data,sender);
+    return action->second->execute(data, sender);
 }
 
 void ActionHandler::registerAction(std::string type, std::unique_ptr<Action> action) {

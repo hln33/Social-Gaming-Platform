@@ -1,5 +1,6 @@
 // Desription 
 
+#include "RoomConfig.h"
 #include "controller.h"
 #include "handlerHelper.h"
 
@@ -11,21 +12,13 @@
 // instead to uniquely determine which player
 
 
-Response Controller::createRoom(json jsonFile, networking::Connection player){
-
-    RoomConfig config = createRoom(jsonFile);
+Response Controller::createRoom(json jsonFile, networking::Connection connectionObj){    
     
-    Player newHost = Player(playerTypeEnum::host);
+    //make host and add them to the player hashtable
+    Player newHost = Player{playerTypeEnum::host};
+    playerLookUp.insert({connectionObj, newHost.getId()});
     
-    // steps:
     // 1. generate random code
-    std::string code = randomCode();
-    // 2. add the room into GameRoomLookup
-    RoomConfigBuilderOptions options;
-    options.allowAudience = 
-    
-    // 3. create the response object 
-    // // 4. return the response
     std::string newRandomCode = randomCode();
     auto it = GameRoomLookUp.find(newRandomCode);
 
@@ -33,13 +26,20 @@ Response Controller::createRoom(json jsonFile, networking::Connection player){
         newRandomCode = randomCode();
     }
 
-    // // Room::Room newRoom(config, newHost, newRandomCode);
-
-
-
+    // 2. add the room into GameRoomLookup
+    RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
+    // RoomConfig rConfig = RoomConfig(config);
     
+    // std::vector<Player> players;
+    // RoomConfig rConfig = buildRoomConfig(configBuilder, players);
+       
     
-    return Response{Status::SUCCESS, "RANDOM CODE"};
+    Room room = Room(configBuilder, newHost);
+
+    // GameRoomLookUp.insert({newRandomCode, room});
+    
+     // // 3. return the response
+    return Response{Status::SUCCESS, newRandomCode};
 }
 
 
@@ -60,43 +60,38 @@ Response Controller::createRoom(json jsonFile, networking::Connection player){
 
 // }
 
-Response Controller::joinRoom(std::string roomCode, Player& playerInfo) {
+Response Controller::joinRoom(std::string roomCode, networking::Connection connectionInfo) {
     // 1. lookup the room in GameRoomLookup
     // 1.1 if could not find room send error response
     // 1.2 otherwise ask the room if player can join
     // 1.2.1 if no then send the response
     // 1.2.2 if yes then send the response
 
-
-    auto roomItr = this->GameRoomLookUp.find(roomCode);
-    if (roomItr != this->GameRoomLookUp.end()) {
-        Room& room = (*roomItr).second;
-        // ask the room if player can join
-        if (!room.addPlayer(playerInfo)) {
-            // room doesnt allow the player
-            return Response{Status::FAIL, "Not allowed to join the room!"};
-        }
-
-        // allow the player
-        return Response{Status::SUCCESS, "Join room ok"};
+    auto roomItr = GameRoomLookUp.find(roomCode);
+    if (roomItr == GameRoomLookUp.end()) {
+        return Response{Status::FAIL, "Could not find room!"};
+    }
+    
+    Room& room = (*roomItr).second;
+    Player newPlayer {playerTypeEnum::player};
+    if (!room.addPlayer(newPlayer)) {
+        return Response{Status::FAIL, "Not allowed to join the room!"};
     }
 
-    // could not find room 
-    // send error response
-    return Response{Status::FAIL, "Could not find room!"};
+    return Response{Status::SUCCESS, "Join room ok"};
 }
 
 Response Controller::leaveRoom(std::string roomCode, Player& playerInfo) {
-    auto it = this->GameRoomLookUp.find(roomCode);
-    if (it == this->GameRoomLookUp.end()) {
+    auto roomItr = GameRoomLookUp.find(roomCode);
+    if (roomItr == GameRoomLookUp.end()) {
         return Response{Status::FAIL, "Could not find room!"};
     }
 
-    Room& room = (*it).second;
+    Room& room = (*roomItr).second;
     room.removePlayer(playerInfo);
-    if (room.getNumPlayers() == 0) {
-        this->deleteRoom(roomCode);
-    }
+    // if (room.getNumPlayers() == 0) {
+    //     deleteRoom(roomCode);
+    // }
 
     return Response{Status::SUCCESS, "Left room ok"};
 }

@@ -10,6 +10,7 @@
 
 class RoomConfig { 
 public:
+
     void addJoinPolicy(std::unique_ptr<JoinPolicyInterface> joinPolicy) {
         joinPolicies.push_back(std::move(joinPolicy));
     }
@@ -46,10 +47,11 @@ private:
 
 
 struct RoomConfigBuilderOptions {
+    std::string name;
     size_t maxPlayers;
     size_t minPlayers;
     bool allowAudience;
 };
 
-RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, PlayerStorage& playersRef);
+RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
 

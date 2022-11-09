@@ -33,6 +33,13 @@ Player::Player(playerTypeEnum type) {
     playerType = type;
 }
 
+Player::Player(playerTypeEnum type, std::string_view username) {
+    currentID++;
+    id = currentID;
+    name = username;
+    playerType = type;
+}
+
 std::string_view Player::getName() {
     return name;
 }

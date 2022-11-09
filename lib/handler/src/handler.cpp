@@ -6,6 +6,8 @@
 // #include "../../gameLogic/business_logic_interface.h"
 #include <fstream>
 
+#include "RoomConfig.h"
+
 using json = nlohmann::json;
 
 void initLogging() {
@@ -262,16 +264,13 @@ bool storeParsedValuesRevised(std::string& message){
     return true;
 }
 
-Config extractConfig(json& text){
-    Config config;
+RoomConfigBuilderOptions extractConfig(json& text){
+    RoomConfigBuilderOptions config;
 
-    std::string roomName = text["configuration"]["name"];
-    int minPlayers = text["configuration"]["player count"]["min"];
-    int maxPlayers = text["configuration"]["player count"]["max"];
-    config.setup["name"] = text["configuration"]["name"];
-    config.setup["min"] = std::to_string(minPlayers);
-    config.setup["max"] = std::to_string(maxPlayers);
-
+    config.name = text["configuration"]["name"];
+    config.minPlayers = text["configuration"]["playerCount"]["min"];
+    config.maxPlayers = text["configuration"]["playerCount"]["max"];
+    config.allowAudience = text["configuration"]["audience"];
     return config;
 }
 

@@ -38,5 +38,5 @@ private:
 };
 
 
-std::unique_ptr<PlayerStorageInterface> buildPlayerStorage()
+std::unique_ptr<PlayerStorageInterface> buildPlayerStorage();
 

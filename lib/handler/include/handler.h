@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <iostream>
 
+#include "RoomConfig.h"
+
 enum class parse_event_t : std:: uint8_t{
     object_start,
     object_end,
@@ -115,7 +117,7 @@ bool MessageContains(const std::string& string, const std::string& substring);
 
 bool storeParsedValuesRevised(std::string& message);
 
-Config extractConfig(json& text);
+RoomConfigBuilderOptions extractConfig(json& text);
 
 Constant extractConstant(json& text);
 

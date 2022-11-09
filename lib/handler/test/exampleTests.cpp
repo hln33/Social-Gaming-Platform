@@ -21,18 +21,18 @@ TEST(exampleTests, GetJsonFromWrongFilePath){
     EXPECT_TRUE(jsonFile == empty);
 }
 
-TEST(exampleTests, ExtractConfigFromFile) {
-    bool testResult = true;
-    try{
-        json jsonFile = getJsonFromFilePath("test.json");
-        Config config = extractConfig(jsonFile);
+// TEST(exampleTests, ExtractConfigFromFile) {
+//     bool testResult = true;
+//     try{
+//         json jsonFile = getJsonFromFilePath("test.json");
+//         Config config = extractConfig(jsonFile);
         
-    } catch(std::exception& e){
-        testResult = false;
-        std::cout << e.what() << "\n";
-    }
-    EXPECT_TRUE(testResult);
-}
+//     } catch(std::exception& e){
+//         testResult = false;
+//         std::cout << e.what() << "\n";
+//     }
+//     EXPECT_TRUE(testResult);
+// }
 
 TEST(exampleTests, ExtractConstantFromFile) {
     

@@ -6,6 +6,7 @@
 #define SOCIAL_GAMING_PLAYER_H
 
 #include <string>
+#include <string_view>
 
 enum playerTypeEnum{
     host,
@@ -15,7 +16,7 @@ enum playerTypeEnum{
 
 class Player {
     private:
-        std::string_view name;
+        std::string name; 
         int id;
         int highScore;
         int currentScore;
@@ -25,6 +26,7 @@ class Player {
 
     public:
         Player(playerTypeEnum playerType);
+        Player(playerTypeEnum playerType, std::string_view username);
         // Player(std::string_view name, bool audience, int highScore, int currentScore);
         // Player(std::string_view name, bool audience, int currentScore);
         // Player(std::string_view name, bool audience);

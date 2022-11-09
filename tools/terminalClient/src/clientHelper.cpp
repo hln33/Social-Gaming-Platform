@@ -42,16 +42,12 @@ void joinRoom(networking::Client* client){
   std::cout << "Enter Code:" << std::endl;
   std::cin >> code;
 
-  std::cout << "Enter Name:" << std::endl;
-  std::cin >> userName;
-
-  json payload = createJSONMessage("Join", code);
-  // json payload = {
-  //   {"type", "join"},
-  //   {"message", {
-  //     {"name", userName},
-  //     {"code", code}
-  //   }}
-  // };
+  //json payload = createJSONMessage("Join", code);
+  json payload = {
+    {"type", "join"},
+    {"message", {
+      {"code", code}
+    }}
+  };
   client->send(payload.dump());
 }

@@ -42,11 +42,12 @@ class ActionHandler {
             init();
         }
 
-        json executeAction(ActionType action, json data, Connection sender);
+        json executeAction(std::string action, json data, Connection sender);
 
     private:
         Controller controller;
+        std::unordered_map<std::string, ActionPointer> actions;
 
-        void registerAction(ActionType action, std::unique_ptr<Action>);
+        void registerAction(std::string action, std::unique_ptr<Action>);
         void init();
 };
