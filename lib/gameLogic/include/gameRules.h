@@ -20,7 +20,10 @@ void switchrule();
 void when();
 
 //-----------List-Operators-----------//
-void extend();
+template <typename T>
+void extend(std::vector<T> &target, std::vector<T> &list) {
+    target.insert(target.end(), list.begin(), list.end());
+}
 
 void reverse();
 
