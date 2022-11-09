@@ -16,7 +16,7 @@ class JoinAction : public Action {
 
             //std::string placeholder_roomcode = "123";
             std::string roomCode = data["code"];
-            controller.joingame(roomCode, sender);
+            controller.joinRoom(roomCode, sender);
 
             return createaJSONMessage("Player joined", "");
         }

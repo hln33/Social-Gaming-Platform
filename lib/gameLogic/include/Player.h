@@ -26,13 +26,13 @@ class Player {
 
     public:
         Player(playerTypeEnum playerType);
-        Player(playerTypeEnum playerType, std::string_view username);
+        Player(playerTypeEnum playerType, std::string username);
         // Player(std::string_view name, bool audience, int highScore, int currentScore);
         // Player(std::string_view name, bool audience, int currentScore);
         // Player(std::string_view name, bool audience);
 
-        std::string_view getName();
-        void setName(std::string_view name);
+        std::string getName();
+        void setName(std::string name);
 
         // int getHighScore();
         // void setHighScore(int highScore);
@@ -50,7 +50,7 @@ class Player {
         playerTypeEnum getplayerType();
         void setplayerType(playerTypeEnum type);
 
-        void message(std::string_view message);
+        void message(std::string message);
 };
 
 

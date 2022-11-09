@@ -81,14 +81,14 @@ Response Controller::joinRoom(std::string roomCode, networking::Connection conne
     return Response{Status::SUCCESS, "Join room ok"};
 }
 
-Response Controller::leaveRoom(std::string roomCode, Player& playerInfo) {
+Response Controller::leaveRoom(std::string roomCode, networking::Connection connectionInfo) {
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
         return Response{Status::FAIL, "Could not find room!"};
     }
 
     Room& room = (*roomItr).second;
-    room.removePlayer(playerInfo);
+    // room.removePlayer(playerInfo);
     // if (room.getNumPlayers() == 0) {
     //     deleteRoom(roomCode);
     // }

@@ -5,8 +5,9 @@ add_library(${This}
         src/Player.cpp
         src/GameObject.cpp
         src/UniqueId.cpp
-        src/PlayerStorage.cpp
         src/Room.cpp
+        src/RoomConfig.cpp
+        #src/PlayerStorage.cpp
         #src/unique_id_builder.cpp
         )
 

@@ -39,7 +39,7 @@ public:
 
     Response joinRoom(std::string roomCode, networking::Connection connectionInfo);
 
-    Response leaveRoom(std::string roomCode, Player& playerInfo);
+    Response leaveRoom(std::string roomCode, networking::Connection connectionInfo);
 
     Response handleUserInput(json userInput);
 

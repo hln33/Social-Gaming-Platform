@@ -29,6 +29,7 @@ class Action {
         json execute(json data, Connection sender) {
             return executeImpl(data, sender);
         }
+        Controller controller;
 
     private:
         virtual json executeImpl(json data, Connection sender) = 0;

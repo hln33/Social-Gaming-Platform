@@ -27,24 +27,26 @@
 // }
 
 Player::Player(playerTypeEnum type) {
-    currentID++;
-    id = currentID;
+    // Player.currentID++;
+    // id = Player.currentID;
+    id = 0;
     name = "player " + id;
     playerType = type;
 }
 
-Player::Player(playerTypeEnum type, std::string_view username) {
-    currentID++;
-    id = currentID;
+Player::Player(playerTypeEnum type, std::string username) {
+    // currentID++;
+    // id = currentID;
+    id = 0;
     name = username;
     playerType = type;
 }
 
-std::string_view Player::getName() {
+std::string Player::getName() {
     return name;
 }
 
-void Player::setName(std::string_view name) {
+void Player::setName(std::string name) {
     name = name;
 }
 
@@ -81,6 +83,6 @@ void Player::setplayerType(playerTypeEnum type) {
     this->playerType = type;
 }
 
-void Player::message(std::string_view message) {
+void Player::message(std::string message) {
     std::cout << message << std::endl;
 }

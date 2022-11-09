@@ -10,9 +10,9 @@
 
 using json = nlohmann::json;
 
-void initLogging() {
-    //google::InitGoogleLogging("Handler");
-}
+// void initLogging() {
+//     //google::InitGoogleLogging("Handler");
+// }
 
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
@@ -274,48 +274,48 @@ RoomConfigBuilderOptions extractConfig(json& text){
     return config;
 }
 
-Constant extractConstant(json& text){
-    Constant constant; 
+// Constant extractConstant(json& text){
+//     Constant constant; 
 
-    for (auto keyValPair : text["constants"].items()){
-        Pool pool;
-        std::string constant_key = keyValPair.key();
-        std::string current_list_key = "";
-        // use of json call back function 
-        json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
-        {
-            if (event == json::parse_event_t::key)
-            {
-                current_list_key = parsed.dump();
-                return true;
-            }
-            else if(event == json::parse_event_t::value)
-            {
-                // init new vector if weapon key vector "names" or "beats" does not exist 
-                if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
-                    std::vector<std::string> weaponKeys;
-                    weaponKeys.push_back(parsed.dump());
-                    pool.weaponLookUp[current_list_key] = weaponKeys;
-                }
-                else{
-                    pool.weaponLookUp[current_list_key].push_back(parsed.dump());
-                }
-                return true;
-            }
-            else
-            {
-                return true;
-            }
-        };
+//     for (auto keyValPair : text["constants"].items()){
+//         Pool pool;
+//         std::string constant_key = keyValPair.key();
+//         std::string current_list_key = "";
+//         // use of json call back function 
+//         json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
+//         {
+//             if (event == json::parse_event_t::key)
+//             {
+//                 current_list_key = parsed.dump();
+//                 return true;
+//             }
+//             else if(event == json::parse_event_t::value)
+//             {
+//                 // init new vector if weapon key vector "names" or "beats" does not exist 
+//                 if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
+//                     std::vector<std::string> weaponKeys;
+//                     weaponKeys.push_back(parsed.dump());
+//                     pool.weaponLookUp[current_list_key] = weaponKeys;
+//                 }
+//                 else{
+//                     pool.weaponLookUp[current_list_key].push_back(parsed.dump());
+//                 }
+//                 return true;
+//             }
+//             else
+//             {
+//                 return true;
+//             }
+//         };
 
-        json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
+//         json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
 
-        constant.lists[constant_key] = pool;
-    }
+//         constant.lists[constant_key] = pool;
+//     }
    
-    return constant;
+//     return constant;
     
-}
+// }
 
 json getJsonFromFilePath(std::string file_path){
     try{

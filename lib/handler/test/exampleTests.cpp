@@ -4,22 +4,22 @@
 #include <nlohmann/json.hpp>
 
 
-TEST(exampleTests, DemonstrateGTestMacros) {
-    EXPECT_TRUE(true);
-    EXPECT_TRUE(2 == 2);
-}
+// TEST(exampleTests, DemonstrateGTestMacros) {
+//     EXPECT_TRUE(true);
+//     EXPECT_TRUE(2 == 2);
+// }
 
-TEST(exampleTests, GetJsonFromCorrectFilePath){
-    json empty = json();
-    json jsonFile = getJsonFromFilePath("test.json");
-    EXPECT_TRUE(jsonFile != empty);
-}
+// TEST(exampleTests, GetJsonFromCorrectFilePath){
+//     json empty = json();
+//     json jsonFile = getJsonFromFilePath("test.json");
+//     EXPECT_TRUE(jsonFile != empty);
+// }
 
-TEST(exampleTests, GetJsonFromWrongFilePath){
-    json empty = json();
-    json jsonFile = getJsonFromFilePath("wrong_test.json");
-    EXPECT_TRUE(jsonFile == empty);
-}
+// TEST(exampleTests, GetJsonFromWrongFilePath){
+//     json empty = json();
+//     json jsonFile = getJsonFromFilePath("wrong_test.json");
+//     EXPECT_TRUE(jsonFile == empty);
+// }
 
 // TEST(exampleTests, ExtractConfigFromFile) {
 //     bool testResult = true;
@@ -34,17 +34,17 @@ TEST(exampleTests, GetJsonFromWrongFilePath){
 //     EXPECT_TRUE(testResult);
 // }
 
-TEST(exampleTests, ExtractConstantFromFile) {
+// TEST(exampleTests, ExtractConstantFromFile) {
     
-    bool testResult = true;
-    try{
-        json jsonFile = getJsonFromFilePath("test.json");
-        Constant constant = extractConstant(jsonFile);
-        constant.printConstant();
+//     bool testResult = true;
+//     try{
+//         json jsonFile = getJsonFromFilePath("test.json");
+//         Constant constant = extractConstant(jsonFile);
+//         constant.printConstant();
 
-    } catch(std::exception& e){
-        testResult = false;
-        std::cout << e.what() << "\n";
-    }
-    EXPECT_TRUE(testResult);
-}
+//     } catch(std::exception& e){
+//         testResult = false;
+//         std::cout << e.what() << "\n";
+//     }
+//     EXPECT_TRUE(testResult);
+// }
