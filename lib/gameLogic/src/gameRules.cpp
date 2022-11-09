@@ -20,14 +20,13 @@ void switchrule() {}
 void when(){}
 
 //-----------List-Operators-----------//
-void extend() {}
+// void extend() {}
 
-void reverse() {}
+// void reverse() {}
 
+// void shuffle() {}
 
-void shuffle() {}
-
-void sort() {}
+// void sort() {}
 
 void deal() {}
 
