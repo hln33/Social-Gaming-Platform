@@ -6,36 +6,51 @@
 #define SOCIAL_GAMING_PLAYER_H
 
 #include <string>
+#include <string_view>
+
+enum playerTypeEnum{
+    host,
+    player,
+    audience
+};
 
 class Player {
     private:
-        std::string_view name;
+        std::string name; 
         int id;
         int highScore;
         int currentScore;
-        bool audience;
+        playerTypeEnum playerType;
+
+        static int currentID;
 
     public:
-        Player(std::string_view name, bool audience, int highScore, int currentScore);
-        Player(std::string_view name, bool audience, int currentScore);
-        Player(std::string_view name, bool audience);
+        Player(playerTypeEnum playerType);
+        Player(playerTypeEnum playerType, std::string username);
+        // Player(std::string_view name, bool audience, int highScore, int currentScore);
+        // Player(std::string_view name, bool audience, int currentScore);
+        // Player(std::string_view name, bool audience);
 
-        std::string_view getName();
-        void setName(std::string_view name);
+        std::string getName();
+        void setName(std::string name);
 
-        int getHighScore();
-        void setHighScore(int highScore);
+        // int getHighScore();
+        // void setHighScore(int highScore);
 
-        int getCurrentScore();
-        void setCurrentScore(int currentScore);
+        // int getCurrentScore();
+        // void setCurrentScore(int currentScore);
 
         int getId();
         void setId(int id);
 
-        bool getAudience();
-        void setAudience(bool audience);
+        bool getAudience() {
+            return this->playerType == playerTypeEnum::audience;
+        }
 
-        void message(std::string_view message);
+        playerTypeEnum getplayerType();
+        void setplayerType(playerTypeEnum type);
+
+        void message(std::string message);
 };
 
 

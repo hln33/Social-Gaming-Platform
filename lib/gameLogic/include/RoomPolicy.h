@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "Player.h"
-#include "PlayerStorage.h"
+// #include "std::vector<Player>.h"
 
 class JoinPolicyInterface {
 public:
@@ -18,18 +18,18 @@ public:
 // player to join
 class MaxPlayersOpt : public JoinPolicyInterface {
 public:
-    MaxPlayersOpt(size_t max_players, PlayerStorage& players) : 
+    MaxPlayersOpt(size_t max_players, std::vector<Player>& players) : 
         maxPlayers{max_players},
         storageRef{players}
     { }
 
     bool allow(Player& player) const override {
-        return this->storageRef.getNumPlayerRecords() < this->maxPlayers;
+        return this->storageRef.size() < this->maxPlayers;
     }
 
 private:
     size_t maxPlayers;
-    PlayerStorage& storageRef;
+    std::vector<Player>& storageRef;
 };
 
 class AudienceOpt : public JoinPolicyInterface {
@@ -57,17 +57,17 @@ public:
 
 class MinPlayersOpt : public StartPolicyInterface {
 public:
-    MinPlayersOpt(size_t min_players, PlayerStorage& players) : 
+    MinPlayersOpt(size_t min_players, std::vector<Player>& players) : 
         minPlayers{min_players},
         storageRef{players}
     { }
 
     bool allow() const override {
-        return this->storageRef.getNumPlayerRecords() >= this->minPlayers;
+        return this->storageRef.size() >= this->minPlayers;
     }
 
 private:
     size_t minPlayers;
-    PlayerStorage& storageRef;
+    std::vector<Player>& storageRef;
 };
 

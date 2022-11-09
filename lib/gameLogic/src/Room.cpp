@@ -2,7 +2,7 @@
 #include <memory>
 
 #include <nlohmann/json.hpp>
-
+#include <algorithm>
 #include "PlayerStorage.h"
 #include "UniqueId.h"
 #include "Room.h"
@@ -10,31 +10,39 @@
 
 using json = nlohmann::json;
 
-int Room::getNumPlayers() const {
-    return this->players->getNumPlayerRecords();
-}
+// int Room::getNumPlayers() const {
+//     return this->players->size();
+// }
 
-bool Room::addPlayer(Player& p) {
 
-    if (this->config->satisfiesJoinPolicies(p)) {
 
-        this->players->addPlayerRecord(std::make_unique<Player>(p));
+RoomResponse Room::addPlayer(Player player) {
 
-        return true;
+    if (this->config.satisfiesJoinPolicies(player)) {
+        players.push_back(player);
+        return RoomResponse::Success;
     }
-    return false;
+    return RoomResponse::Fail;
 }
 
-const Player& Room::getPlayer(int pId) const {
-    const Player* p = this->players->getPlayerRecord(pId);
-    return *p;
-}
+// Player Room::getPlayer(int pId) const {
+//     auto p = std::find_if(players.begin(), players.end(), 
+//     [&pId] (Player& p) { 
+//         return p.getId() == pId;
+//     });
 
-void Room::updatePlayer(int pId, Player& player) {
-    this->players->updatePlayerRecord(pId, std::make_unique<Player>(player));
-}
+    
+    
+//     return *p;
+// }
 
-void Room::removePlayer(Player& p) {
-    auto pId = p.getId();
-    this->players->removePlayerRecord(pId);
+
+void Room::removePlayer(Player p) {
+
+    auto removeThis = std::remove_if(players.begin(), players.end(), 
+    [&p] (Player& player) { 
+        return player.getId() == p.getId();
+    });
+
+    players.erase(removeThis);
 }

@@ -6,11 +6,11 @@
 #include <algorithm>
 
 #include "RoomPolicy.h"
-#include "Player.h"
 #include "PlayerStorage.h"
 
-class RoomConfig {
+class RoomConfig { 
 public:
+
     void addJoinPolicy(std::unique_ptr<JoinPolicyInterface> joinPolicy) {
         joinPolicies.push_back(std::move(joinPolicy));
     }
@@ -47,26 +47,11 @@ private:
 
 
 struct RoomConfigBuilderOptions {
+    std::string name;
     size_t maxPlayers;
     size_t minPlayers;
     bool allowAudience;
 };
 
-// RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, PlayerStorage& playersRef) {
-//     RoomConfig config = RoomConfig{};
-
-//     // build join policies
-//     auto maxPlayerPolicy = std::make_unique<MaxPlayersOpt>(MaxPlayersOpt{buildOptions.maxPlayers, playersRef});
-//     auto audiencePolicy = std::make_unique<AudienceOpt>(AudienceOpt{buildOptions.allowAudience});
-
-//     config.addJoinPolicy(std::move(maxPlayerPolicy));
-//     config.addJoinPolicy(std::move(audiencePolicy));
-
-//     // build start policies
-//     auto minPlayerPolicy = std::make_unique<MinPlayersOpt>(MinPlayersOpt{buildOptions.minPlayers, playersRef});
-
-//     config.addStartPolicy(std::move(minPlayerPolicy));
-
-//     return config;
-// }
+RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
 

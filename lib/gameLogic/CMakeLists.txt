@@ -5,8 +5,9 @@ add_library(${This}
         src/Player.cpp
         src/GameObject.cpp
         src/UniqueId.cpp
-        src/PlayerStorage.cpp
         src/Room.cpp
+        src/RoomConfig.cpp
+        #src/PlayerStorage.cpp
         #src/unique_id_builder.cpp
         #these are broken
         #src/room.cpp
@@ -35,6 +36,8 @@ target_link_libraries(${This}
 
 install(TARGETS ${This}
         ARCHIVE DESTINATION lib
-        )# comment out to disable unit testing
+        )
+        
+# comment out to disable unit testing
 #enable_testing()
 #add_subdirectory(test)

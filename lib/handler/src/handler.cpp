@@ -6,11 +6,13 @@
 // #include "../../gameLogic/business_logic_interface.h"
 #include <fstream>
 
+#include "RoomConfig.h"
+
 using json = nlohmann::json;
 
-void initLogging() {
-    //google::InitGoogleLogging("Handler");
-}
+// void initLogging() {
+//     //google::InitGoogleLogging("Handler");
+// }
 
 // checks if a given string is valid JSON
 bool isJSON(const std::string& text) {
@@ -262,61 +264,58 @@ bool storeParsedValuesRevised(std::string& message){
     return true;
 }
 
-Config extractConfig(json& text){
-    Config config;
+RoomConfigBuilderOptions extractConfig(json& text){
+    RoomConfigBuilderOptions config;
 
-    std::string roomName = text["configuration"]["name"];
-    int minPlayers = text["configuration"]["player count"]["min"];
-    int maxPlayers = text["configuration"]["player count"]["max"];
-    config.setup["name"] = text["configuration"]["name"];
-    config.setup["min"] = std::to_string(minPlayers);
-    config.setup["max"] = std::to_string(maxPlayers);
-
+    config.name = text["configuration"]["name"];
+    config.minPlayers = text["configuration"]["playerCount"]["min"];
+    config.maxPlayers = text["configuration"]["playerCount"]["max"];
+    config.allowAudience = text["configuration"]["audience"];
     return config;
 }
 
-Constant extractConstant(json& text){
-    Constant constant; 
+// Constant extractConstant(json& text){
+//     Constant constant; 
 
-    for (auto keyValPair : text["constants"].items()){
-        Pool pool;
-        std::string constant_key = keyValPair.key();
-        std::string current_list_key = "";
-        // use of json call back function 
-        json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
-        {
-            if (event == json::parse_event_t::key)
-            {
-                current_list_key = parsed.dump();
-                return true;
-            }
-            else if(event == json::parse_event_t::value)
-            {
-                // init new vector if weapon key vector "names" or "beats" does not exist 
-                if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
-                    std::vector<std::string> weaponKeys;
-                    weaponKeys.push_back(parsed.dump());
-                    pool.weaponLookUp[current_list_key] = weaponKeys;
-                }
-                else{
-                    pool.weaponLookUp[current_list_key].push_back(parsed.dump());
-                }
-                return true;
-            }
-            else
-            {
-                return true;
-            }
-        };
+//     for (auto keyValPair : text["constants"].items()){
+//         Pool pool;
+//         std::string constant_key = keyValPair.key();
+//         std::string current_list_key = "";
+//         // use of json call back function 
+//         json::parser_callback_t cb = [&pool, &current_list_key](int depth, json::parse_event_t event, json & parsed)
+//         {
+//             if (event == json::parse_event_t::key)
+//             {
+//                 current_list_key = parsed.dump();
+//                 return true;
+//             }
+//             else if(event == json::parse_event_t::value)
+//             {
+//                 // init new vector if weapon key vector "names" or "beats" does not exist 
+//                 if (pool.weaponLookUp.find(current_list_key) == pool.weaponLookUp.end()){
+//                     std::vector<std::string> weaponKeys;
+//                     weaponKeys.push_back(parsed.dump());
+//                     pool.weaponLookUp[current_list_key] = weaponKeys;
+//                 }
+//                 else{
+//                     pool.weaponLookUp[current_list_key].push_back(parsed.dump());
+//                 }
+//                 return true;
+//             }
+//             else
+//             {
+//                 return true;
+//             }
+//         };
 
-        json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
+//         json j_filtered = json::parse(text["constants"][constant_key].dump(), cb);
 
-        constant.lists[constant_key] = pool;
-    }
+//         constant.lists[constant_key] = pool;
+//     }
    
-    return constant;
+//     return constant;
     
-}
+// }
 
 json getJsonFromFilePath(std::string file_path){
     try{
