@@ -6,68 +6,45 @@
 #include <nlohmann/json.hpp>
 #include "PlayerStorage.h"
 #include "UniqueId.h"
-#include "handler.h"
+// #include "handler.h"
 
-class RoomConfigInterface;
-
+#include "RoomConfig.h"
 // room.h
 // responsibilities:
 // - keep track of players
 // - store room info 
 // - has rules on which players can join
-class RoomInterface {
+// class IRoom {
+// public:
+//     virtual int getNumPlayers() const;
+
+//     virtual bool addPlayer(Player&);
+
+//     virtual void removePlayer(Player&);
+
+//     virtual Player& getPlayer(IUniqueId&) const;
+// };
+
+
+class Room {
 public:
-    virtual int getNumPlayers() const;
-
-    virtual bool addPlayer(PlayerInterface&);
-
-    virtual void removePlayer(PlayerInterface&);
-
-    virtual PlayerInterface& getPlayer(UniqueIdInterface&) const;
-};
-
-
-class Room : public RoomInterface {
-public:
-    Room(RoomConfigInterface* rc, PlayerStorageInterface* ps) :
-        config{std::unique_ptr<RoomConfigInterface>(rc)}, 
-        players{std::unique_ptr<PlayerStorageInterface>(ps)}
+    Room(std::unique_ptr<RoomConfig> roomConfig, std::unique_ptr<PlayerStorageInterface> playerStorage) : 
+        config{std::move(roomConfig)}, 
+        players{std::move(playerStorage)} 
     { }
 
-    int getNumPlayers() const override;
+    int getNumPlayers() const;
 
-    bool addPlayer(PlayerInterface&) override;
+    bool addPlayer(Player&);
 
-    void removePlayer(PlayerInterface&) override;
+    void removePlayer(Player&);
 
-    PlayerInterface& getPlayer(UniqueIdInterface&) const override;
+    const Player& getPlayer(int) const;
+
+    void updatePlayer(int, Player&);
 
 private:
+    std::unique_ptr<RoomConfig> config;
     std::unique_ptr<PlayerStorageInterface> players;
-    std::unique_ptr<RoomConfigInterface> config;
-};
- 
-
-class RoomConfigInterface {
-public:
-    virtual void setContext(RoomInterface*);
-
-    virtual bool allow(PlayerInterface&) const;
 };
 
-class RoomConfig : public RoomConfigInterface {
-public:
-
-    int maxAllowedPlayers;
-    int minAllowedPlayers;
-
-    RoomConfig(Config);
-
-    virtual void setContext(RoomInterface*) override;
-    virtual bool allow(PlayerInterface&) const override;
-
-private:
-    std::unique_ptr<RoomInterface> context;
-
-    void parseConfigRules(Config);
-};
