@@ -2,50 +2,52 @@
 
 #include <string_view>
 #include <string>
-//#include <memory>
 #include <nlohmann/json.hpp>
-#include "Player.h"
-#include "PlayerStorage.h"
-#include "UniqueId.h"
 #include <vector>
-// #include "handler.h"
 
+#include "Player.h"
 #include "RoomConfig.h"
 // room.h
 // responsibilities:
 // - keep track of players
 // - store room info 
 // - has rules on which players can join
-// class IRoom {
-// public:
-//     virtual int getNumPlayers() const;
-
-//     virtual bool addPlayer(Player&);
-
-//     virtual void removePlayer(Player&);
-
-//     virtual Player& getPlayer(IUniqueId&) const;
-// };
-
-enum RoomResponse {
-    Success,
-    Fail,
-};
 
 class Room {
 public:
+
+    enum Status {
+        Success,
+        Fail,
+    };
+
+    struct StatusInfo {
+        Status      statusCode;
+        std::string message;
+    };
+
+    struct SendInfo {
+        int         playerId;
+        std::string message;
+    };
+
+    struct Response {
+        StatusInfo            status;
+        std::vector<SendInfo> sendInfo;
+    };
+
     Room(RoomConfigBuilderOptions roomConfig, Player host) { 
-        config = buildRoomConfig(roomConfig, players);
+        buildRoomConfig(this->config, roomConfig, players);
         players.push_back(host);
     }
 
-    // int getNumPlayers() const;
+    Response addPlayer(Player);
 
-    RoomResponse addPlayer(Player);
+    Response removePlayer(Player);
 
-    void removePlayer(Player);
+    Response startGame(Player);
 
-    // Player getPlayer(int) const;
+    Response sendGameData(Player);
 
 
 private:
@@ -53,3 +55,23 @@ private:
     std::vector<Player> players;
 };
 
+
+class ResponseBuilder {
+public:
+    ResponseBuilder(Room::Response& res) : 
+        response{res}
+    { }
+
+    ResponseBuilder& setStatus(Room::Status status, std::string message) {
+        this->response.status = Room::StatusInfo{status, message};
+        return *this;
+    }
+
+    ResponseBuilder& addReceiver(Player receiver, std::string message) {
+        this->response.sendInfo.push_back(Room::SendInfo{receiver.getId(), message});
+        return *this;
+    }
+
+private:
+    Room::Response& response;
+};

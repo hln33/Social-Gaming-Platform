@@ -53,5 +53,5 @@ struct RoomConfigBuilderOptions {
     bool allowAudience;
 };
 
-RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
+void buildRoomConfig(RoomConfig& config, RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
 

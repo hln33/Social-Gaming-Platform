@@ -4,9 +4,7 @@
 #include "RoomPolicy.h"
 #include "RoomConfig.h"
 
-RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players) {
-    RoomConfig config = RoomConfig{};
-
+void buildRoomConfig(RoomConfig& config, RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players) {
     // build join policies
     auto maxPlayerPolicy = std::make_unique<MaxPlayersOpt>(MaxPlayersOpt{buildOptions.maxPlayers, players});
     auto audiencePolicy = std::make_unique<AudienceOpt>(AudienceOpt{buildOptions.allowAudience});
@@ -18,6 +16,4 @@ RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<P
     auto minPlayerPolicy = std::make_unique<MinPlayersOpt>(MinPlayersOpt{buildOptions.minPlayers, players});
 
     config.addStartPolicy(std::move(minPlayerPolicy));
-
-    return config;
 }
