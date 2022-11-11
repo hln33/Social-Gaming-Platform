@@ -19,7 +19,7 @@ std::string Controller::generateRoomCode() {
     return newRandomCode;
 }
 
-Room Controller::createRoom(json jsonFile, Player host) {
+Room Controller::createRoomFromConfig(json jsonFile, Player host) {
     RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
 
     std::vector<Player> players;
@@ -45,7 +45,7 @@ Response Controller::createRoom(json jsonFile, networking::Connection connection
     std::string newRandomCode = generateRoomCode();
 
     // 2. add the room into GameRoomLookup
-    Room room = createRoom(jsonFile, newHost);
+    Room room = createRoomFromConfig(jsonFile, newHost);
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
     
      // // 3. return the response
@@ -96,9 +96,14 @@ Response Controller::leaveRoom(std::string roomCode, networking::Connection conn
     if (roomItr == GameRoomLookUp.end()) {
         return Response{Status::FAIL, "Could not find room!"};
     }
+    auto playerItr = playerLookUp.find(connectionInfo);
+    if (playerItr == playerLookUp.end()) {
+        return Response{Status::FAIL, "Could not find player!"};
+    }
 
     Room& room = (*roomItr).second; 
-    //room.removePlayer(playerInfo);
+    int playerId = (*playerItr).second;
+    //room.removePlayer(playerId); I think we may have to change room.removePlayer to take in playerID instead of player object
 
     return Response{Status::SUCCESS, "Left room ok"};
 }

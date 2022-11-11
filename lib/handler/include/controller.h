@@ -21,17 +21,8 @@ struct Response {
 class Controller{
 
 public:
-
     std::unordered_map<std::string, Room> GameRoomLookUp;
     std::unordered_map<networking::Connection, int, networking::ConnectionHash> playerLookUp;
-
-    // std::find_if(playerLookup.begin(), playerLookup.end(), [connection& conectee](const auto& pair){
-    //     return pair->second == conectee
-    // })
-
-    // if (it == playerLookup.end()) {
-
-    // }
     
     // create room from json file and host player connection
     //returns the random code to the room
@@ -46,5 +37,5 @@ public:
     
 private:
     std::string generateRoomCode();
-    Room createRoom(json jsonFile, Player host);
+    Room createRoomFromConfig(json jsonFile, Player host);
 };
