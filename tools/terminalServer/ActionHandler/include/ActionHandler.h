@@ -26,13 +26,12 @@ class Action {
         // Action(Action&&) = delete;
         // virtual ~Action() = default;
 
-        json execute(json data, Connection sender) {
-            return executeImpl(data, sender);
+        json execute(json data, Connection sender, Controller& controller) {
+            return executeImpl(data, sender, controller);
         }
-        Controller controller;
 
     private:
-        virtual json executeImpl(json data, Connection sender) = 0;
+        virtual json executeImpl(json data, Connection sender, Controller& controller) = 0;
 };
 
 class ActionHandler {

@@ -11,7 +11,7 @@ json createaJSONMessage(std::string type, std::string message){
 
 class JoinAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Join Action Detected");
 
             //std::string placeholder_roomcode = "123";
@@ -24,7 +24,7 @@ class JoinAction : public Action {
 
 class QuitAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
 
             std::string placeholder_roomcode = "123";
@@ -37,7 +37,7 @@ class QuitAction : public Action {
 
 class CreateGameAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
 
             controller.createRoom(data, sender);
@@ -48,7 +48,7 @@ class CreateGameAction : public Action {
 
 class ShutdownAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Shutdown Action Detected");
             return createaJSONMessage("shutdown", "server shutting down");
         }
@@ -56,7 +56,7 @@ class ShutdownAction : public Action {
 
 class EndGameAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("End Game Action Detected");
 
             return createaJSONMessage("close game", "game ended");
@@ -65,7 +65,7 @@ class EndGameAction : public Action {
 
 class SendChatAction : public Action {
     private:
-        json executeImpl(json data, Connection sender) override {
+        json executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Send Chat Action Detected");
          
             return createaJSONMessage("chat", "");
@@ -80,7 +80,7 @@ json ActionHandler::executeAction(std::string type, json data, Connection sender
         return createaJSONMessage("Error", "No action found");
     }
 
-    return action->second->execute(data, sender);
+    return action->second->execute(data, sender, this->controller);
 }
 
 void ActionHandler::registerAction(std::string type, std::unique_ptr<Action> action) {
