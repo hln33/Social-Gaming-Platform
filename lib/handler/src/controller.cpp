@@ -28,15 +28,14 @@ Response Controller::createRoom(json jsonFile, networking::Connection connection
 
     // 2. add the room into GameRoomLookup
     RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
-    // RoomConfig rConfig = RoomConfig(config);
-    
-    // std::vector<Player> players;
-    // RoomConfig rConfig = buildRoomConfig(configBuilder, players);
+     
+    std::vector<Player> players;
+    RoomConfig rConfig = buildRoomConfig(configBuilder, players);
        
     
-    Room room = Room(configBuilder, newHost);
+    Room room {configBuilder, newHost};
 
-    // GameRoomLookUp.insert({newRandomCode, room});
+    GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
     
      // // 3. return the response
     return Response{Status::SUCCESS, newRandomCode};
