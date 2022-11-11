@@ -45,7 +45,6 @@ public:
 
     
 private:
-    void deleteRoom(std::string roomCode) {
-        //this->GameRoomLookUp.erase(roomCode);
-    }
+    std::string generateRoomCode();
+    Room createRoom(json jsonFile, Player host);
 };

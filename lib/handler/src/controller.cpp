@@ -5,20 +5,10 @@
 #include "handlerHelper.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC
+// PRIVATE
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TODO: might not need the client to store the player id because we can use the connection info
-// instead to uniquely determine which player
-
-
-Response Controller::createRoom(json jsonFile, networking::Connection connectionObj){    
-    
-    //make host and add them to the player hashtable
-    Player newHost = Player{playerTypeEnum::host};
-    playerLookUp.insert({connectionObj, newHost.getId()});
-    
-    // 1. generate random code
+std::string Controller::generateRoomCode() {
     std::string newRandomCode = randomCode();
     auto it = GameRoomLookUp.find(newRandomCode);
 
@@ -26,15 +16,36 @@ Response Controller::createRoom(json jsonFile, networking::Connection connection
         newRandomCode = randomCode();
     }
 
-    // 2. add the room into GameRoomLookup
-    RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
-     
-    std::vector<Player> players;
-    RoomConfig rConfig = buildRoomConfig(configBuilder, players);
-       
-    
-    Room room {configBuilder, newHost};
+    return newRandomCode;
+}
 
+Room Controller::createRoom(json jsonFile, Player host) {
+    RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
+
+    std::vector<Player> players;
+    RoomConfig RoomConfig = buildRoomConfig(configBuilder, players);
+
+    return Room{configBuilder, host};
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// TODO: might not need the client to store the player id because we can use the connection info
+// instead to uniquely determine which player
+
+
+Response Controller::createRoom(json jsonFile, networking::Connection connectionObj) {    
+    //make host and add them to the player hashtable
+    Player newHost = Player{playerTypeEnum::host};
+    playerLookUp.insert({connectionObj, newHost.getId()});
+    
+    // 1. generate random code
+    std::string newRandomCode = generateRoomCode();
+
+    // 2. add the room into GameRoomLookup
+    Room room = createRoom(jsonFile, newHost);
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
     
      // // 3. return the response
@@ -86,11 +97,8 @@ Response Controller::leaveRoom(std::string roomCode, networking::Connection conn
         return Response{Status::FAIL, "Could not find room!"};
     }
 
-    Room& room = (*roomItr).second;
-    // room.removePlayer(playerInfo);
-    // if (room.getNumPlayers() == 0) {
-    //     deleteRoom(roomCode);
-    // }
+    Room& room = (*roomItr).second; 
+    //room.removePlayer(playerInfo);
 
     return Response{Status::SUCCESS, "Left room ok"};
 }
