@@ -19,15 +19,6 @@ std::string Controller::generateRoomCode() {
     return newRandomCode;
 }
 
-Room Controller::createRoomFromConfig(json jsonFile, Player host) {
-    RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
-
-    std::vector<Player> players;
-    RoomConfig RoomConfig = buildRoomConfig(configBuilder, players);
-
-    return Room{configBuilder, host};
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,30 +36,14 @@ Response Controller::createRoom(json jsonFile, networking::Connection connection
     std::string newRandomCode = generateRoomCode();
 
     // 2. add the room into GameRoomLookup
-    Room room = createRoomFromConfig(jsonFile, newHost);
+    RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
+
+    Room room = Room{configBuilder, newHost};
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
     
      // // 3. return the response
     return Response{Status::SUCCESS, newRandomCode};
 }
-
-
-// Response Controller::createRoomConfig(json jsonFile){
-//     if (jsonFile.contains("configuration")){
-
-//         // we cannot pass json object to create config because that contradicts:
-//         // business do not need to handle json parsing
-
-//         // the argument should be struct
-//         // Config c;
-//         // RoomConfig config = extractConfig(jsonFile);
-
-
-//         // return config;
-//     }
-//     return Response{Status::SUCCESS, "RANDOM CODE"};
-
-// }
 
 Response Controller::joinRoom(std::string roomCode, networking::Connection connectionInfo) {
     // 1. lookup the room in GameRoomLookup
@@ -84,8 +59,15 @@ Response Controller::joinRoom(std::string roomCode, networking::Connection conne
     
     Room& room = (*roomItr).second;
     Player newPlayer {playerTypeEnum::player};
-    if (!room.addPlayer(newPlayer)) {
+
+    Room::Response res = room.addPlayer(newPlayer);
+    if (res.status.statusCode == Room::Status::Fail) {
         return Response{Status::FAIL, "Not allowed to join the room!"};
+    }
+
+    // loop through the players to send a message to
+    for (auto x : res.sendInfo) {
+        // send(x.playerId, x.message)
     }
 
     return Response{Status::SUCCESS, "Join room ok"};
