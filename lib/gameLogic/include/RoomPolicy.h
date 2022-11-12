@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <string> 
 
 #include "Player.h"
 // #include "std::vector<Player>.h"
@@ -11,6 +12,7 @@
 class JoinPolicyInterface {
 public:
     virtual bool allow(Player&) const = 0;
+    virtual std::string getPolicyName() const = 0;
 };
 
 // the join policies will be applied whenever somone tries to
@@ -27,9 +29,14 @@ public:
         return this->storageRef.size() < this->maxPlayers;
     }
 
+    std::string getPolicyName() const override {
+        return this->policyName;
+    }
+
 private:
     size_t maxPlayers;
     std::vector<Player>& storageRef;
+    std::string policyName = "max players policy";
 };
 
 class AudienceOpt : public JoinPolicyInterface {
@@ -42,8 +49,13 @@ public:
         return player.getAudience() == this->allowsAudience;
     }
 
+    std::string getPolicyName() const override {
+        return this->policyName;
+    }
+
 private:
     bool allowsAudience;
+    std::string policyName = "audience policy";
 };
 
 // the start policies will be applicd whenever the game is
@@ -52,6 +64,7 @@ private:
 class StartPolicyInterface {
 public:
     virtual bool allow() const = 0;
+    virtual std::string getPolicyName() const = 0;
 };
 
 
@@ -66,7 +79,12 @@ public:
         return this->storageRef.size() >= this->minPlayers;
     }
 
+    std::string getPolicyName() const override {
+        return this->policyName;
+    }
+
 private:
+    std::string policyName = "max players policy";
     size_t minPlayers;
     std::vector<Player>& storageRef;
 };
