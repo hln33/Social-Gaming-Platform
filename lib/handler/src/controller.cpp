@@ -76,7 +76,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
         recipients.emplace_back(connectionInfo);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
-
+    
    
     // loop through the players to send a message to
     auto players = room.getAllPlayers();

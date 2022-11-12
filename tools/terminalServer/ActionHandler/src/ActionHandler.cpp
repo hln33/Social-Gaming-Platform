@@ -100,7 +100,6 @@ json ActionHandler::executeAction(std::string type, json data, Connection sender
         return createaJSONMessage("Error", "No action found");
     }
 
-
     auto wrapper = action->second->execute(data, sender, this->controller);
     recipients = wrapper.recipientList;
 
