@@ -7,6 +7,7 @@
 
 #include <string>
 #include <string_view>
+#include "Server.h"
 
 enum playerTypeEnum{
     host,
@@ -21,7 +22,7 @@ class Player {
         int highScore;
         int currentScore;
         playerTypeEnum playerType;
-
+        networking::Connection connection;
         static int currentID;
 
     public:
@@ -51,6 +52,9 @@ class Player {
         void setplayerType(playerTypeEnum type);
 
         void message(std::string message);
+
+        void setConnection(networking::Connection connection);
+        networking::Connection getConnection();
 };
 
 

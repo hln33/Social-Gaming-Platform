@@ -59,3 +59,16 @@ Room::Response Room::sendGameData(Player requester) {
 
     return res;
 }
+
+std::vector<Player> Room::getAllPlayers() {
+    return players;
+}
+
+Player Room::getHost() {
+    auto host = std::find_if(players.begin(), players.end(), 
+        [] (auto player){
+            return player.getplayerType() == playerTypeEnum::host;
+        }
+    );
+    return *host;
+}

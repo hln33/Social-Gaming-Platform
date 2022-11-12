@@ -76,6 +76,7 @@ int main(int argc, char* argv[]) {
 
     auto incoming = server.receive();
     auto [log, roomClients, quit] = MessageProcessor.processMessages(incoming);
+
     auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
 

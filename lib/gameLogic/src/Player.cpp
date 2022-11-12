@@ -86,3 +86,9 @@ void Player::setplayerType(playerTypeEnum type) {
 void Player::message(std::string message) {
     std::cout << message << std::endl;
 }
+void Player::setConnection(networking::Connection connection) {
+    this->connection = connection;
+}
+networking::Connection Player::getConnection() {
+    
+}

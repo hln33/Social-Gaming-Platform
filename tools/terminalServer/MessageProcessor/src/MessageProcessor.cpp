@@ -3,6 +3,7 @@
 
 #include <spdlog/spdlog.h>
 
+
 Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) {
   std::ostringstream result;
   
@@ -13,10 +14,15 @@ Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) 
     json parsedMessage = json::parse(message.text);
 
     const std::string command = parsedMessage["type"];
-    const json data = parsedMessage["message"]; 
-    Connection sender = message.connection;
-    json response = actionHandler.executeAction(command, data, sender);
+    const std::string data = parsedMessage["message"]; 
+
+    json parsedData = json::parse(data);
     
+
+    Connection sender = message.connection;
+    json response = actionHandler.executeAction(command, parsedData, sender, this->recipients);
+
+
     result << response.dump();
   }
   
