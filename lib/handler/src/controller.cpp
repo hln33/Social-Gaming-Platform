@@ -42,8 +42,7 @@ std::set<networking::Connection> Controller::getConnections(Room& room) {
 
 recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection connectionInfo) {    
     //make host and add them to the player hashtable
-    Player newHost = Player{playerTypeEnum::host};
-    newHost.setConnection(connectionInfo);
+    Player newHost = Player{playerTypeEnum::host, connectionInfo};
     // PlayerLookUp.insert(std::pair(connectionInfo, newHost.getId()));
     
     // 1. generate random code
@@ -60,6 +59,7 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection c
     recipients.insert(connectionInfo);
 
     // recipientsWrapper
+    SPDLOG_INFO("Room:{} has been created with host:[{}]", newRandomCode, connectionInfo.id);
     return recipientsWrapper{recipients,Response{Status::SUCCESS, newRandomCode}};
 }
 
@@ -85,13 +85,14 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     Player newPlayer {playerTypeEnum::player, connectionInfo};
     Room::Response res = room.addPlayer(newPlayer);
     if (res.status.statusCode == Room::Status::Fail) {
-        SPDLOG_ERROR("Connection:[{}] was unable to join room:[{}]", connectionInfo.id, roomCode);
+        SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
     
     auto players = getConnections(room);
     recipients.insert(players.begin(), players.end());
 
+    SPDLOG_INFO("Connection:[{}] has joined room:{}", connectionInfo.id, roomCode);
     return recipientsWrapper{recipients, Response{Status::SUCCESS, newPlayer.getName() + " joined room"}};
 }
 
@@ -115,10 +116,11 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     // int playerId = (*playerItr).second;
     //room.removePlayer(playerId); I think we may have to change room.removePlayer to take in playerID instead of player object
 
-    
+
     auto players = getConnections(room);
     recipients.insert(players.begin(), players.end());
 
+    SPDLOG_INFO("Connection:[{}] has left room: {}", connectionInfo.id, roomCode);
     return recipientsWrapper{recipients, Response{Status::SUCCESS, " left room"}};
 
     //this one later to show who left room
