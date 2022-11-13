@@ -4,7 +4,7 @@
 #include "controller.h"
 #include "handlerHelper.h"
 
-#include <set>
+#include <spdlog/spdlog.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
@@ -15,7 +15,6 @@ std::string Controller::generateRoomCode() {
     auto it = GameRoomLookUp.find(newRandomCode);
 
     while(it != GameRoomLookUp.end()){
-        
         newRandomCode = randomCode();
     }
 
@@ -55,8 +54,8 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection c
 
     Room room = Room{configBuilder, newHost};
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
-     // // 3. return the response
 
+    // 3. return the response
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
@@ -78,6 +77,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
+        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
     }
     
@@ -85,6 +85,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     Player newPlayer {playerTypeEnum::player, connectionInfo};
     Room::Response res = room.addPlayer(newPlayer);
     if (res.status.statusCode == Room::Status::Fail) {
+        SPDLOG_ERROR("Connection:[{}] was unable to join room:[{}]", connectionInfo.id, roomCode);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
     
@@ -101,6 +102,7 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
 
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
+        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
     }
     // auto playerItr = PlayerLookUp.find(connectionInfo);

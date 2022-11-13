@@ -18,7 +18,8 @@ class JoinAction : public Action {
 
             std::cout << data << "\n";
             std::string roomCode = data.at("code");
-
+            
+            SPDLOG_INFO("Attempting to join room with code: {}", roomCode);
             recipientsWrapper wrapper = controller.joinRoom(roomCode, sender);
             wrapper.actionName = "Player joined";
 
@@ -31,7 +32,6 @@ class QuitAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
 
-            std::string placeholder_roomcode = "123";
             std::string roomcode = (std::string) data;
             recipientsWrapper wrapper = controller.leaveRoom(roomcode, sender);
             wrapper.actionName = "Quit";

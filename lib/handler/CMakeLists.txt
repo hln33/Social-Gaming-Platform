@@ -24,6 +24,7 @@ target_link_libraries(${This}
                       nlohmann_json::nlohmann_json
                       gameLogic
                       networking
+                      spdlog::spdlog
 )
 
 install(TARGETS ${This}
