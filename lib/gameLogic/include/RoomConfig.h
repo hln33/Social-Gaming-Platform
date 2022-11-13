@@ -26,7 +26,7 @@ public:
             joinPolicies.begin(), 
             joinPolicies.end(), 
             [&player](std::unique_ptr<JoinPolicyInterface> const& x) {
-                return x->allow(player);
+                return !x->allow(player);
             }
         );
 
@@ -43,7 +43,7 @@ public:
             startPolicies.begin(),
             startPolicies.end(),
             [](std::unique_ptr<StartPolicyInterface> const& x) {
-                return x->allow();
+                return !x->allow();
             }
         );
 

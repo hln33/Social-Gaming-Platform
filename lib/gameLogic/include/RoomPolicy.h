@@ -5,7 +5,7 @@
 #include <memory>
 #include <algorithm>
 #include <string> 
-
+#include <iostream>
 #include "Player.h"
 // #include "std::vector<Player>.h"
 
@@ -26,6 +26,9 @@ public:
     { }
 
     bool allow(Player& player) const override {
+        // std::cout << "size: " << this->storageRef.size() << std::endl;
+        // std::cout << "max: " << this->maxPlayers << std::endl;
+
         return this->storageRef.size() < this->maxPlayers;
     }
 
