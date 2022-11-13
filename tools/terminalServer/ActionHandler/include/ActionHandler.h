@@ -42,7 +42,7 @@ class ActionHandler {
             init();
         }
 
-        json executeAction(std::string action, json data, Connection sender, std::vector<Connection>& recipients);
+        json executeAction(std::string action, json data, Connection sender, std::set<Connection>& recipients);
 
     private:
         Controller controller;

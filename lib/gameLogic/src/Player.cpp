@@ -42,6 +42,12 @@ Player::Player(playerTypeEnum type, std::string username) {
     playerType = type;
 }
 
+Player::Player(playerTypeEnum type, networking::Connection connection) {
+    id = 0;
+    playerType = type;
+    connection = connection;
+}
+
 std::string Player::getName() {
     return name;
 }

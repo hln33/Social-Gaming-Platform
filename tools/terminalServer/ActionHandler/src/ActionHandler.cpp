@@ -16,7 +16,6 @@ class JoinAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Join Action Detected");
 
-            //std::string placeholder_roomcode = "123";
             std::cout << data << "\n";
             std::string roomCode = data.at("code");
 
@@ -54,15 +53,13 @@ class CreateGameAction : public Action {
                 //return room code to client
                 SPDLOG_INFO("Game Created: " + room.data.message);
                 room.actionName = "Game Created";
-                return room;
             }
             else{
-                SPDLOG_INFO("Error: room not created");
+                SPDLOG_ERROR("Error: room not created");
                 room.actionName = "Error";
-                return room;
             }
 
-            
+            return room;
         }
 };
 
@@ -94,7 +91,7 @@ class CreateGameAction : public Action {
 
 
 
-json ActionHandler::executeAction(std::string type, json data, Connection sender, std::vector<Connection>& recipients) {    
+json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
         return createaJSONMessage("Error", "No action found");

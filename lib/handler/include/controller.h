@@ -3,11 +3,14 @@
 #include "handler.h"
 #include "Room.h"
 #include "Player.h"
+#include "Server.h"
+
+#include <nlohmann/json.hpp>
+
+#include <vector>
 #include <map>
 #include <string> 
-#include "Server.h"
-#include <nlohmann/json.hpp>
-#include <vector>
+#include <set>
 
 enum Status {
     SUCCESS,
@@ -19,7 +22,7 @@ struct Response {
 };
 
 struct recipientsWrapper{
-    std::vector<networking::Connection> recipientList;
+    std::set<networking::Connection> recipientList;
     Response data;
     std::string actionName = "";
 };
@@ -44,5 +47,5 @@ public:
     
 private:
     std::string generateRoomCode();
-    Room createRoomFromConfig(json jsonFile, Player host);
+    std::set<networking::Connection> getConnections(Room& room);
 };

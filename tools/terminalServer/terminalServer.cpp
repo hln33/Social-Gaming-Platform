@@ -27,7 +27,7 @@ void onDisconnect(Connection c) {
 }
 
 std::deque<Message>
-buildOutgoing(const std::string& log, std::vector<Connection> clients) {
+buildOutgoing(const std::string& log, std::set<Connection> clients) {
   std::deque<Message> outgoing;
   for (auto client : clients) {
     outgoing.push_back({client, log});

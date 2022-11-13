@@ -4,6 +4,8 @@
 #include "controller.h"
 #include "handlerHelper.h"
 
+#include <set>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,17 @@ std::string Controller::generateRoomCode() {
     }
 
     return newRandomCode;
+}
+
+std::set<networking::Connection> Controller::getConnections(Room& room) {
+    std::set<networking::Connection> recipients;
+
+    auto players = room.getAllPlayers();
+    for (auto player : players) {
+        recipients.insert(player.getConnection());
+    }
+
+    return recipients;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +57,8 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection c
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
      // // 3. return the response
 
-    std::vector<networking::Connection> recipients;
-    recipients.emplace_back(connectionInfo);
+    std::set<networking::Connection> recipients;
+    recipients.insert(connectionInfo);
 
     // recipientsWrapper
     return recipientsWrapper{recipients,Response{Status::SUCCESS, newRandomCode}};
@@ -60,40 +73,34 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 
     
     
-    std::vector<networking::Connection> recipients;
+    std::set<networking::Connection> recipients;
+    recipients.insert(connectionInfo);
 
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
-        recipients.emplace_back(connectionInfo);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
     }
     
     Room& room = (*roomItr).second;
-    Player newPlayer {playerTypeEnum::player};
-    newPlayer.setConnection(connectionInfo);
+    Player newPlayer {playerTypeEnum::player, connectionInfo};
     Room::Response res = room.addPlayer(newPlayer);
     if (res.status.statusCode == Room::Status::Fail) {
-        recipients.emplace_back(connectionInfo);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
     
-   
-    // loop through the players to send a message to
-    auto players = room.getAllPlayers();
-    for (auto player : players) {
-        recipients.emplace_back(player.getConnection());
-    }
+    auto players = getConnections(room);
+    recipients.insert(players.begin(), players.end());
 
     return recipientsWrapper{recipients, Response{Status::SUCCESS, newPlayer.getName() + " joined room"}};
 }
 
 recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection connectionInfo) {
 
-    std::vector<networking::Connection> recipients;
+    std::set<networking::Connection> recipients;
+    recipients.insert(connectionInfo);
 
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
-         recipients.emplace_back(connectionInfo);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
     }
     // auto playerItr = PlayerLookUp.find(connectionInfo);
@@ -107,11 +114,11 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     //room.removePlayer(playerId); I think we may have to change room.removePlayer to take in playerID instead of player object
 
     
-    auto players = room.getAllPlayers();
-    for (auto player : players) {
-        recipients.emplace_back(player.getConnection());
-    }
+    auto players = getConnections(room);
+    recipients.insert(players.begin(), players.end());
+
     return recipientsWrapper{recipients, Response{Status::SUCCESS, " left room"}};
+
     //this one later to show who left room
     // return recipientsWrapper{recipients, Response{Status::SUCCESS, player.getName() + " left room"}};
 }
