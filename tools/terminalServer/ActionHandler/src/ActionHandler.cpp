@@ -16,10 +16,9 @@ class JoinAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Join Action Detected");
 
-            std::cout << data << "\n";
             std::string roomCode = data.at("code");
-            
-            SPDLOG_INFO("Attempting to join room with code: {}", roomCode);
+
+            SPDLOG_INFO("Connection:[{}] attempting to join room:{}", sender.id, roomCode);
             recipientsWrapper wrapper = controller.joinRoom(roomCode, sender);
             wrapper.actionName = "Player joined";
 
@@ -32,7 +31,9 @@ class QuitAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
 
-            std::string roomcode = (std::string) data;
+            std::string roomcode = data.at("code");
+
+            SPDLOG_INFO("Connection:[{}] attempting to leave room:", sender.id, roomcode);
             recipientsWrapper wrapper = controller.leaveRoom(roomcode, sender);
             wrapper.actionName = "Quit";
 
@@ -45,10 +46,7 @@ class CreateGameAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
 
-            recipientsWrapper room = controller.createRoom(data, sender);
-
-            createaJSONMessage("Game Created", room.data.message);
-            
+            recipientsWrapper room = controller.createRoom(data, sender);            
             if(room.data.status == Status::SUCCESS){
                 //return room code to client
                 SPDLOG_INFO("Game Created: " + room.data.message);
