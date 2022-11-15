@@ -49,6 +49,10 @@ public:
 
     Response sendGameData(Player);
 
+    std::vector<Player> getAllPlayers();
+
+    Player getHost();
+
 
 private:
     RoomConfig config;

@@ -267,10 +267,14 @@ bool storeParsedValuesRevised(std::string& message){
 RoomConfigBuilderOptions extractConfig(json& text){
     RoomConfigBuilderOptions config;
 
-    config.name = text["configuration"]["name"];
-    config.minPlayers = text["configuration"]["playerCount"]["min"];
-    config.maxPlayers = text["configuration"]["playerCount"]["max"];
-    config.allowAudience = text["configuration"]["audience"];
+    json configuration = text.at("configuration");
+    json playerCount = configuration.at("player count");
+    
+    config.name = configuration.at("name");
+    config.minPlayers = playerCount.at("min");
+    config.maxPlayers = playerCount.at("max");
+    config.allowAudience = configuration.at("audience");
+
     return config;
 }
 

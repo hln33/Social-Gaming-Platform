@@ -21,12 +21,12 @@ public:
         startPolicies.push_back(std::move(startPolicy));
     }
 
-    bool satisfiesJoinPolicies(Player& player) {
+    bool satisfiesJoinPolicies(Player& player, std::vector<Player> const& members) {
         auto policy = std::find_if(
             joinPolicies.begin(), 
             joinPolicies.end(), 
-            [&player](std::unique_ptr<JoinPolicyInterface> const& x) {
-                return !x->allow(player);
+            [&player, &members](std::unique_ptr<JoinPolicyInterface> const& x) {
+                return !x->allow(player, members);
             }
         );
 
@@ -38,12 +38,12 @@ public:
         return allowed;
     }
 
-    bool satisfiesStartPolicies() {
+    bool satisfiesStartPolicies(std::vector<Player> const& members) {
         auto policy = std::find_if(
             startPolicies.begin(),
             startPolicies.end(),
-            [](std::unique_ptr<StartPolicyInterface> const& x) {
-                return !x->allow();
+            [&members](std::unique_ptr<StartPolicyInterface> const& x) {
+                return !x->allow(members);
             }
         );
 

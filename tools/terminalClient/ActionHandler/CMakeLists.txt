@@ -1,9 +1,7 @@
-set(This handler)
+set(This ClientActionHandler)
 
 add_library(${This}
-  src/handler.cpp
-  src/controller.cpp
-  src/handlerHelper.cpp
+            src/ActionHandler.cpp
 )
 
 target_include_directories(${This}
@@ -21,16 +19,12 @@ set_target_properties(${This}
 )
 
 target_link_libraries(${This}
-                      nlohmann_json::nlohmann_json
-                      gameLogic
-                      networking
-                      spdlog::spdlog
+                    networking
+                    nlohmann_json::nlohmann_json
+                    spdlog::spdlog
+                    handler
 )
 
 install(TARGETS ${This}
   ARCHIVE DESTINATION lib
 )
-
-# comment out to disable unit testing
-enable_testing()
-add_subdirectory(test)

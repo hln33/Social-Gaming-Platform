@@ -34,19 +34,19 @@ int main() {
     std::cout << "size of players: " << players.size() << std::endl;
 
     // add audience player -> expected to fail
-    std::cout << "expected: rejected, " << "actual: " << (roomConf.satisfiesJoinPolicies(audience) ? "allowed\n" : "rejected\n");
+    std::cout << "expected: rejected, " << "actual: " << (roomConf.satisfiesJoinPolicies(audience, players) ? "allowed\n" : "rejected\n");
     std::cout << "reason: " << roomConf.result << std::endl;
     // std::cout << "size of players: " << players.size() << std::endl;
 
     // add non audience should pass
-    std::cout << "expected: allowed, " << "actual: " << (roomConf.satisfiesJoinPolicies(nonAudience) ? "allowed\n" : "rejected\n");
+    std::cout << "expected: allowed, " << "actual: " << (roomConf.satisfiesJoinPolicies(nonAudience, players) ? "allowed\n" : "rejected\n");
     // std::cout << "reason: " << roomConf.result << std::endl;
     // std::cout << "size of players: " << players.size() << std::endl;
     players.push_back(nonAudience);
 
     // add player violating max players -> expect fail
     Player anotherPlayer = Player{playerTypeEnum::player, "jack2324"};
-    std::cout << "expected: rejected, " << "actual: " << (roomConf.satisfiesJoinPolicies(anotherPlayer) ? "allowed\n" : "rejected\n");
+    std::cout << "expected: rejected, " << "actual: " << (roomConf.satisfiesJoinPolicies(anotherPlayer, players) ? "allowed\n" : "rejected\n");
     std::cout << "reason: " << roomConf.result << std::endl;
     // std::cout << "size of players: " << players.size() << std::endl;
 

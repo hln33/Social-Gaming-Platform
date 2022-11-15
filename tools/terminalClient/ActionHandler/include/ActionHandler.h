@@ -26,12 +26,12 @@ class Action {
         // Action(Action&&) = delete;
         // virtual ~Action() = default;
 
-        recipientsWrapper execute(json data, Connection sender, Controller& controller) {
+        json execute(json data, Connection sender, Controller& controller) {
             return executeImpl(data, sender, controller);
         }
 
     private:
-        virtual recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) = 0;
+        virtual json executeImpl(json data, Connection sender, Controller& controller) = 0;
 };
 
 class ActionHandler {
@@ -42,7 +42,7 @@ class ActionHandler {
             init();
         }
 
-        json executeAction(std::string action, json data, Connection sender, std::set<Connection>& recipients);
+        json executeAction(std::string action, json data, Connection sender);
 
     private:
         Controller controller;

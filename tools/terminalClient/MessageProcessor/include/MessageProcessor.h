@@ -13,7 +13,7 @@ using networking::Message;
 
 struct Outgoing {
   std::string result;
-  std::set<Connection> sendTo;
+  std::vector<Connection> sendTo;
   bool shouldShutdown;
 };
 
@@ -25,7 +25,7 @@ class MessageProcessor {
 
   private:
     ActionHandler actionHandler;
-    std::set<Connection> recipients;
+    std::vector<Connection> recipients;
     std::ostringstream messageLog;
 
     void clearRecipients() {
