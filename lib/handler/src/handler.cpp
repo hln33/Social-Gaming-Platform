@@ -48,6 +48,8 @@ json getJsonFromString(const std::string& text){
                   << "exception id: " << e.id << '\n'
                   << "byte postion of error: " << e.byte <<std::endl;
     };
+
+    return "error";
 }
 
 
