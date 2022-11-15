@@ -4,7 +4,7 @@ add_executable(${This} test.cpp)
 
 target_link_libraries(${This}
     GTest::gtest_main
-    ServerActions
+    ActionHandler
     spdlog::spdlog
     nlohmann_json
 )

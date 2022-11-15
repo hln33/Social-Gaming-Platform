@@ -4,7 +4,8 @@
 #include <memory>
 #include <exception>
 
-#include "../includes/Room.h"
+#include "Room.h"
+#include "ConfigDecorator.h"
 
 class PlayerStub : public IPlayer {
 public:

@@ -4,7 +4,7 @@ add_executable(runRoomTests
 
 target_link_libraries(runRoomTests
   gmock gtest gtest_main
-  Room PlayerStorage UniqueId
+  gameLogic
 )
 
 add_test(NAME AllTests COMMAND runRoomTests)

@@ -30,7 +30,3 @@ target_link_libraries(${This}
 install(TARGETS ${This}
   ARCHIVE DESTINATION lib
 )
-
-# comment out to disable unit testing
-enable_testing()
-add_subdirectory(test)
