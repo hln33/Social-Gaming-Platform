@@ -28,7 +28,7 @@ class Player {
     public:
         Player(playerTypeEnum playerType);
         Player(playerTypeEnum playerType, std::string username);
-        Player(playerTypeEnum playerType, networking::Connection connection);
+        Player(playerTypeEnum playerType, networking::Connection& connection);
         // Player(std::string_view name, bool audience, int highScore, int currentScore);
         // Player(std::string_view name, bool audience, int currentScore);
         // Player(std::string_view name, bool audience);

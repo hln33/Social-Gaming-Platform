@@ -40,7 +40,7 @@ std::set<networking::Connection> Controller::getConnections(Room& room) {
 // instead to uniquely determine which player
 
 
-recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection connectionInfo) {    
+recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& connectionInfo) {    
     //make host and add them to the player hashtable
     Player newHost = Player{playerTypeEnum::host, connectionInfo};
     // PlayerLookUp.insert(std::pair(connectionInfo, newHost.getId()));
@@ -63,15 +63,13 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection c
     return recipientsWrapper{recipients,Response{Status::SUCCESS, newRandomCode}};
 }
 
-recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection connectionInfo) {
+recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection& connectionInfo) {
     // 1. lookup the room in GameRoomLookup
     // 1.1 if could not find room send error response
     // 1.2 otherwise ask the room if player can join
     // 1.2.1 if no then send the response
     // 1.2.2 if yes then send the response
 
-    
-    
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
@@ -88,7 +86,6 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
         SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
         return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
-    
     auto players = getConnections(room);
     recipients.insert(players.begin(), players.end());
 

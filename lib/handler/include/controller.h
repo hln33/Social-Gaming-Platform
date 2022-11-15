@@ -36,9 +36,9 @@ public:
     
     // create room from json file and host player connection
     //returns the random code to the room
-    recipientsWrapper createRoom(json jsonFile, networking::Connection connectionInfo);
+    recipientsWrapper createRoom(json jsonFile, networking::Connection& connectionInfo);
 
-    recipientsWrapper joinRoom(std::string roomCode, networking::Connection connectionInfo);
+    recipientsWrapper joinRoom(std::string roomCode, networking::Connection& connectionInfo);
 
     recipientsWrapper leaveRoom(std::string roomCode, networking::Connection connectionInfo);
 
