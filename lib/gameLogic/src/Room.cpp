@@ -9,7 +9,7 @@ Room::Response Room::addPlayer(Player player) {
     Response res;
     ResponseBuilder builder{res};
 
-    if (this->config.satisfiesJoinPolicies(player)) {
+    if (this->config.satisfiesJoinPolicies(player, this->players)) {
         players.push_back(player);
 
         builder.setStatus(Status::Success, "add player ok");
