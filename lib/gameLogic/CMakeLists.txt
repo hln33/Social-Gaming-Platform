@@ -41,27 +41,3 @@ install(TARGETS ${This}
 # comment out to disable unit testing
 #enable_testing()
 #add_subdirectory(test)
-
-
-add_executable(fixPolicyBugHaHa
-    drivers/fix-policy-bug.cpp
-)
-
-set_target_properties(fixPolicyBugHaHa
-                      PROPERTIES
-                      LINKER_LANGUAGE CXX
-                      CXX_STANDARD 17
-                      PREFIX ""
-)
-
-target_include_directories(fixPolicyBugHaHa
-  PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_link_libraries(fixPolicyBugHaHa
-  ${This}
-)
