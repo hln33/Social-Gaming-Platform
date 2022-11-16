@@ -2,55 +2,55 @@
 #include<string>
 #include<vector>
 #include <variant>
-enum RuleStatus{
+#include <cctype>
+#include <memory>
+#include <algorithm>
+enum ExecutionStatus{
     SUCCESS, 
     FAIL 
 };
 
+
+
 class RuleInterface {
+    private:
+        virtual ExecutionStatus executeImpl() = 0;
+        virtual std::string getName() const = 0;
     public: 
-        RuleStatus execute(){
+        RuleInterface() = default;
+        RuleInterface(const RuleInterface&) = delete;
+        RuleInterface(RuleInterface&&) = delete;
+        ExecutionStatus execute(){
             return executeImpl();          
         }
-    private:
-        virtual RuleStatus executeImpl() = 0;
-        virtual std::string getName() const = 0;
+    
 };
 
-struct ListExpression{ 
-    std::string expression;
-};
 
 struct Condition{
     std::string expression;
 };
-
-struct ListObject{
-    std::string expression;
-};
-
-struct Rules{
-    std::vector<RuleInterface> rules;
-};
-
 struct Cases {
     // Clarification: for when and switch, each case contain a condition and rules
-   std::vector< std::pair<Condition, Rules> > cases;
+   std::vector< std::pair<Condition, std::unique_ptr<RuleInterface>> > cases;
    
 };
 
-class RuleList{
-    // Clarification: a vector that contains variants, each variant can either be rules or cases 
-    // E.g: For each contains rules but when contains cases,
-    public: 
-    RuleList(const RuleList& rl){
-        // this->list = rl.list;
-    };
-    RuleList(RuleList&&) = default;
-    RuleList(std::vector< std::variant<Rules, Cases> > list){
-        // this->list = list;
-    }
-    std::vector< std::variant<Rules, Cases> > list;  
+class RuleVariant{
+    private:
+        // Clarification: a vector that contains variants, each variant can either be rules or cases 
+        // E.g: in the json file, FOREACH contains rules but WHEN contains cases,
+        std::variant< std::unique_ptr<RuleInterface>, Cases > rulesOrCases; 
+    public:
+        RuleVariant(std::unique_ptr<RuleInterface> only_rule) : rulesOrCases{std::move(only_rule)}
+        {}
+        RuleVariant(Cases only_case) : rulesOrCases{std::move(only_case)} 
+        {}
+        RuleVariant() = default;
+        RuleVariant(const RuleVariant& variant);
+        RuleVariant(RuleVariant&&) = delete;
+        RuleVariant& operator=(const RuleVariant& o) = delete;
+        RuleVariant& operator=(RuleVariant&&) = delete;
+    
 };
-
 

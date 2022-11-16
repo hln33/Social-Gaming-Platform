@@ -1,25 +1,33 @@
 #include "Rules.h"
-#include <string>
+
 
 
 class ForEachRule : public RuleInterface{
     public:
-        ForEachRule(ListExpression expression, ListObject object) : 
-        listExpression{expression}, 
-        listObj{object}
-        { }
+        ForEachRule()
+        {}
 
         std::string getName() const override{
             return this->ruleName;
         }
 
-        RuleStatus executeImpl() override{
-            return RuleStatus::FAIL;
+        ExecutionStatus executeImpl() override{
+            return ExecutionStatus::FAIL;
+        }
+
+        void setListExpression(std::string str) {
+            this->listExpression = str;
+        }
+        void setElement(std::string str){
+            this->element = str;
+        }
+        void addRule(RuleVariant rule){
+            list.push_back(rule);
         }
     private:
         std::string ruleName = "foreach";
-        ListExpression listExpression;
-        ListObject listObj; 
-        // RuleList ruleList;
+        std::string listExpression;
+        std::string element; 
+        std::vector< RuleVariant > list;        
 };
 
