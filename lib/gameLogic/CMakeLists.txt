@@ -7,6 +7,7 @@ add_library(${This}
         src/UniqueId.cpp
         src/Room.cpp
         src/RoomConfig.cpp
+        src/Rules.cpp
         #src/PlayerStorage.cpp
         #src/unique_id_builder.cpp
         #these are broken
