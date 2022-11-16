@@ -4,12 +4,14 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <string_view>
 
 #include "RoomPolicy.h"
 #include "PlayerStorage.h"
 
 class RoomConfig { 
 public:
+    std::string result;
 
     void addJoinPolicy(std::unique_ptr<JoinPolicyInterface> joinPolicy) {
         joinPolicies.push_back(std::move(joinPolicy));
@@ -19,32 +21,45 @@ public:
         startPolicies.push_back(std::move(startPolicy));
     }
 
-    bool satisfiesJoinPolicies(Player& player) const {
-        return std::all_of(
+    bool satisfiesJoinPolicies(Player& player, std::vector<Player> const& members) {
+        auto policy = std::find_if(
             joinPolicies.begin(), 
             joinPolicies.end(), 
-            [&player](std::unique_ptr<JoinPolicyInterface> const& x) {
-                return x->allow(player);
+            [&player, &members](std::unique_ptr<JoinPolicyInterface> const& x) {
+                return !x->allow(player, members);
             }
         );
+
+        bool allowed = policy == joinPolicies.end();
+        if (!allowed) {
+            this->result = policy->get()->getPolicyName();
+        }
+
+        return allowed;
     }
 
-    bool satisfiesStartPolicies() const {
-        return std::all_of(
+    bool satisfiesStartPolicies(std::vector<Player> const& members) {
+        auto policy = std::find_if(
             startPolicies.begin(),
             startPolicies.end(),
-            [](std::unique_ptr<StartPolicyInterface> const& x) {
-                return x->allow();
+            [&members](std::unique_ptr<StartPolicyInterface> const& x) {
+                return !x->allow(members);
             }
         );
+
+        bool allowed = policy == startPolicies.end();
+        if (!allowed) {
+            this->result = policy->get()->getPolicyName();
+        }
+
+        return allowed;
     }
 
 private:
+
     std::vector<std::unique_ptr<JoinPolicyInterface>> joinPolicies;
     std::vector<std::unique_ptr<StartPolicyInterface>> startPolicies;
 };
-
-
 
 struct RoomConfigBuilderOptions {
     std::string name;
@@ -53,5 +68,5 @@ struct RoomConfigBuilderOptions {
     bool allowAudience;
 };
 
-RoomConfig buildRoomConfig(RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
+void buildRoomConfig(RoomConfig& config, RoomConfigBuilderOptions& buildOptions, std::vector<Player>& players);
 

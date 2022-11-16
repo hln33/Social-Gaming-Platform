@@ -1,4 +1,4 @@
-set(This MessageProcessor)
+set(This ClientMessageProcessor)
 
 add_library(${This}
             src/MessageProcessor.cpp
@@ -22,7 +22,7 @@ target_link_libraries(${This}
                     networking
                     spdlog::spdlog
                     nlohmann_json::nlohmann_json
-                    ActionHandler
+                    ClientActionHandler
 )
 
 install(TARGETS ${This}

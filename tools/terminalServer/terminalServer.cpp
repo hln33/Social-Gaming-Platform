@@ -19,15 +19,15 @@ using networking::Message;
 
 
 void onConnect(Connection c) {
-  spdlog::info("New Connection Found: {}", c.id);
+  SPDLOG_INFO("New Connection Found: {}", c.id);
 }
 
 void onDisconnect(Connection c) {
-  spdlog::info("Connection Lost: {}", c.id);
+  SPDLOG_INFO("Connection Lost: {}", c.id);
 }
 
 std::deque<Message>
-buildOutgoing(const std::string& log, std::vector<Connection> clients) {
+buildOutgoing(const std::string& log, std::set<Connection> clients) {
   std::deque<Message> outgoing;
   for (auto client : clients) {
     outgoing.push_back({client, log});
@@ -49,8 +49,8 @@ getHTTPMessage(const char* htmlLocation) {
 }
 
 void initLogging() {
-  spdlog::set_pattern("[%Y-%m-%d %H:%M] [Process: %P] [%^%l%$] %s:%# - %v");
-  spdlog::info("starting program");
+  spdlog::set_pattern("[%Y-%m-%d %H:%M] [%^%l%$] %s:%# - %v");
+  SPDLOG_INFO("starting program");
 }
 
 int main(int argc, char* argv[]) {
@@ -70,12 +70,13 @@ int main(int argc, char* argv[]) {
     try {
       server.update();
     } catch (std::exception& e) {
-      spdlog::error("Exception from Server update:\n{}\n\n", e.what());
+      SPDLOG_ERROR("Exception from Server update:\n{}\n\n", e.what());
       quit = true;
     }
 
     auto incoming = server.receive();
     auto [log, roomClients, quit] = MessageProcessor.processMessages(incoming);
+
     auto outgoing = buildOutgoing(log, roomClients);
     server.send(outgoing);
 

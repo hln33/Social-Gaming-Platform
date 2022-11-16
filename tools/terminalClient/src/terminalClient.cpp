@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     if (!response.empty()) {
       json data = json::parse(response);
       std::string message = data["message"];
-      chatWindow.displayText(message + "\n");
+      chatWindow.displayText(response + "\n");
 
       if (data["type"] == "Error") {
         isError = true;
