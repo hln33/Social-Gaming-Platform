@@ -3,6 +3,7 @@ enable_testing()
 add_executable(runAllTests
     messageProcessorTests.cpp
     handlerTests.cpp
+    RulesUnitTest.cpp
 )
 
 target_link_libraries(runAllTests
