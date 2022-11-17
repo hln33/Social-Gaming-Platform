@@ -14,20 +14,9 @@ TEST(rulesTest, createForEachRule){
     rule.setElement("round");
     
     // inner rule
-    auto another_foreach_rule = std::make_unique<ForEachRule>();
-    another_foreach_rule.get()->setListExpression("test expression");
-    another_foreach_rule.get()->setElement("test element");
-    
-    
-    // add inner rule to outer rule
-    auto variant_ptr = std::make_unique<RuleVariant>(std::move(another_foreach_rule));
-    rule.addRule(std::move(variant_ptr));
+    auto another = std::make_unique<ForEachRule>(ForEachRule("testExpression", "testElement"));
+    rule.addForEachRule(std::move(another));
 
-    // auto first = rule.list.at(0).get();
+    EXPECT_TRUE(ExecutionStatus::WAITING == rule.getRuleAt(0)->execute());
 
-    // auto added = std::get<Cases> (first->rulesOrCases);
-
-
-    EXPECT_TRUE(true);
 }
-
