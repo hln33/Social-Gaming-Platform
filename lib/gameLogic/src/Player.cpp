@@ -1,7 +1,7 @@
 //
 // Created by mcgir on 10/6/2022.
 //
-
+ 
 #include "Player.h"
 #include <iostream>
 #include <cstdlib>
@@ -26,27 +26,23 @@
 //     audience = audience;
 // }
 
-Player::Player(playerTypeEnum type) {
-    // Player.currentID++;
-    // id = Player.currentID;
-    id = 0;
-    name = "player " + id;
-    playerType = type;
+Player::Player(playerTypeEnum type) 
+    :id{0}, playerType{type}
+{ 
+    name = "player" + id;
 }
 
-Player::Player(playerTypeEnum type, std::string username) {
-    // currentID++;
-    // id = currentID;
-    id = 0;
-    name = username;
-    playerType = type;
-}
+Player::Player(playerTypeEnum type, std::string username) 
+    :id{0}, playerType{type}, name{username}
+{ }
 
-Player::Player(playerTypeEnum type, networking::Connection& connection) {
-    id = 0;
-    playerType = type;
-    connection = connection;
-}
+Player::Player(playerTypeEnum type, networking::Connection& connection) 
+    :id{0}, playerType{type}, connectionID{connection.id}
+{ }
+
+Player::Player(playerTypeEnum type, uintptr_t connectionID) 
+    :id{0}, playerType{type}, connectionID{connectionID}
+{ }
 
 std::string Player::getName() {
     return name;
@@ -91,10 +87,4 @@ void Player::setplayerType(playerTypeEnum type) {
 
 void Player::message(std::string message) {
     std::cout << message << std::endl;
-}
-void Player::setConnection(networking::Connection connection) {
-    this->connection = connection;
-}
-networking::Connection Player::getConnection() {
-    return this->connection;
 }

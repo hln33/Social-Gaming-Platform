@@ -17,18 +17,20 @@ enum playerTypeEnum{
 
 class Player {
     private:
-        std::string name; 
         int id;
+        playerTypeEnum playerType;
+        std::string name; 
         int highScore;
         int currentScore;
-        playerTypeEnum playerType;
-        networking::Connection connection;
         static int currentID;
 
     public:
+        uintptr_t connectionID;
+
         Player(playerTypeEnum playerType);
         Player(playerTypeEnum playerType, std::string username);
         Player(playerTypeEnum playerType, networking::Connection& connection);
+        Player(playerTypeEnum playerType, uintptr_t connectionID);
         // Player(std::string_view name, bool audience, int highScore, int currentScore);
         // Player(std::string_view name, bool audience, int currentScore);
         // Player(std::string_view name, bool audience);
@@ -53,9 +55,6 @@ class Player {
         void setplayerType(playerTypeEnum type);
 
         void message(std::string message);
-
-        void setConnection(networking::Connection connection);
-        networking::Connection getConnection();
 };
 
 

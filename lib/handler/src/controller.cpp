@@ -25,8 +25,10 @@ std::set<networking::Connection> Controller::getConnections(Room& room) {
     std::set<networking::Connection> recipients;
 
     auto players = room.getAllPlayers();
-    for (auto player : players) {
-        recipients.insert(player.getConnection());
+    for (auto& player : players) {
+        networking::Connection connection;
+        connection.id = player.connectionID;
+        recipients.insert(connection);
     }
 
     return recipients;
@@ -93,7 +95,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     return recipientsWrapper{recipients, Response{Status::SUCCESS, newPlayer.getName() + " joined room"}};
 }
 
-recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection connectionInfo) {
+recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
 
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
