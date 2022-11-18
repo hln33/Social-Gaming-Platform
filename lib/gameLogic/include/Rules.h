@@ -11,7 +11,7 @@
 enum ExecutionStatus{
     SUCCESS, 
     FAIL,
-    WAITING
+    WAITING_FOR_INPUT
 };
 
 class RuleInterface {
@@ -30,13 +30,18 @@ class RuleInterface {
 };
 struct Condition{
     std::string expression;
+    Condition() {}
+    Condition(std::string ex){this->expression = ex;}
+    Condition(const Condition&other){this->expression = other.expression;};
+    Condition(Condition&&) = delete;
 };
 
 struct Rules {
-    std::vector<std::unique_ptr<RuleInterface>> rules;
     // Clarification: for foreach and parallel, they contain rules
-    Rules() = default;
-    Rules(const Rules&) = delete;
+    std::vector<std::unique_ptr<RuleInterface>> rules;
+   
+    Rules() {}
+    Rules(const Rules&){};
     Rules(Rules&&) = delete;
 };
 
@@ -66,7 +71,7 @@ class ForEachRule : public RuleInterface{
 
         ExecutionStatus executeImpl() override{
             // TODO: implement this
-            return ExecutionStatus::WAITING;
+            return ExecutionStatus::WAITING_FOR_INPUT;
         }
 
         void setListExpression(std::string str) {
@@ -105,7 +110,7 @@ class WhenRule : public RuleInterface{
 
         ExecutionStatus executeImpl() override{
             // TODO: implement this
-            return ExecutionStatus::WAITING;
+            return ExecutionStatus::WAITING_FOR_INPUT;
         }
         
         void addCase(std::unique_ptr<std::pair<Condition, Rules>> _case){

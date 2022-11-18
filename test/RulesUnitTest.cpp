@@ -17,6 +17,21 @@ TEST(rulesTest, createForEachRule){
     auto another = std::make_unique<ForEachRule>(ForEachRule("testExpression", "testElement"));
     rule.addForEachRule(std::move(another));
 
-    EXPECT_TRUE(ExecutionStatus::WAITING == rule.getRuleAt(0)->execute());
+    EXPECT_TRUE(ExecutionStatus::WAITING_FOR_INPUT == rule.getRuleAt(0)->execute());
 
+}
+
+TEST(ruleTest, createWhenRule){
+    ForEachRule foreach_rule;
+    
+    WhenRule when_rule;
+
+    auto pair1 = std::make_pair(Condition("testCondition"),Rules());
+    auto ptr = std::make_unique<std::pair<Condition, Rules>> (pair1);
+
+    when_rule.addCase(std::move(ptr));
+
+    Condition c = when_rule.getFirstCaseCondition();
+    
+    EXPECT_TRUE(c.expression == "testCondition");
 }
