@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cassert>
 
-#include "SignalData.hpp"
+#include "SignalData.h"
 
 class InterpreterState;
 

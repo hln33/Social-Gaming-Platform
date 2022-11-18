@@ -3,12 +3,14 @@ enable_testing()
 add_executable(runAllTests
     messageProcessorTests.cpp
     handlerTests.cpp
+    rulesUnitTests.cpp
 )
 
 target_link_libraries(runAllTests
     gmock gtest gtest_main
     spdlog::spdlog
     handler
+    rules
 )
 
 set_target_properties(runAllTests
