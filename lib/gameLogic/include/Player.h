@@ -26,6 +26,8 @@ class Player {
         static int currentID;
 
     public:
+        uintptr_t connectionID;
+
         Player(playerTypeEnum playerType);
         Player(playerTypeEnum playerType, std::string username);
         Player(playerTypeEnum playerType, networking::Connection& connection);

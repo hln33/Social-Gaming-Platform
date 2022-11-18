@@ -25,8 +25,10 @@ std::set<networking::Connection> Controller::getConnections(Room& room) {
     std::set<networking::Connection> recipients;
 
     auto players = room.getAllPlayers();
-    for (auto player : players) {
-        recipients.insert(player.getConnection());
+    for (auto& player : players) {
+        networking::Connection connection;
+        connection.id = player.connectionID;
+        recipients.insert(connection);
     }
 
     return recipients;

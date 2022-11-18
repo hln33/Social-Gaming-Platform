@@ -1,7 +1,7 @@
 //
 // Created by mcgir on 10/6/2022.
 //
-
+ 
 #include "Player.h"
 #include <iostream>
 #include <cstdlib>
@@ -46,6 +46,7 @@ Player::Player(playerTypeEnum type, networking::Connection& connection) {
     id = 0;
     playerType = type;
     connection = connection;
+    connectionID = connection.id;
 }
 
 std::string Player::getName() {
