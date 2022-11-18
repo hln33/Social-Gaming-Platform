@@ -95,7 +95,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     return recipientsWrapper{recipients, Response{Status::SUCCESS, newPlayer.getName() + " joined room"}};
 }
 
-recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection connectionInfo) {
+recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
 
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);

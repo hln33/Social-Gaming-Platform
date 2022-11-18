@@ -40,7 +40,7 @@ public:
 
     recipientsWrapper joinRoom(std::string roomCode, networking::Connection& connectionInfo);
 
-    recipientsWrapper leaveRoom(std::string roomCode, networking::Connection connectionInfo);
+    recipientsWrapper leaveRoom(std::string roomCode, networking::Connection& connectionInfo);
 
     recipientsWrapper handleUserInput(json userInput);
 
