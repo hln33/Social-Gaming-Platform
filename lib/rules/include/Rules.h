@@ -10,6 +10,7 @@
 #include "SignalData.h"
 
 class InterpreterState;
+class RuleListIter;
 
 // iter is a bookmark for the game state
 
@@ -36,16 +37,45 @@ using RuleIterPointer = std::unique_ptr<Iter>;
 
 class Object {}; // the type of the user defined variables
 
+class Rule {  
+    public: 
+        Rule() = default;
+        Rule(const Rule&) = delete;
+        Rule(Rule&&) = delete;
+
+        SignalData execute(InterpreterState& interpreter){
+            return executeImpl(interpreter);          
+        }
+
+        std::string getName() const { return getNameImpl(); }
+    
+    private:
+        virtual SignalData executeImpl(InterpreterState& interpreter) = 0;
+        virtual std::string getNameImpl() const = 0;
+
+      
+};
+
 // every rule needs to have a getIter function so it can create a bookmark for itself
 // this needs to be implemented in another file
 // all rules need to derive from this interface plz
-class RuleList {
+class RuleListInterface {
 public:
-    RuleIterPointer getIter() { return nullptr; }
-    SignalData execute(InterpreterState&) const { 
-        return SignalData{Signal::NOSIGNAL, std::vector<Bundle>{}};
-    }
+    using RuleIter = std::vector<std::unique_ptr<Rule>>::iterator;
+
+    RuleIterPointer getIter() { return getIterImpl(); }
+    RuleIter begin() { return beginImpl(); }
+    RuleIter end() { return endImpl(); }
+    void appendRule(std::unique_ptr<Rule> rule) { appendRuleImpl(std::move(rule)); }
+
+private:
+    virtual RuleIterPointer getIterImpl() = 0;
+    virtual void appendRuleImpl(std::unique_ptr<Rule> rule) = 0;
+    virtual RuleIter beginImpl() = 0;
+    virtual RuleIter endImpl() = 0;
+
 };
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +145,7 @@ private:
 // keeps track of location in rule list
 class RuleListIter : public Iter {
 public:
-    RuleListIter(std::vector<RuleList*>::const_iterator begin, std::vector<RuleList*>::const_iterator end) :
+    RuleListIter(std::vector<std::unique_ptr<Rule>>::iterator begin, std::vector<std::unique_ptr<Rule>>::iterator end) :
         listIter{begin},
         sentinel{end}
     { }
@@ -130,18 +160,45 @@ private:
     }
 
     SignalData executeImpl(InterpreterState& interpreter) override {
-        return (*listIter)->execute(interpreter); // <-- call execute on the rule. 
+        return (*listIter).get()->execute(interpreter); // <-- call execute on the rule. 
         // the rule can modify interpreter state but it is constant
     }
 
-    std::vector<RuleList*>::const_iterator listIter;
-    std::vector<RuleList*>::const_iterator sentinel;
+    std::vector<std::unique_ptr<Rule>>::iterator listIter;
+    std::vector<std::unique_ptr<Rule>>::iterator sentinel;
+};
+
+class RuleList : public RuleListInterface{
+public:
+    RuleList() { }
+    RuleList(std::unique_ptr<Rule> rule) {
+        rules.push_back(std::move(rule));
+    }
+
+private:
+    std::vector<std::unique_ptr<Rule>> rules;
+
+    RuleIterPointer getIterImpl() override { 
+        return std::make_unique<RuleListIter>(RuleListIter{rules.begin(), rules.end()});
+    }
+
+    void appendRuleImpl(std::unique_ptr<Rule> rule) override {
+        rules.push_back(std::move(rule));
+    }
+
+    RuleIter beginImpl() override {
+        return rules.begin();
+    }
+    
+    RuleIter endImpl() override {
+        return rules.end();
+    }
 };
 
 // we also need a bookmark for the foreach rule to track the iteration of the loop
 class ForeachIter : public Iter {
 public:
-    ForeachIter(ObjectGenerator begin, ObjectGenerator end, RuleList* body) :
+    ForeachIter(ObjectGenerator begin, ObjectGenerator end, RuleListInterface* body) :
         listIter{begin},
         sentinel{end},
         ruleList{body}
@@ -169,13 +226,13 @@ private:
     ObjectGenerator sentinel;
 
     // rule-list generator
-    RuleList* ruleList;
+    RuleListInterface* ruleList;
 };
 
 // we also need a bookmark for the loop rule to track the iteration of the loop
 class LoopIter : public Iter {
 public:
-    LoopIter(RuleList* boolCondition, RuleList* body) :
+    LoopIter(Rule* boolCondition, RuleListInterface* body) :
         condition{boolCondition},
         ruleList{body}
     { }
@@ -200,10 +257,10 @@ private:
         return SignalData{Signal::COMPLETE};
     }
 
-    RuleList* condition;
+    Rule* condition;
 
     // rule-list generator
-    RuleList* ruleList;
+    RuleListInterface* ruleList;
 };
 
 // * this is the 'rule trees' we talked about in the meeting
@@ -215,11 +272,15 @@ private:
 // could take more than 1 iteration to complete this instruction
 class InparallelIter : public Iter {
 public:
-    InparallelIter(std::vector<RuleList*>& ruleList)
+    InparallelIter(RuleListInterface& ruleList)
     {
         // initialize parallel execution stacks
         std::transform(ruleList.begin(), ruleList.end(), std::back_inserter(parallelRules),
-            [](RuleList* r) { return InterpreterState{r->getIter()}; }
+            [](std::unique_ptr<Rule>& r) { 
+                // create new rule list with 1 rule
+                auto rules = RuleList{std::move(r)};
+                return InterpreterState{rules.getIter()}; 
+            }
         );
     }
 
@@ -271,7 +332,7 @@ private:
 
 class ParallelforIter : public Iter {
 public:
-    ParallelforIter(std::vector<Object>& itemList, RuleList* body)
+    ParallelforIter(std::vector<Object>& itemList, RuleListInterface* body)
     {
         // initialize parallel execution stacks
         std::transform(itemList.begin(), itemList.end(), std::back_inserter(parallelRules),
