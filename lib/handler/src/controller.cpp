@@ -45,14 +45,13 @@ Room& Controller::findRoom(std::string roomCode) {
     return room;
 }
 
-Player& Controller::findPlayer(std::string roomCode, networking::Connection& connectionInfo) {
-    Room& room = findRoom(roomCode);
+Player& Controller::findPlayer(Room& room, networking::Connection& connectionInfo) {
     auto players = room.getAllPlayers();
     auto playerItr = std::find_if(players.begin(), players.end(), [&connectionInfo](const auto& player){
         return player.connectionID == connectionInfo.id;
     });
     if (playerItr == players.end()) {
-        SPDLOG_ERROR("could not find player in room with code: {}", roomCode);
+        SPDLOG_ERROR("could not find player in room");
         throw recipientsWrapper{recipients, Response{Status::FAIL, "Could not find player!"}};
     }
 
@@ -60,24 +59,29 @@ Player& Controller::findPlayer(std::string roomCode, networking::Connection& con
     return player;
 }
 
-void Controller::addPlayer(std::string roomCode, networking::Connection& connectionInfo) {
-    Room& room = findRoom(roomCode);
+void Controller::addPlayer(Room& room, networking::Connection& connectionInfo) {
     Player newPlayer {playerTypeEnum::player, connectionInfo};
 
     Room::Response res = room.addPlayer(newPlayer);
     if (res.status.statusCode == Room::Status::Fail) {
-        SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
+        SPDLOG_ERROR("Connection:[{}] was unable to join room", connectionInfo.id);
         throw recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
+    }
+}
+
+void Controller::removePlayer(Room& room, networking::Connection& connectionInfo) {
+    Player& player = findPlayer(room, connectionInfo);
+
+    Room::Response res = room.removePlayer(player);
+    if (res.status.statusCode == Room::Status::Fail) {
+        SPDLOG_ERROR("Player with connection: {}  failed to leave room", connectionInfo.id);
+        throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to leave room"}};
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
-// TODO: might not need the client to store the player id because we can use the connection info
-// instead to uniquely determine which player
-
 
 recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& connectionInfo) {    
     initRecipients();
@@ -107,7 +111,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 
     try {
         Room& room = findRoom(roomCode);
-        addPlayer(roomCode, connectionInfo);
+        addPlayer(room, connectionInfo);
         addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;
@@ -123,8 +127,7 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
 
     try {
         Room& room = findRoom(roomCode);
-        Player& player = findPlayer(roomCode, connectionInfo);
-        room.removePlayer(player);
+        removePlayer(room, connectionInfo);
         addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;
@@ -140,8 +143,11 @@ recipientsWrapper Controller::startGame(std::string roomCode, networking::Connec
 
     try {
         Room& room = findRoom(roomCode);
-        Player& player = findPlayer(roomCode, connectionInfo);
-        room.startGame(player);
+        Player& player = findPlayer(room, connectionInfo);
+        Room::Response res = room.startGame(player);
+        if (res.status.statusCode == Room::Status::Fail) {
+            throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to start game in room: " + roomCode}};
+        }
         addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;

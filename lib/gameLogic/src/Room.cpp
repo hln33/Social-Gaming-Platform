@@ -5,7 +5,7 @@
 #include "Room.h"
 
 
-Room::Response Room::addPlayer(Player player) {
+Room::Response Room::addPlayer(Player& player) {
     Response res;
     ResponseBuilder builder{res};
 
@@ -23,7 +23,7 @@ Room::Response Room::addPlayer(Player player) {
     return res;
 }
 
-Room::Response Room::removePlayer(Player p) {
+Room::Response Room::removePlayer(Player& p) {
     Response res;
     ResponseBuilder builder{res};
 
@@ -38,7 +38,7 @@ Room::Response Room::removePlayer(Player p) {
     return res;
 }
 
-Room::Response Room::startGame(Player requester) { 
+Room::Response Room::startGame(Player& requester) { 
     Room::Response res = Room::Response{};
 
     // TODO
@@ -49,7 +49,7 @@ Room::Response Room::startGame(Player requester) {
     return res;
 }
 
-Room::Response Room::sendGameData(Player requester) {
+Room::Response Room::sendGameData(Player& requester) {
     Room::Response res = Room::Response{};
 
     // TODO

@@ -55,7 +55,9 @@ private:
     std::string generateRoomCode();
     void addToRecipients(Room& room);
     void initRecipients();
+
     Room& findRoom(std::string roomCode);
-    Player& findPlayer(std::string roomCode, networking::Connection& connectionInfo);
-    void addPlayer(std::string roomCode, networking::Connection& connectionInfo);
+    Player& findPlayer(Room& room, networking::Connection& connectionInfo);
+    void addPlayer(Room& room, networking::Connection& connectionInfo);
+    void removePlayer(Room& room, networking::Connection& connectionInfo);
 };

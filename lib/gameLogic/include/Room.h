@@ -36,18 +36,18 @@ public:
         std::vector<SendInfo> sendInfo;
     };
 
-    Room(RoomConfigBuilderOptions roomConfig, Player host) { 
+    Room(RoomConfigBuilderOptions roomConfig, Player& host) { 
         buildRoomConfig(this->config, roomConfig, players);
         players.push_back(host);
     }
 
-    Response addPlayer(Player);
+    Response addPlayer(Player&);
 
-    Response removePlayer(Player);
+    Response removePlayer(Player&);
 
-    Response startGame(Player);
+    Response startGame(Player&);
 
-    Response sendGameData(Player);
+    Response sendGameData(Player&);
 
     std::vector<Player> getAllPlayers();
 
