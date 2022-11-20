@@ -8,26 +8,8 @@
 #include <cassert>
 
 #include "SignalData.h"
-
-class InterpreterState;
-class RuleListIter;
-
-// iter is a bookmark for the game state
-
-class Iter {
-public:
-    bool isReachedEnd() { return isReachedEndImpl(); }
-    void next() { nextImpl(); }
-    SignalData execute(InterpreterState& interpreter) { return executeImpl(interpreter); }
-
-private:
-    virtual bool isReachedEndImpl() = 0;
-    virtual void nextImpl() = 0;
-    virtual SignalData executeImpl(InterpreterState&) = 0;
-};
-
-using RuleIterPointer = std::unique_ptr<Iter>;
-
+#include "InterpreterStack.h"
+#include "RuleInterface.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 // @FAKE - need to implement later
@@ -36,29 +18,16 @@ using RuleIterPointer = std::unique_ptr<Iter>;
 // name it rule. i think thats clear enough
 
 class Object {}; // the type of the user defined variables
+using ObjectGenerator = std::vector<Object>::const_iterator;//custom variables
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-class Rule {  
-    public: 
-        Rule() = default;
-        Rule(const Rule&) = delete;
-        Rule(Rule&&) = delete;
 
-        SignalData execute(InterpreterState& interpreter){
-            return executeImpl(interpreter);          
-        }
 
-        std::string getName() const { return getNameImpl(); }
-    
-    private:
-        virtual SignalData executeImpl(InterpreterState& interpreter) = 0;
-        virtual std::string getNameImpl() const = 0;
-
-      
-};
+// using RuleIterPointer = std::unique_ptr<Iter>;
 
 // every rule needs to have a getIter function so it can create a bookmark for itself
-// this needs to be implemented in another file
-// all rules need to derive from this interface plz
+// rulelist needs to derive from this interface
 class RuleListInterface {
 public:
     using RuleIter = std::vector<std::unique_ptr<Rule>>::iterator;
@@ -75,65 +44,6 @@ private:
     virtual RuleIter endImpl() = 0;
 
 };
-
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-using ObjectGenerator = std::vector<Object>::const_iterator;//custom variables
-
-
-/////////////////////////////////////////////////////////////////////////////////
-// @FAKE - need to implement later
-/////////////////////////////////////////////////////////////////////////////////
-
-class SymbolTable {}; // holds local variables
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-class InterpreterState {
-public:
-    InterpreterState(RuleIterPointer instr) {
-        push(std::move(instr));
-    }
-
-    void push(RuleIterPointer instr) {
-        state.push(std::move(instr));
-    }
-
-    SignalData run() {
-        SignalData commData;
-        commData.signal = Signal::NOSIGNAL;
-        while (!state.empty() && commData.signal != Signal::INTERRUPT) {
-
-            // get the first instruction from the stack
-            // assume no null iterators
-            assert(state.top() != nullptr && "null pointer");
-
-            Iter* instr = state.top().get();
-
-            // assume no empty iterators
-            assert(!instr->isReachedEnd() && "Empty iterator was not popped from stack");
-
-            // run the instruction and increment to the next one
-            SignalData commData = instr->execute(*this);
-            instr->next();
-
-            // if instruction iterator doesnt have anymore stuff to run we can pop it
-            if (instr->isReachedEnd()) {
-                state.pop();
-            }
-        }
-        return commData;
-    }
-
-private:
-    std::stack<RuleIterPointer> state;
-    // @note 
-    // in addition i think interpreterstate should hold it's own local variables so the rules
-    // can access them. the table should handle scope variables too
-    SymbolTable localVariables;
-};
-
 
 /////////////////////////////////////////////////////////////////////////////////
 // @NOTE
@@ -166,33 +76,6 @@ private:
 
     std::vector<std::unique_ptr<Rule>>::iterator listIter;
     std::vector<std::unique_ptr<Rule>>::iterator sentinel;
-};
-
-class RuleList : public RuleListInterface{
-public:
-    RuleList() { }
-    RuleList(std::unique_ptr<Rule> rule) {
-        rules.push_back(std::move(rule));
-    }
-
-private:
-    std::vector<std::unique_ptr<Rule>> rules;
-
-    RuleIterPointer getIterImpl() override { 
-        return std::make_unique<RuleListIter>(RuleListIter{rules.begin(), rules.end()});
-    }
-
-    void appendRuleImpl(std::unique_ptr<Rule> rule) override {
-        rules.push_back(std::move(rule));
-    }
-
-    RuleIter beginImpl() override {
-        return rules.begin();
-    }
-    
-    RuleIter endImpl() override {
-        return rules.end();
-    }
 };
 
 // we also need a bookmark for the foreach rule to track the iteration of the loop

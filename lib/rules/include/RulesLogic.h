@@ -1,8 +1,43 @@
 #pragma once
 
+#include <memory>
+#include <string>
 #include <cassert>
 
-#include "Rules.h"
+
+#include "RuleInterface.h"
+#include "InterpreterStack.h"
+#include "RuleIter.h"
+
+
+// contains the list of rules
+class RuleList : public RuleListInterface{
+public:
+    RuleList() { }
+    RuleList(std::unique_ptr<Rule> rule) {
+        rules.push_back(std::move(rule));
+    }
+
+private:
+    std::vector<std::unique_ptr<Rule>> rules;
+
+    RuleIterPointer getIterImpl() override { 
+        return std::make_unique<RuleListIter>(RuleListIter{rules.begin(), rules.end()});
+    }
+
+    void appendRuleImpl(std::unique_ptr<Rule> rule) override {
+        rules.push_back(std::move(rule));
+    }
+
+    RuleIter beginImpl() override {
+        return rules.begin();
+    }
+    
+    RuleIter endImpl() override {
+        return rules.end();
+    }
+};
+
 
 /**
 { "rule": "foreach",
@@ -24,12 +59,11 @@ struct Condition{
 };
 
 
-
+// using ObjectGenerator = std::vector<Object>::const_iterator;//custom variables
 class Expression {
     public: 
-        ObjectGenerator getResult(){}
+        std::vector<Object> getResult(){}
 };
-
 
 
 
@@ -114,7 +148,7 @@ private:
 
     SignalData executeImpl(InterpreterState& interpreter) override{
         // TODO: implement this
-        interpreter.push(std::make_unique<InparallelIter>(listExpr.getResult(), &ruleList));
+        interpreter.push(std::make_unique<InparallelIter>(&ruleList));
         return SignalData{Signal::COMPLETE};
     }
 };
@@ -181,7 +215,7 @@ private:
 
     SignalData executeImpl(InterpreterState& interpreter) override{
         // if condition is true
-        interpreter.push(std::make_unique<RuleListIter>{ruleList.begin(), ruleList.end()});
+        interpreter.push(std::make_unique<RuleListIter>(ruleList.begin(), ruleList.end()));
         // otherwise do nothing
         return SignalData{Signal::COMPLETE};
     }
@@ -232,7 +266,7 @@ class WhenRule : public Rule{
 
         SignalData executeImpl(InterpreterState& interpreter) override{
             // TODO: implement this
-            for (auto rule : cases) {
+            for (auto& rule : cases) {
                 rule.execute(interpreter);
             }
             return SignalData{Signal::COMPLETE};
@@ -258,7 +292,7 @@ class Switch : public Rule{
 
         SignalData executeImpl(InterpreterState& interpreter) override{
             // TODO: implement this
-            for (auto guard : cases){
+            for (auto& guard : cases){
                 guard.execute(interpreter);
             }
             
