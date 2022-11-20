@@ -8,42 +8,6 @@
 #include <vector>
 #include <string_view>
 
-// Player::Player(std::string_view name, bool audience, int highScore, int currentScore) {
-//     name = name;
-//     audience = audience;
-//     highScore = highScore;
-//     currentScore = currentScore;
-// }
-
-// Player::Player(std::string_view name, bool audience, int currentScore) {
-//     name = name;
-//     audience = audience;
-//     currentScore = currentScore;
-// }
-
-// Player::Player(std::string_view name, bool audience) {
-//     name = name;
-//     audience = audience;
-// }
-
-Player::Player(playerTypeEnum type) 
-    :id{0}, playerType{type}
-{ 
-    name = "player" + id;
-}
-
-Player::Player(playerTypeEnum type, std::string username) 
-    :id{0}, playerType{type}, name{username}
-{ }
-
-Player::Player(playerTypeEnum type, networking::Connection& connection) 
-    :id{0}, playerType{type}, connectionID{connection.id}
-{ }
-
-Player::Player(playerTypeEnum type, uintptr_t connectionID) 
-    :id{0}, playerType{type}, connectionID{connectionID}
-{ }
-
 std::string Player::getName() {
     return name;
 }
