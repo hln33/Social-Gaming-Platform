@@ -2,7 +2,9 @@ project(Blini)
 
 cmake_minimum_required(VERSION 3.19)
 
-add_executable(rules driver.cpp)
+add_library(rules
+  src/Rules.cpp
+)
 
 target_include_directories(rules
         PUBLIC

@@ -4,9 +4,9 @@
 #include <memory>
 #include <exception>
 
-#include "Rules.h"
+// #include "Rules.h"
 
-TEST(RuleTest, firstTest){
+// TEST(RuleTest, firstTest){
 
-    InterpreterState state{nullptr};
-}
+//     InterpreterState state{nullptr};
+// }
