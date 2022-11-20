@@ -126,6 +126,15 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     // return recipientsWrapper{recipients, Response{Status::SUCCESS, player.getName() + " left room"}};
 }
 
+recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) {
+
+}
+
+recipientsWrapper endGame(networking::Connection& connectionInfo) {
+    
+}
+
+
 // recipientsWrapper Controller::handleUserInput(json userInput) {
 //     // send userInput to room that player is in
 //     // json data to get room code

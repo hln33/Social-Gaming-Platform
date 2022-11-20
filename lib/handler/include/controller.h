@@ -42,6 +42,10 @@ public:
 
     recipientsWrapper leaveRoom(std::string roomCode, networking::Connection& connectionInfo);
 
+    recipientsWrapper startGame(networking::Connection& connectionInfo);
+
+    recipientsWrapper endGame(networking::Connection& connectionInfo);
+
     recipientsWrapper handleUserInput(json userInput);
 
     
