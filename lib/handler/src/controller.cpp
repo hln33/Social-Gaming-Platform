@@ -21,20 +21,20 @@ std::string Controller::generateRoomCode() {
     return newRandomCode;
 }
 
-std::set<networking::Connection> Controller::getConnections(Room& room) {
-    std::set<networking::Connection> recipients;
-
+void Controller::addToRecipients(Room& room) {
     auto players = room.getAllPlayers();
     for (auto& player : players) {
         networking::Connection connection;
         connection.id = player.connectionID;
         recipients.insert(connection);
     }
-
-    return recipients;
 }
 
-Room& Controller::findRoom(std::string roomCode, std::set<networking::Connection>& recipients) {
+void Controller::initRecipients() {
+    recipients.clear();
+}
+
+Room& Controller::findRoom(std::string roomCode) {
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
         SPDLOG_ERROR("Could not find room with code: {}", roomCode);
@@ -45,8 +45,8 @@ Room& Controller::findRoom(std::string roomCode, std::set<networking::Connection
     return room;
 }
 
-Player& Controller::findPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients) {
-    Room& room = findRoom(roomCode, recipients);
+Player& Controller::findPlayer(std::string roomCode, networking::Connection& connectionInfo) {
+    Room& room = findRoom(roomCode);
     auto players = room.getAllPlayers();
     auto playerItr = std::find_if(players.begin(), players.end(), [&connectionInfo](const auto& player){
         return player.connectionID == connectionInfo.id;
@@ -60,8 +60,8 @@ Player& Controller::findPlayer(std::string roomCode, networking::Connection& con
     return player;
 }
 
-void Controller::addPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients) {
-    Room& room = findRoom(roomCode, recipients);
+void Controller::addPlayer(std::string roomCode, networking::Connection& connectionInfo) {
+    Room& room = findRoom(roomCode);
     Player newPlayer {playerTypeEnum::player, connectionInfo};
 
     Room::Response res = room.addPlayer(newPlayer);
@@ -80,6 +80,9 @@ void Controller::addPlayer(std::string roomCode, networking::Connection& connect
 
 
 recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& connectionInfo) {    
+    initRecipients();
+    recipients.insert(connectionInfo);
+
     //make host and add them to the player hashtable
     Player newHost = Player{playerTypeEnum::host, connectionInfo};
     // PlayerLookUp.insert(std::pair(connectionInfo, newHost.getId()));
@@ -94,24 +97,18 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& 
     GameRoomLookUp.insert(std::pair<std::string, Room>(newRandomCode, std::move(room)));
 
     // 3. return the response
-    std::set<networking::Connection> recipients;
-    recipients.insert(connectionInfo);
-
-    // recipientsWrapper
     SPDLOG_INFO("Room:{} has been created with host:[{}]", newRandomCode, connectionInfo.id);
     return recipientsWrapper{recipients,Response{Status::SUCCESS, newRandomCode}};
 }
 
 recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection& connectionInfo) {
-    std::set<networking::Connection> recipients;
+    initRecipients();
     recipients.insert(connectionInfo);
 
     try {
-        Room& room = findRoom(roomCode, recipients);
-        addPlayer(roomCode, connectionInfo, recipients);
-
-        auto players = getConnections(room);
-        recipients.insert(players.begin(), players.end());
+        Room& room = findRoom(roomCode);
+        addPlayer(roomCode, connectionInfo);
+        addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;
     }
@@ -121,16 +118,14 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 }
 
 recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
-    std::set<networking::Connection> recipients;
+    initRecipients();
     recipients.insert(connectionInfo);
 
     try {
-        Room& room = findRoom(roomCode, recipients);
-        Player& player = findPlayer(roomCode, connectionInfo, recipients);
-
+        Room& room = findRoom(roomCode);
+        Player& player = findPlayer(roomCode, connectionInfo);
         room.removePlayer(player);
-        auto players = getConnections(room);
-        recipients.insert(players.begin(), players.end());
+        addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;
     }
@@ -140,13 +135,14 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
 }
 
 recipientsWrapper Controller::startGame(std::string roomCode, networking::Connection& connectionInfo) {
-    std::set<networking::Connection> recipients;
+    initRecipients();
     recipients.insert(connectionInfo);
 
     try {
-        Room& room = findRoom(roomCode, recipients);
-        Player& player = findPlayer(roomCode, connectionInfo, recipients);
+        Room& room = findRoom(roomCode);
+        Player& player = findPlayer(roomCode, connectionInfo);
         room.startGame(player);
+        addToRecipients(room);
     } catch (recipientsWrapper exception) {
         return exception;
     }
