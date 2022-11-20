@@ -60,6 +60,16 @@ Player& Controller::findPlayer(std::string roomCode, networking::Connection& con
     return player;
 }
 
+void Controller::addPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients) {
+    Room& room = findRoom(roomCode, recipients);
+    Player newPlayer {playerTypeEnum::player, connectionInfo};
+    Room::Response res = room.addPlayer(newPlayer);
+    if (res.status.statusCode == Room::Status::Fail) {
+        SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
+        throw recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,24 +111,18 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
-    auto roomItr = GameRoomLookUp.find(roomCode);
-    if (roomItr == GameRoomLookUp.end()) {
-        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
-        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
+    try {
+        Room& room = findRoom(roomCode, recipients);
+        addPlayer(roomCode, connectionInfo, recipients);
+
+        auto players = getConnections(room);
+        recipients.insert(players.begin(), players.end());
+    } catch (recipientsWrapper exception) {
+        return exception;
     }
     
-    Room& room = (*roomItr).second;
-    Player newPlayer {playerTypeEnum::player, connectionInfo};
-    Room::Response res = room.addPlayer(newPlayer);
-    if (res.status.statusCode == Room::Status::Fail) {
-        SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
-        return recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
-    }
-    auto players = getConnections(room);
-    recipients.insert(players.begin(), players.end());
-
     SPDLOG_INFO("Connection:[{}] has joined room:{}", connectionInfo.id, roomCode);
-    return recipientsWrapper{recipients, Response{Status::SUCCESS, newPlayer.getName() + " joined room"}};
+    return recipientsWrapper{recipients, Response{Status::SUCCESS, connectionInfo.id + " joined room"}};
 }
 
 recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
@@ -167,9 +171,9 @@ recipientsWrapper Controller::startGame(std::string roomCode, networking::Connec
     return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game started"}};
 }
 
-recipientsWrapper endGame(networking::Connection& connectionInfo) {
+// recipientsWrapper endGame(networking::Connection& connectionInfo) {
 
-}
+// }
 
 
 // recipientsWrapper Controller::handleUserInput(json userInput) {
