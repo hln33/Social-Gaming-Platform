@@ -96,7 +96,6 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 }
 
 recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
-
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
@@ -126,12 +125,35 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     // return recipientsWrapper{recipients, Response{Status::SUCCESS, player.getName() + " left room"}};
 }
 
-recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) {
+recipientsWrapper Controller::startGame(std::string roomCode, networking::Connection& connectionInfo) {
+    std::set<networking::Connection> recipients;
+    recipients.insert(connectionInfo);
 
+    auto roomItr = GameRoomLookUp.find(roomCode);
+    if (roomItr == GameRoomLookUp.end()) {
+        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
+        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
+    }
+
+    Room& room = (*roomItr).second;
+    auto players = room.getAllPlayers();
+    auto playerItr = std::find_if(players.begin(), players.end(), [&connectionInfo](const auto& player){
+        return player.connectionID == connectionInfo.id;
+    });
+    if (playerItr == players.end()) {
+        SPDLOG_ERROR("could not find player in room with code: {}", roomCode);
+        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find player!"}};
+    }
+
+    Player& player = *playerItr;
+    room.startGame(player);
+
+    SPDLOG_INFO("Starting game in room: {}", roomCode);
+    return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game started"}};
 }
 
 recipientsWrapper endGame(networking::Connection& connectionInfo) {
-    
+
 }
 
 
