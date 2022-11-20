@@ -52,4 +52,6 @@ public:
 private:
     std::string generateRoomCode();
     std::set<networking::Connection> getConnections(Room& room);
+    Room& findRoom(std::string roomCode, std::set<networking::Connection>& recipients);
+    Player& findPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients);
 };

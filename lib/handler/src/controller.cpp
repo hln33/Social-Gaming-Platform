@@ -34,6 +34,32 @@ std::set<networking::Connection> Controller::getConnections(Room& room) {
     return recipients;
 }
 
+Room& Controller::findRoom(std::string roomCode, std::set<networking::Connection>& recipients) {
+    auto roomItr = GameRoomLookUp.find(roomCode);
+    if (roomItr == GameRoomLookUp.end()) {
+        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
+        throw recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
+    }
+
+    Room& room = (*roomItr).second;
+    return room;
+}
+
+Player& Controller::findPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients) {
+    Room& room = findRoom(roomCode, recipients);
+    auto players = room.getAllPlayers();
+    auto playerItr = std::find_if(players.begin(), players.end(), [&connectionInfo](const auto& player){
+        return player.connectionID == connectionInfo.id;
+    });
+    if (playerItr == players.end()) {
+        SPDLOG_ERROR("could not find player in room with code: {}", roomCode);
+        throw recipientsWrapper{recipients, Response{Status::FAIL, "Could not find player!"}};
+    }
+
+    Player& player = *playerItr;
+    return player;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,25 +155,14 @@ recipientsWrapper Controller::startGame(std::string roomCode, networking::Connec
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
-    auto roomItr = GameRoomLookUp.find(roomCode);
-    if (roomItr == GameRoomLookUp.end()) {
-        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
-        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
+    try {
+        Room& room = findRoom(roomCode, recipients);
+        Player& player = findPlayer(roomCode, connectionInfo, recipients);
+        room.startGame(player);
+    } catch (recipientsWrapper exception) {
+        return exception;
     }
-
-    Room& room = (*roomItr).second;
-    auto players = room.getAllPlayers();
-    auto playerItr = std::find_if(players.begin(), players.end(), [&connectionInfo](const auto& player){
-        return player.connectionID == connectionInfo.id;
-    });
-    if (playerItr == players.end()) {
-        SPDLOG_ERROR("could not find player in room with code: {}", roomCode);
-        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find player!"}};
-    }
-
-    Player& player = *playerItr;
-    room.startGame(player);
-
+    
     SPDLOG_INFO("Starting game in room: {}", roomCode);
     return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game started"}};
 }
