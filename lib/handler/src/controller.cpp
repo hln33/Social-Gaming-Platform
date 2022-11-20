@@ -63,6 +63,7 @@ Player& Controller::findPlayer(std::string roomCode, networking::Connection& con
 void Controller::addPlayer(std::string roomCode, networking::Connection& connectionInfo, std::set<networking::Connection>& recipients) {
     Room& room = findRoom(roomCode, recipients);
     Player newPlayer {playerTypeEnum::player, connectionInfo};
+
     Room::Response res = room.addPlayer(newPlayer);
     if (res.status.statusCode == Room::Status::Fail) {
         SPDLOG_ERROR("Connection:[{}] was unable to join room:{}", connectionInfo.id, roomCode);
@@ -102,12 +103,6 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& 
 }
 
 recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection& connectionInfo) {
-    // 1. lookup the room in GameRoomLookup
-    // 1.1 if could not find room send error response
-    // 1.2 otherwise ask the room if player can join
-    // 1.2.1 if no then send the response
-    // 1.2.2 if yes then send the response
-
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
@@ -129,30 +124,19 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     std::set<networking::Connection> recipients;
     recipients.insert(connectionInfo);
 
-    auto roomItr = GameRoomLookUp.find(roomCode);
-    if (roomItr == GameRoomLookUp.end()) {
-        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
-        return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find room!"}};
+    try {
+        Room& room = findRoom(roomCode, recipients);
+        Player& player = findPlayer(roomCode, connectionInfo, recipients);
+
+        room.removePlayer(player);
+        auto players = getConnections(room);
+        recipients.insert(players.begin(), players.end());
+    } catch (recipientsWrapper exception) {
+        return exception;
     }
-    // auto playerItr = PlayerLookUp.find(connectionInfo);
-    // if (playerItr == PlayerLookUp.end()) {
-    //     recipients.emplace_back(connectionInfo);
-    //     return recipientsWrapper{recipients, Response{Status::FAIL, "Could not find player!"}};
-    // }
-
-    Room& room = (*roomItr).second; 
-    // int playerId = (*playerItr).second;
-    //room.removePlayer(playerId); I think we may have to change room.removePlayer to take in playerID instead of player object
-
-
-    auto players = getConnections(room);
-    recipients.insert(players.begin(), players.end());
 
     SPDLOG_INFO("Connection:[{}] has left room: {}", connectionInfo.id, roomCode);
     return recipientsWrapper{recipients, Response{Status::SUCCESS, " left room"}};
-
-    //this one later to show who left room
-    // return recipientsWrapper{recipients, Response{Status::SUCCESS, player.getName() + " left room"}};
 }
 
 recipientsWrapper Controller::startGame(std::string roomCode, networking::Connection& connectionInfo) {
