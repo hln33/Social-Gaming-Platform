@@ -32,7 +32,7 @@ class Controller{
 
 public:
     std::unordered_map<std::string, Room> GameRoomLookUp;
-    // std::unordered_map<networking::Connection, int> PlayerLookUp;
+    std::unordered_map<uintptr_t, std::string> PlayerLookUp;
     
     // create room from json file and host player connection
     //returns the random code to the room
@@ -40,11 +40,11 @@ public:
 
     recipientsWrapper joinRoom(std::string roomCode, networking::Connection& connectionInfo);
 
-    recipientsWrapper leaveRoom(std::string roomCode, networking::Connection& connectionInfo);
+    recipientsWrapper leaveRoom(networking::Connection& connectionInfo);
 
-    recipientsWrapper startGame(std::string roomCode, networking::Connection& connectionInfo);
+    recipientsWrapper startGame(networking::Connection& connectionInfo);
 
-    recipientsWrapper endGame(std::string roomCode, networking::Connection& connectionInfo);
+    recipientsWrapper endGame(networking::Connection& connectionInfo);
 
     recipientsWrapper handleUserInput(json userInput);
 
@@ -56,8 +56,10 @@ private:
     void addToRecipients(Room& room);
     void initRecipients();
 
+    std::string findRoomCode(networking::Connection connectionInfo);
     Room& findRoom(std::string roomCode);
+
     Player& findPlayer(Room& room, networking::Connection& connectionInfo);
-    void addPlayer(Room& room, networking::Connection& connectionInfo);
-    void removePlayer(Room& room, networking::Connection& connectionInfo);
+    void addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
+    void removePlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
 };

@@ -34,7 +34,7 @@ class QuitAction : public Action {
             std::string roomcode = data.at("code");
 
             SPDLOG_INFO("Connection:[{}] attempting to leave room:", sender.id, roomcode);
-            recipientsWrapper wrapper = controller.leaveRoom(roomcode, sender);
+            recipientsWrapper wrapper = controller.leaveRoom(sender);
             wrapper.actionName = "Quit";
 
             return wrapper;

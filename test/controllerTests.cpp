@@ -118,7 +118,7 @@ TEST_F(ControllerTests, onePlayerLeavesRoom) {
     it = recipients.find(player1);
     EXPECT_FALSE(it == recipients.end());
 
-    response = controller.leaveRoom(inviteCode, player2);
+    response = controller.leaveRoom(player2);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 2);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -143,7 +143,7 @@ TEST_F(ControllerTests, multiplePlayersLeaveRoom) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player2);
+    response = controller.leaveRoom(player2);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 3);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -158,7 +158,7 @@ TEST_F(ControllerTests, multiplePlayersLeaveRoom) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player3);
+    response = controller.leaveRoom(player3);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 2);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -189,7 +189,7 @@ TEST_F(ControllerTests, allPlayersLeaveRoom) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player1);
+    response = controller.leaveRoom(player1);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 3);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -204,7 +204,7 @@ TEST_F(ControllerTests, allPlayersLeaveRoom) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player2);
+    response = controller.leaveRoom(player2);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 2);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -216,7 +216,7 @@ TEST_F(ControllerTests, allPlayersLeaveRoom) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player3);
+    response = controller.leaveRoom(player3);
     recipients = response.recipientList;
     EXPECT_EQ(response.data.status, Status::SUCCESS);
 
@@ -235,7 +235,7 @@ TEST_F(ControllerTests, leaveRoomTwice) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player2);
+    response = controller.leaveRoom(player2);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 2);
     EXPECT_EQ(response.data.status, Status::SUCCESS);
@@ -247,7 +247,7 @@ TEST_F(ControllerTests, leaveRoomTwice) {
     EXPECT_FALSE(it == recipients.end());
 
 
-    response = controller.leaveRoom(inviteCode, player2);
+    response = controller.leaveRoom(player2);
     recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 1);
     EXPECT_EQ(response.data.status, Status::FAIL);
@@ -257,7 +257,7 @@ TEST_F(ControllerTests, leaveRoomTwice) {
 }
 
 TEST_F(ControllerTests, leaveRoomButNeverJoin) {
-    auto response = controller.leaveRoom(inviteCode, player2);
+    auto response = controller.leaveRoom(player2);
     auto recipients = response.recipientList;
     EXPECT_EQ(recipients.size(), 1);
     EXPECT_EQ(response.data.status, Status::FAIL);
