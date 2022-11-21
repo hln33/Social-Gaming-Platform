@@ -12,9 +12,7 @@
 
 std::string Controller::generateRoomCode() {
     std::string newRandomCode = randomCode();
-    auto it = GameRoomLookUp.find(newRandomCode);
-
-    while(it != GameRoomLookUp.end()){
+    while (GameRoomLookUp.find(newRandomCode) != GameRoomLookUp.end()) {
         newRandomCode = randomCode();
     }
 
