@@ -49,6 +49,14 @@ Room::Response Room::startGame(Player& requester) {
     return res;
 }
 
+Room::Response Room::endGame(Player& requester) {
+    Room::Response res;
+
+    auto builder = ResponseBuilder{res};
+    builder.setStatus(Room::Status::Fail, "todo");
+    return res;
+}
+
 Room::Response Room::sendGameData(Player& requester) {
     Room::Response res = Room::Response{};
 

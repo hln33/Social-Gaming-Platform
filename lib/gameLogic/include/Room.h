@@ -47,6 +47,8 @@ public:
 
     Response startGame(Player&);
 
+    Response endGame(Player&);
+
     Response sendGameData(Player&);
 
     std::vector<Player> getAllPlayers();

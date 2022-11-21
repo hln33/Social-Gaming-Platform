@@ -109,6 +109,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     initRecipients();
     recipients.insert(connectionInfo);
 
+    SPDLOG_INFO("Attempting to join room: {}", roomCode);
     try {
         Room& room = findRoom(roomCode);
         addPlayer(room, connectionInfo);
@@ -125,6 +126,7 @@ recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connec
     initRecipients();
     recipients.insert(connectionInfo);
 
+    SPDLOG_INFO("Attempting to leave room: {}", roomCode);
     try {
         Room& room = findRoom(roomCode);
         removePlayer(room, connectionInfo);
@@ -141,6 +143,7 @@ recipientsWrapper Controller::startGame(std::string roomCode, networking::Connec
     initRecipients();
     recipients.insert(connectionInfo);
 
+    SPDLOG_INFO("Attempting to start game in room: {}", roomCode);
     try {
         Room& room = findRoom(roomCode);
         Player& player = findPlayer(room, connectionInfo);
@@ -157,9 +160,25 @@ recipientsWrapper Controller::startGame(std::string roomCode, networking::Connec
     return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game started"}};
 }
 
-// recipientsWrapper endGame(networking::Connection& connectionInfo) {
+recipientsWrapper Controller::endGame(std::string roomCode, networking::Connection& connectionInfo) {
+    initRecipients();
+    recipients.insert(connectionInfo);
 
-// }
+    SPDLOG_INFO("Attempting to end game in room: {}", roomCode);
+    try {
+        Room& room = findRoom(roomCode);
+        Player& player = findPlayer(room, connectionInfo);
+        Room::Response res = room.endGame(player);
+        if (res.status.statusCode == Room::Status::Fail) {
+            throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to end game in room: " + roomCode}};
+        }
+    } catch (recipientsWrapper exception) {
+        return exception;
+    }
+
+    SPDLOG_INFO("Successfully ended game in room: {}", roomCode);
+    return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game ended"}};
+}
 
 
 // recipientsWrapper Controller::handleUserInput(json userInput) {
