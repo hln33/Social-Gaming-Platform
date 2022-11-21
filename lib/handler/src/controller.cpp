@@ -143,7 +143,6 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
-    SPDLOG_INFO(recipients.size());
 
     SPDLOG_INFO("Player: {}  Attempting to leave room", connectionInfo.id);
     try {
@@ -179,7 +178,6 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
     } catch (recipientsWrapper exception) {
         return exception;
     }
-    
     
     return recipientsWrapper{recipients, Response{Status::SUCCESS, "Game started"}};
 }
