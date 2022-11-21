@@ -7,18 +7,16 @@
 #include "Room.h"
 
 
-room::Response Room::addPlayer(Player& player) {
+Response Room::addPlayer(Player& player) {
     if (this->config.satisfiesJoinPolicies(player, this->players)) {
         players.push_back(player);
 
-        room::Response res{room::Status::Success, "add player ok"};
-        return res;
+        return Response {Status::Success, "add player ok"};
     }
-    room::Response res{room::Status::Fail, "does not meet requiements"};
-    return res;
+    throw Response {Status::Fail, "does not meet requiements"};
 }
 
-room::Response Room::removePlayer(Player& p) {
+Response Room::removePlayer(Player& p) {
     auto removeThis = std::remove_if(players.begin(), players.end(), 
     [&p] (Player& player) { 
         return player.connectionID == p.connectionID;
@@ -26,27 +24,35 @@ room::Response Room::removePlayer(Player& p) {
  
     players.erase(removeThis);
 
-    room::Response res{room::Status::Success, "Removed player" + p.connectionID};
-    return res;
+    return Response {Status::Success, "Removed player" + p.connectionID};
 }
 
-room::Response Room::startGame(Player& requester) { 
-    room::Response res{room::Status::Fail, "todo"};    
-    return res;
+Response Room::startGame(Player& requester) { 
+    return Response {Status::Fail, "todo"};    
 }
 
-room::Response Room::endGame(Player& requester) {
-    room::Response res{room::Status::Fail, "todo"};    
-    return res;
+Response Room::endGame(Player& requester) {
+    return Response {Status::Fail, "todo"};    
 }
 
-room::Response Room::sendGameData(Player& requester) {
-    room::Response res{room::Status::Fail, "todo"};    
-    return res;
+Response Room::sendGameData(Player& requester) {
+    return Response {Status::Fail, "todo"};    
 }
 
 std::vector<Player> Room::getAllPlayers() {
     return players;
+}
+
+Player Room::findPlayer(uintptr_t connectionID) {
+    auto playerItr = std::find_if(players.begin(), players.end(), [&connectionID](const auto& player){
+        return player.connectionID == connectionID;
+    });
+    if (playerItr == players.end()) {
+        SPDLOG_ERROR("could not find player in room");
+        throw Response {Status::Fail, "Could not find player with ID: " + connectionID};
+    }
+
+    return *playerItr;
 }
 
 Player Room::getHost() {

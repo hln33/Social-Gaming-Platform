@@ -13,19 +13,15 @@
 // - store room info 
 // - has rules on which players can join
 
-namespace room {
+enum Status {
+    Success,
+    Fail,
+};
 
-    enum Status {
-        Success,
-        Fail,
-    };
-
-    struct Response {
-        Status code;
-        std::string message;
-    };
-
-}
+struct Response {
+    Status code;
+    std::string message;
+};
 
 class Room {
 public:
@@ -34,17 +30,19 @@ public:
         players.push_back(host);
     }
 
-    room::Response addPlayer(Player&);
+    Response addPlayer(Player&);
 
-    room::Response removePlayer(Player&);
+    Response removePlayer(Player&);
 
-    room::Response startGame(Player&);
+    Response startGame(Player&);
 
-    room::Response endGame(Player&);
+    Response endGame(Player&);
 
-    room::Response sendGameData(Player&);
+    Response sendGameData(Player&);
 
     std::vector<Player> getAllPlayers();
+
+    Player findPlayer(uintptr_t connectionID);
 
     Player getHost();
 

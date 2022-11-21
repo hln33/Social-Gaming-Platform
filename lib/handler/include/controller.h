@@ -11,14 +11,6 @@
 #include <string> 
 #include <set>
 
-enum Status {
-    SUCCESS,
-    FAIL
-};
-struct Response {
-    Status status;
-    std::string message;
-};
 
 struct recipientsWrapper{
     std::set<networking::Connection> recipientList;
@@ -58,7 +50,6 @@ private:
     std::string findRoomCode(networking::Connection connectionInfo);
     Room& findRoom(std::string roomCode);
 
-    Player& findPlayer(Room& room, networking::Connection& connectionInfo);
     void addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
     void removePlayer(Room& room, networking::Connection& connectionInfo);
 };

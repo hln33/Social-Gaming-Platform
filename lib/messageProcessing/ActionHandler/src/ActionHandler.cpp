@@ -44,7 +44,7 @@ class CreateGameAction : public Action {
             SPDLOG_INFO("CreateGame Action Detected");
 
             recipientsWrapper res = controller.createRoom(data, sender);            
-            if(res.data.status == Status::SUCCESS) {
+            if(res.data.code == Status::Success) {
                 //return room code to client
                 SPDLOG_INFO("Game Created: " + res.data.message);
                 res.actionName = "Game Created";
@@ -63,7 +63,7 @@ class StartGameAction : public Action {
             SPDLOG_INFO("StartGame Action Detected");
 
             auto res = controller.startGame(sender);
-            if (res.data.status == Status::SUCCESS) {
+            if (res.data.code == Status::Success) {
                 SPDLOG_INFO("Game Started");
                 res.actionName = "Game Started";
             } else {
@@ -89,7 +89,7 @@ class EndGameAction : public Action {
             SPDLOG_INFO("End Game Action Detected");
 
             auto res = controller.endGame(sender);
-            if (res.data.status == Status::SUCCESS) {
+            if (res.data.code == Status::Success) {
                 SPDLOG_INFO("Game Ended");
                 res.actionName = "Game Ended";
             } else {
