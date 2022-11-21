@@ -129,7 +129,6 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     SPDLOG_INFO("Player: {}  Attempting to join room", connectionInfo.id);
     try {
         Room& room = findRoom(roomCode);
-
         addPlayer(room, roomCode, connectionInfo);
         addToRecipients(room);
         SPDLOG_INFO("Connection:[{}] has joined room: {}", connectionInfo.id, roomCode);
@@ -148,7 +147,6 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
-
         removePlayer(room, roomCode, connectionInfo);
         addToRecipients(room);
         SPDLOG_INFO("Player has left room: {}", roomCode);
@@ -173,6 +171,7 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
         if (res.status.statusCode == Room::Status::Fail) {
             throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to start game in room: " + roomCode}};
         }
+
         addToRecipients(room);
         SPDLOG_INFO("Starting game in room: {}", roomCode);
     } catch (recipientsWrapper exception) {
@@ -196,6 +195,7 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
         if (res.status.statusCode == Room::Status::Fail) {
             throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to end game in room: " + roomCode}};
         }
+        
         SPDLOG_INFO("Successfully ended game in room: {}", roomCode);
     } catch (recipientsWrapper exception) {
         return exception;
