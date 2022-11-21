@@ -83,7 +83,7 @@ void Controller::addPlayer(Room& room, std::string roomCode, networking::Connect
     PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
 }
 
-void Controller::removePlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo) {
+void Controller::removePlayer(Room& room, networking::Connection& connectionInfo) {
     Player& player = findPlayer(room, connectionInfo);
 
     Room::Response res = room.removePlayer(player);
@@ -147,7 +147,7 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
-        removePlayer(room, roomCode, connectionInfo);
+        removePlayer(room, connectionInfo);
         addToRecipients(room);
         SPDLOG_INFO("Player has left room: {}", roomCode);
     } catch (recipientsWrapper exception) {
@@ -195,7 +195,7 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
         if (res.status.statusCode == Room::Status::Fail) {
             throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to end game in room: " + roomCode}};
         }
-        
+
         SPDLOG_INFO("Successfully ended game in room: {}", roomCode);
     } catch (recipientsWrapper exception) {
         return exception;

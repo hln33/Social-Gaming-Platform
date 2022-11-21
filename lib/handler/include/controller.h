@@ -61,5 +61,5 @@ private:
 
     Player& findPlayer(Room& room, networking::Connection& connectionInfo);
     void addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
-    void removePlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
+    void removePlayer(Room& room, networking::Connection& connectionInfo);
 };
