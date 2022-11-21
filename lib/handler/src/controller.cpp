@@ -118,13 +118,14 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
         return exception;
     }
     
-    SPDLOG_INFO("Connection:[{}] has joined room:{}", connectionInfo.id, roomCode);
+    SPDLOG_INFO("Connection:[{}] has joined room: {}", connectionInfo.id, roomCode);
     return recipientsWrapper{recipients, Response{Status::SUCCESS, connectionInfo.id + " joined room"}};
 }
 
 recipientsWrapper Controller::leaveRoom(std::string roomCode, networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
+    SPDLOG_INFO(recipients.size());
 
     SPDLOG_INFO("Attempting to leave room: {}", roomCode);
     try {

@@ -2,6 +2,8 @@
 #include <memory>
 #include <algorithm>
 
+#include <spdlog/spdlog.h>
+
 #include "Room.h"
 
 
@@ -29,7 +31,7 @@ Room::Response Room::removePlayer(Player& p) {
 
     auto removeThis = std::remove_if(players.begin(), players.end(), 
     [&p] (Player& player) { 
-        return player.getId() == p.getId();
+        return player.connectionID == p.connectionID;
     });
 
     players.erase(removeThis);
