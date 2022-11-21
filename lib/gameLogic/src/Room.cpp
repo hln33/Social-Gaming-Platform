@@ -7,66 +7,41 @@
 #include "Room.h"
 
 
-Room::Response Room::addPlayer(Player& player) {
-    Response res;
-    ResponseBuilder builder{res};
-
+room::Response Room::addPlayer(Player& player) {
     if (this->config.satisfiesJoinPolicies(player, this->players)) {
         players.push_back(player);
 
-        builder.setStatus(Status::Success, "add player ok");
-        for (auto p : players) {
-            builder.addReceiver(p, "player " + player.getName() + " joined the room");
-        }
+        room::Response res{room::Status::Success, "add player ok"};
         return res;
     }
-    builder.setStatus(Status::Fail, "does not meet requirements");
-
+    room::Response res{room::Status::Fail, "does not meet requiements"};
     return res;
 }
 
-Room::Response Room::removePlayer(Player& p) {
-    Response res;
-    ResponseBuilder builder{res};
-
+room::Response Room::removePlayer(Player& p) {
     auto removeThis = std::remove_if(players.begin(), players.end(), 
     [&p] (Player& player) { 
         return player.connectionID == p.connectionID;
     });
-
+ 
     players.erase(removeThis);
 
-    builder.setStatus(Status::Success, "removed player " + p.getName());
+    room::Response res{room::Status::Success, "Removed player" + p.connectionID};
     return res;
 }
 
-Room::Response Room::startGame(Player& requester) { 
-    Room::Response res = Room::Response{};
-
-    // TODO
-
-    auto builder = ResponseBuilder{res};
-    builder.setStatus(Room::Status::Fail, "todo");
-
+room::Response Room::startGame(Player& requester) { 
+    room::Response res{room::Status::Fail, "todo"};    
     return res;
 }
 
-Room::Response Room::endGame(Player& requester) {
-    Room::Response res;
-
-    auto builder = ResponseBuilder{res};
-    builder.setStatus(Room::Status::Fail, "todo");
+room::Response Room::endGame(Player& requester) {
+    room::Response res{room::Status::Fail, "todo"};    
     return res;
 }
 
-Room::Response Room::sendGameData(Player& requester) {
-    Room::Response res = Room::Response{};
-
-    // TODO
-
-    auto builder = ResponseBuilder{res};
-    builder.setStatus(Room::Status::Fail, "todo");
-
+room::Response Room::sendGameData(Player& requester) {
+    room::Response res{room::Status::Fail, "todo"};    
     return res;
 }
 

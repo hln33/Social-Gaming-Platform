@@ -72,8 +72,8 @@ Player& Controller::findPlayer(Room& room, networking::Connection& connectionInf
 void Controller::addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo) {
     Player newPlayer {playerTypeEnum::player, connectionInfo};
 
-    Room::Response res = room.addPlayer(newPlayer);
-    if (res.status.statusCode == Room::Status::Fail) {
+    room::Response res = room.addPlayer(newPlayer);
+    if (res.code == room::Status::Fail) {
         SPDLOG_ERROR("Connection:[{}] was unable to join room", connectionInfo.id);
         throw recipientsWrapper{recipients, Response{Status::FAIL, "Not allowed to join the room!"}};
     }
@@ -84,8 +84,8 @@ void Controller::addPlayer(Room& room, std::string roomCode, networking::Connect
 void Controller::removePlayer(Room& room, networking::Connection& connectionInfo) {
     Player& player = findPlayer(room, connectionInfo);
 
-    Room::Response res = room.removePlayer(player);
-    if (res.status.statusCode == Room::Status::Fail) {
+    room::Response res = room.removePlayer(player);
+    if (res.code == room::Status::Fail) {
         SPDLOG_ERROR("Player with connection: {}  failed to leave room", connectionInfo.id);
         throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to leave room"}};
     }
@@ -165,8 +165,8 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
         Room& room = findRoom(roomCode);
         Player& player = findPlayer(room, connectionInfo);
 
-        Room::Response res = room.startGame(player);
-        if (res.status.statusCode == Room::Status::Fail) {
+        room::Response res = room.startGame(player);
+        if (res.code == room::Status::Fail) {
             throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to start game in room: " + roomCode}};
         }
 
@@ -189,8 +189,8 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
         Room& room = findRoom(roomCode);
         Player& player = findPlayer(room, connectionInfo);
 
-        Room::Response res = room.endGame(player);
-        if (res.status.statusCode == Room::Status::Fail) {
+        room::Response res = room.endGame(player);
+        if (res.code == room::Status::Fail) {
             throw recipientsWrapper{recipients, Response{Status::FAIL, "Failed to end game in room: " + roomCode}};
         }
 
