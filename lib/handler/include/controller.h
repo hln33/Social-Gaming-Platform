@@ -49,7 +49,4 @@ private:
 
     std::string findRoomCode(networking::Connection connectionInfo);
     Room& findRoom(std::string roomCode);
-
-    void addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo);
-    void removePlayer(Room& room, networking::Connection& connectionInfo);
 };

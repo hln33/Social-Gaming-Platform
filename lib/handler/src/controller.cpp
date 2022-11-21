@@ -55,20 +55,6 @@ Room& Controller::findRoom(std::string roomCode) {
     return room;
 }
 
-void Controller::addPlayer(Room& room, std::string roomCode, networking::Connection& connectionInfo) {
-    Player newPlayer {playerTypeEnum::player, connectionInfo};
-    Response res = room.addPlayer(newPlayer);
-
-    PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
-}
-
-void Controller::removePlayer(Room& room, networking::Connection& connectionInfo) {
-    Player player = room.findPlayer(connectionInfo.id);
-    Response res = room.removePlayer(player);
-
-    PlayerLookUp.erase(connectionInfo.id);
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,13 +89,15 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     SPDLOG_INFO("Player: {}  Attempting to join room", connectionInfo.id);
     try {
         Room& room = findRoom(roomCode);
-        addPlayer(room, roomCode, connectionInfo);
+        Player newPlayer {playerTypeEnum::player, connectionInfo};
+        Response res = room.addPlayer(newPlayer);
         addToRecipients(room);
         SPDLOG_INFO("Connection:[{}] has joined room: {}", connectionInfo.id, roomCode);
     } catch (Response exception) {
         return recipientsWrapper{recipients, Response{exception.code, exception.message}};
     }
     
+    PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
     return recipientsWrapper{recipients, Response{Status::Success, connectionInfo.id + " joined room"}};
 }
 
@@ -121,13 +109,15 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
-        removePlayer(room, connectionInfo);
+        Player player = room.findPlayer(connectionInfo.id);
+        Response res = room.removePlayer(player);
         addToRecipients(room);
         SPDLOG_INFO("Player has left room: {}", roomCode);
     } catch (Response exception) {
         return recipientsWrapper{recipients, Response{exception.code, exception.message}};
     }
 
+    PlayerLookUp.erase(connectionInfo.id);
     return recipientsWrapper{recipients, Response{Status::Success, " left room"}};
 }
 
