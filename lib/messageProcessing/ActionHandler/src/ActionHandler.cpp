@@ -14,11 +14,7 @@ class JoinAction : public Action {
             SPDLOG_INFO("Join Action Detected");
 
             std::string roomCode = data.at("code");
-
-            SPDLOG_INFO("Connection:[{}] attempting to join room:{}", sender.id, roomCode);
             auto res = controller.joinRoom(roomCode, sender);
-            res.actionName = "Player joined";
-
             return res;
         }
 };
@@ -28,12 +24,7 @@ class QuitAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
 
-            std::string roomcode = data.at("code");
-
-            SPDLOG_INFO("Connection:[{}] attempting to leave room:", sender.id, roomcode);
             auto res = controller.leaveRoom(sender);
-            res.actionName = "Quit";
-
             return res;
         }
 };
@@ -44,15 +35,6 @@ class CreateGameAction : public Action {
             SPDLOG_INFO("CreateGame Action Detected");
 
             recipientsWrapper res = controller.createRoom(data, sender);            
-            if(res.data.code == Status::Success) {
-                //return room code to client
-                SPDLOG_INFO("Game Created: " + res.data.message);
-                res.actionName = "Game Created";
-            } else {
-                SPDLOG_ERROR("Error: room not created");
-                res.actionName = "Error";
-            }
-
             return res;
         }
 };
@@ -63,14 +45,6 @@ class StartGameAction : public Action {
             SPDLOG_INFO("StartGame Action Detected");
 
             auto res = controller.startGame(sender);
-            if (res.data.code == Status::Success) {
-                SPDLOG_INFO("Game Started");
-                res.actionName = "Game Started";
-            } else {
-                SPDLOG_ERROR("Error: game not started");
-                res.actionName = "Error";
-            }
-
             return res;
         }
 };
@@ -89,14 +63,6 @@ class EndGameAction : public Action {
             SPDLOG_INFO("End Game Action Detected");
 
             auto res = controller.endGame(sender);
-            if (res.data.code == Status::Success) {
-                SPDLOG_INFO("Game Ended");
-                res.actionName = "Game Ended";
-            } else {
-                SPDLOG_ERROR("Error: game not ended");
-                res.actionName = "Error";
-            }
-
             return res;
         }
 };
@@ -115,12 +81,13 @@ class EndGameAction : public Action {
 json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
-        return createaJSONMessage("Error", "No action found");
+        return createaJSONMessage(ResponseType::ERROR, "No action found");
     }
 
     auto wrapper = action->second->execute(data, sender, this->controller);
     recipients = wrapper.recipientList;
 
+    SPDLOG_INFO(wrapper.actionName);
     return createaJSONMessage(wrapper.actionName, wrapper.data.message);
 
 }

@@ -10,7 +10,7 @@
 #include <map>
 #include <string> 
 #include <set>
-
+ 
 
 struct recipientsWrapper{
     std::set<networking::Connection> recipientList;

@@ -7,29 +7,26 @@
 #include "Room.h"
 
 
-Response Room::addPlayer(Player& player) {
+void Room::addPlayer(Player& player) {
     if (this->config.satisfiesJoinPolicies(player, this->players)) {
         players.push_back(player);
-
-        return Response {Status::Success, "add player ok"};
+        return;
     }
 
     SPDLOG_ERROR("Failed to add player:{} into room", player.connectionID);
-    throw Response {Status::Fail, "does not meet requiements"};
+    throw Response {Status::Fail, REQUIREMENTS_NOT_MET};
 }
 
-Response Room::removePlayer(Player& p) {
+void Room::removePlayer(Player& p) {
     auto removeThis = std::remove_if(players.begin(), players.end(), 
     [&p] (Player& player) { 
         return player.connectionID == p.connectionID;
     });
     if (removeThis == players.end()) {
-        throw Response {Status::Fail, "Player not found"};
+        throw Response {Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
     }
  
     players.erase(removeThis);
-
-    return Response {Status::Success, "Removed player" + p.connectionID};
 }
 
 Response Room::startGame(Player& requester) { 
@@ -54,7 +51,7 @@ Player Room::findPlayer(uintptr_t connectionID) {
     });
     if (playerItr == players.end()) {
         SPDLOG_ERROR("could not find player in room");
-        throw Response {Status::Fail, "Could not find player with ID: " + connectionID};
+        throw Response {Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
     }
 
     return *playerItr;

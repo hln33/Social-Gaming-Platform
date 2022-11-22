@@ -22,9 +22,9 @@ public:
         players.push_back(host);
     }
 
-    Response addPlayer(Player&);
+    void addPlayer(Player&);
 
-    Response removePlayer(Player&);
+    void removePlayer(Player&);
 
     Response startGame(Player&);
 
