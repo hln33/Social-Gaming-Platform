@@ -13,6 +13,8 @@ Response Room::addPlayer(Player& player) {
 
         return Response {Status::Success, "add player ok"};
     }
+
+    SPDLOG_ERROR("Failed to add player:{} into room", player.connectionID);
     throw Response {Status::Fail, "does not meet requiements"};
 }
 
@@ -21,6 +23,9 @@ Response Room::removePlayer(Player& p) {
     [&p] (Player& player) { 
         return player.connectionID == p.connectionID;
     });
+    if (removeThis == players.end()) {
+        throw Response {Status::Fail, "Player not found"};
+    }
  
     players.erase(removeThis);
 
