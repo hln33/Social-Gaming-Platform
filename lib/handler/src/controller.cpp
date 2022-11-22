@@ -62,24 +62,21 @@ Room& Controller::findRoom(std::string roomCode) {
 recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& connectionInfo) {    
     initRecipients();
     recipients.insert(connectionInfo);
-
-    //make host and add them to the player hashtable
-    Player newHost = Player{playerTypeEnum::host, connectionInfo};
-    // PlayerLookUp.insert(std::pair(connectionInfo, newHost.getId()));
     
     // 1. generate random code
     std::string newRandomCode = generateRoomCode();
 
     // 2. add the room into GameRoomLookup
     RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
-
+    Player newHost = Player{playerTypeEnum::host, connectionInfo};
     Room room = Room{configBuilder, newHost};
+    
     GameRoomLookUp.insert(std::pair{newRandomCode, std::move(room)});
     PlayerLookUp.insert(std::pair{connectionInfo.id, newRandomCode});
 
     // 3. return the response
     SPDLOG_INFO("Room:{} has been created with host:[{}]", newRandomCode, connectionInfo.id);
-    return recipientsWrapper{recipients,Response{Status::Success, newRandomCode}};
+    return recipientsWrapper{recipients, Response{Status::Success, newRandomCode}};
 }
 
 recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection& connectionInfo) {
@@ -94,7 +91,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
         addToRecipients(room);
         SPDLOG_INFO("Connection:[{}] has joined room: {}", connectionInfo.id, roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, Response{exception.code, exception.message}};
+        return recipientsWrapper{recipients, exception};
     }
     
     PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
@@ -114,7 +111,7 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
         addToRecipients(room);
         SPDLOG_INFO("Player has left room: {}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, Response{exception.code, exception.message}};
+        return recipientsWrapper{recipients, exception};
     }
 
     PlayerLookUp.erase(connectionInfo.id);
@@ -134,7 +131,7 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
         addToRecipients(room);
         SPDLOG_INFO("Starting game in room: {}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, Response{exception.code, exception.message}};
+        return recipientsWrapper{recipients, exception};
     } 
     
     return recipientsWrapper{recipients, Response{Status::Success, START_GAME_SUCCESS}};
@@ -152,7 +149,7 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
         Response res = room.endGame(player);
         SPDLOG_INFO("Successfully ended game in room: {}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, Response{exception.code, exception.message}};
+        return recipientsWrapper{recipients, exception};
     } 
 
     return recipientsWrapper{recipients, Response{Status::Success, END_GAME_SUCCESS}};
