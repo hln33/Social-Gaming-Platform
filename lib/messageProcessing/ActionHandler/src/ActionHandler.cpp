@@ -64,10 +64,8 @@ class StartGameAction : public Action {
 
             auto res = controller.startGame(sender);
             if (res.data.code == Status::Success) {
-                SPDLOG_INFO("Game Started");
                 res.actionName = "Game Started";
             } else {
-                SPDLOG_ERROR("Error: game not started");
                 res.actionName = "Error";
             }
 
@@ -90,10 +88,8 @@ class EndGameAction : public Action {
 
             auto res = controller.endGame(sender);
             if (res.data.code == Status::Success) {
-                SPDLOG_INFO("Game Ended");
                 res.actionName = "Game Ended";
             } else {
-                SPDLOG_ERROR("Error: game not ended");
                 res.actionName = "Error";
             }
 
