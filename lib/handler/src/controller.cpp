@@ -37,7 +37,7 @@ std::string Controller::findRoomCode(networking::Connection connectionInfo) {
     auto itr = PlayerLookUp.find(connectionID);
     if (itr == PlayerLookUp.end()) {
         SPDLOG_ERROR("Player does not belong in a room");
-        throw Response{Status::Fail, "Player is not in any room"};
+        throw Response{Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
     }
 
     auto roomCode = (*itr).second;
@@ -48,7 +48,7 @@ Room& Controller::findRoom(std::string roomCode) {
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
         SPDLOG_ERROR("Could not find room with code: {}", roomCode);
-        throw Response{Status::Fail, "Could not find room!"};
+        throw Response{Status::Fail, ROOM_NOT_FOUND};
     }
 
     Room& room = (*roomItr).second;
@@ -118,7 +118,7 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
     }
 
     PlayerLookUp.erase(connectionInfo.id);
-    return recipientsWrapper{recipients, Response{Status::Success, " left room"}};
+    return recipientsWrapper{recipients, Response{Status::Success, LEFT_ROOM_SUCCESS}};
 }
 
 recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) {
@@ -137,7 +137,7 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
         return recipientsWrapper{recipients, Response{exception.code, exception.message}};
     } 
     
-    return recipientsWrapper{recipients, Response{Status::Success, "Game started"}};
+    return recipientsWrapper{recipients, Response{Status::Success, START_GAME_SUCCESS}};
 }
 
 recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
@@ -155,7 +155,7 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
         return recipientsWrapper{recipients, Response{exception.code, exception.message}};
     } 
 
-    return recipientsWrapper{recipients, Response{Status::Success, "Game ended"}};
+    return recipientsWrapper{recipients, Response{Status::Success, END_GAME_SUCCESS}};
 }
 
 
