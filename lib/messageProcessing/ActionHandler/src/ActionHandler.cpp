@@ -1,9 +1,6 @@
 #include "ActionHandler.h"
-#include <iostream>
-// #include "controller.h" is in the header
 
 #include <spdlog/spdlog.h>
-
 
 
 json createaJSONMessage(std::string type, std::string message){
@@ -19,10 +16,10 @@ class JoinAction : public Action {
             std::string roomCode = data.at("code");
 
             SPDLOG_INFO("Connection:[{}] attempting to join room:{}", sender.id, roomCode);
-            recipientsWrapper wrapper = controller.joinRoom(roomCode, sender);
-            wrapper.actionName = "Player joined";
+            auto res = controller.joinRoom(roomCode, sender);
+            res.actionName = "Player joined";
 
-            return wrapper;
+            return res;
         }
 };
 
@@ -34,10 +31,10 @@ class QuitAction : public Action {
             std::string roomcode = data.at("code");
 
             SPDLOG_INFO("Connection:[{}] attempting to leave room:", sender.id, roomcode);
-            recipientsWrapper wrapper = controller.leaveRoom(roomcode, sender);
-            wrapper.actionName = "Quit";
+            auto res = controller.leaveRoom(sender);
+            res.actionName = "Quit";
 
-            return wrapper;
+            return res;
         }
 };
 
@@ -46,18 +43,33 @@ class CreateGameAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
 
-            recipientsWrapper room = controller.createRoom(data, sender);            
-            if(room.data.status == Status::SUCCESS){
+            recipientsWrapper res = controller.createRoom(data, sender);            
+            if(res.data.code == Status::Success) {
                 //return room code to client
-                SPDLOG_INFO("Game Created: " + room.data.message);
-                room.actionName = "Game Created";
-            }
-            else{
+                SPDLOG_INFO("Game Created: " + res.data.message);
+                res.actionName = "Game Created";
+            } else {
                 SPDLOG_ERROR("Error: room not created");
-                room.actionName = "Error";
+                res.actionName = "Error";
             }
 
-            return room;
+            return res;
+        }
+};
+
+class StartGameAction : public Action {
+    private:
+        recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
+            SPDLOG_INFO("StartGame Action Detected");
+
+            auto res = controller.startGame(sender);
+            if (res.data.code == Status::Success) {
+                res.actionName = "Game Started";
+            } else {
+                res.actionName = "Error";
+            }
+
+            return res;
         }
 };
 
@@ -69,14 +81,21 @@ class CreateGameAction : public Action {
 //         }
 // };
 
-// class EndGameAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
-//             SPDLOG_INFO("End Game Action Detected");
+class EndGameAction : public Action {
+    private:
+        recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
+            SPDLOG_INFO("End Game Action Detected");
 
-//             return createaJSONMessage("close game", "game ended");
-//         }
-// };
+            auto res = controller.endGame(sender);
+            if (res.data.code == Status::Success) {
+                res.actionName = "Game Ended";
+            } else {
+                res.actionName = "Error";
+            }
+
+            return res;
+        }
+};
 
 // class SendChatAction : public Action {
 //     private:
@@ -111,6 +130,6 @@ void ActionHandler::init() {
     registerAction("Quit", std::make_unique<QuitAction>());
     // registerAction("Shutdown", std::make_unique<ShutdownAction>());
     registerAction("Create", std::make_unique<CreateGameAction>());
-    // registerAction("End Game", std::make_unique<EndGameAction>());
+    registerAction("End Game", std::make_unique<EndGameAction>());
     // registerAction("Send Chat", std::make_unique<SendChatAction>());
 }

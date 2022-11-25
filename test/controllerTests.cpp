@@ -46,7 +46,7 @@ TEST_F(ControllerTests, createRoom) {
     auto response = controller.createRoom(config, player1);
     auto recipients = response.recipientList;
 
-    EXPECT_EQ(response.data.status, Status::SUCCESS);
+    EXPECT_EQ(response.data.code, Status::Success);
     EXPECT_FALSE(response.data.message == ""); // game code should created
     EXPECT_FALSE(recipients.find(player1) == recipients.end());
     EXPECT_EQ(recipients.size(), 1);
@@ -56,50 +56,40 @@ TEST_F(ControllerTests, onePlayerJoinsRoom) {
     auto response = controller.joinRoom(inviteCode, player2);
     auto recipients = response.recipientList;
 
-    EXPECT_EQ(response.data.status, Status::SUCCESS);
+    EXPECT_EQ(response.data.code, Status::Success);
     EXPECT_EQ(recipients.size(), 2);
 
     auto it = recipients.find(player2);
-    auto id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 222);
 
     it = recipients.find(player1);
-    id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 111);
 }
 
 TEST_F(ControllerTests, multiplePlayersJoinRoom) {
     auto response = controller.joinRoom(inviteCode, player2);
     auto recipients = response.recipientList;
-    EXPECT_EQ(response.data.status, Status::SUCCESS);
+    EXPECT_EQ(response.data.code, Status::Success);
     EXPECT_EQ(recipients.size(), 2);
 
     response = controller.joinRoom(inviteCode, player3);
     recipients = response.recipientList;
-    EXPECT_EQ(response.data.status, Status::SUCCESS);
+    EXPECT_EQ(response.data.code, Status::Success);
     EXPECT_EQ(recipients.size(), 3);
 
     response = controller.joinRoom(inviteCode, player4);
     recipients = response.recipientList;
-    EXPECT_EQ(response.data.status, Status::SUCCESS);
+    EXPECT_EQ(response.data.code, Status::Success);
     EXPECT_EQ(recipients.size(), 4);
 
     auto it = recipients.find(player4);
-    auto id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 444);
 
     it = recipients.find(player3);
-    id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 333);
 
     it = recipients.find(player2);
-    id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 222);
 }
 
 TEST_F(ControllerTests, maxPlayersInRoom) {
@@ -109,23 +99,169 @@ TEST_F(ControllerTests, maxPlayersInRoom) {
 
     auto response = controller.joinRoom(inviteCode, player5);
     auto recipients = response.recipientList;
-    EXPECT_EQ(response.data.status, Status::FAIL);
+    EXPECT_EQ(response.data.code, Status::Fail);
     EXPECT_EQ(recipients.size(), 1);
 
     auto it = recipients.find(player5);
-    auto id = (*it).id;
     EXPECT_FALSE(it == recipients.end());
-    EXPECT_EQ(id, 555);
 }
 
 TEST_F(ControllerTests, onePlayerLeavesRoom) {
+    auto response = controller.joinRoom(inviteCode, player2);
+    auto recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
 
+    auto it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player1);
+    EXPECT_FALSE(it == recipients.end());
+
+    response = controller.leaveRoom(player2);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
 }
 
 TEST_F(ControllerTests, multiplePlayersLeaveRoom) {
+    auto response = controller.joinRoom(inviteCode, player2);
+    auto recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
 
+    auto it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.joinRoom(inviteCode, player3);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 3);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player2);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 3);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player1);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player3);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player1);
+    EXPECT_FALSE(it == recipients.end());
 }
 
 TEST_F(ControllerTests, allPlayersLeaveRoom) {
+    auto response = controller.joinRoom(inviteCode, player2);
+    auto recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
 
+    auto it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.joinRoom(inviteCode, player3);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 3);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player1);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 3);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player1);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player2);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player3);
+    recipients = response.recipientList;
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    EXPECT_EQ(recipients.size(), 1);
+    it = recipients.find(player3);
+    EXPECT_FALSE(it == recipients.end());
+}
+
+TEST_F(ControllerTests, leaveRoomTwice) {
+    auto response = controller.joinRoom(inviteCode, player2);
+    auto recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    auto it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player2);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 2);
+    EXPECT_EQ(response.data.code, Status::Success);
+
+    it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+
+    it = recipients.find(player1);
+    EXPECT_FALSE(it == recipients.end());
+
+
+    response = controller.leaveRoom(player2);
+    recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 1);
+    EXPECT_EQ(response.data.code, Status::Fail);
+
+    it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
+}
+
+TEST_F(ControllerTests, leaveRoomButNeverJoin) {
+    auto response = controller.leaveRoom(player2);
+    auto recipients = response.recipientList;
+    EXPECT_EQ(recipients.size(), 1);
+    EXPECT_EQ(response.data.code, Status::Fail);
+
+    auto it = recipients.find(player2);
+    EXPECT_FALSE(it == recipients.end());
 }

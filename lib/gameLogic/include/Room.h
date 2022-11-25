@@ -13,43 +13,36 @@
 // - store room info 
 // - has rules on which players can join
 
+enum Status {
+    Success,
+    Fail,
+};
+
+struct Response {
+    Status code;
+    std::string message;
+};
+
 class Room {
 public:
-
-    enum Status {
-        Success,
-        Fail,
-    };
-
-    struct StatusInfo {
-        Status      statusCode;
-        std::string message;
-    };
-
-    struct SendInfo {
-        int         playerId;
-        std::string message;
-    };
-
-    struct Response {
-        StatusInfo            status;
-        std::vector<SendInfo> sendInfo;
-    };
-
-    Room(RoomConfigBuilderOptions roomConfig, Player host) { 
+    Room(RoomConfigBuilderOptions roomConfig, Player& host) { 
         buildRoomConfig(this->config, roomConfig, players);
         players.push_back(host);
     }
 
-    Response addPlayer(Player);
+    Response addPlayer(Player&);
 
-    Response removePlayer(Player);
+    Response removePlayer(Player&);
 
-    Response startGame(Player);
+    Response startGame(Player&);
 
-    Response sendGameData(Player);
+    Response endGame(Player&);
+
+    Response sendGameData(Player&);
 
     std::vector<Player> getAllPlayers();
+
+    Player findPlayer(uintptr_t connectionID);
 
     Player getHost();
 
@@ -57,25 +50,4 @@ public:
 private:
     RoomConfig config;
     std::vector<Player> players;
-};
-
-
-class ResponseBuilder {
-public:
-    ResponseBuilder(Room::Response& res) : 
-        response{res}
-    { }
-
-    ResponseBuilder& setStatus(Room::Status status, std::string message) {
-        this->response.status = Room::StatusInfo{status, message};
-        return *this;
-    }
-
-    ResponseBuilder& addReceiver(Player receiver, std::string message) {
-        this->response.sendInfo.push_back(Room::SendInfo{receiver.getId(), message});
-        return *this;
-    }
-
-private:
-    Room::Response& response;
 };

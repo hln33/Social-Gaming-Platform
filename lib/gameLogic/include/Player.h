@@ -27,10 +27,23 @@ class Player {
     public:
         uintptr_t connectionID;
 
-        Player(playerTypeEnum playerType);
-        Player(playerTypeEnum playerType, std::string username);
-        Player(playerTypeEnum playerType, networking::Connection& connection);
-        Player(playerTypeEnum playerType, uintptr_t connectionID);
+        Player(playerTypeEnum type) 
+            :id{0}, playerType{type}
+        { 
+            name = "player" + id;
+        }
+
+        Player(playerTypeEnum type, std::string username) 
+            :id{0}, playerType{type}, name{username}
+        { }
+
+        Player(playerTypeEnum type, networking::Connection& connection) 
+            :id{0}, playerType{type}, connectionID{connection.id}
+        { }
+
+        Player(playerTypeEnum type, uintptr_t connectionID) 
+            :id{0}, playerType{type}, connectionID{connectionID}
+        { }
         // Player(std::string_view name, bool audience, int highScore, int currentScore);
         // Player(std::string_view name, bool audience, int currentScore);
         // Player(std::string_view name, bool audience);
