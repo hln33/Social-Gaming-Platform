@@ -83,17 +83,18 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player:{}  Attempting to join room", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to join room:{}", connectionInfo.id, roomCode);
     try {
         Room& room = findRoom(roomCode);
         Player newPlayer {playerTypeEnum::player, connectionInfo};
         room.addPlayer(newPlayer);
         addToRecipients(room);
-        SPDLOG_INFO("Connection:{} has joined room:{}", connectionInfo.id, roomCode);
     } catch (Response exception) {
+        SPDLOG_ERROR("Player:{} Unable to join room:{}", connectionInfo.id, roomCode);
         return recipientsWrapper{recipients, exception, ResponseCode::JOIN_GAME_FAIL};
     }
-    
+
+    SPDLOG_INFO("Connection:{} has joined room:{}", connectionInfo.id, roomCode);
     PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
     return recipientsWrapper{recipients, Response{connectionInfo.id + " joined room"}, ResponseCode::JOIN_GAME_SUCCESS};
 }
@@ -102,18 +103,20 @@ recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) 
     initRecipients();
     recipients.insert(connectionInfo);
 
+    // don't need to check for exceptions because player will not have option to leave room unless they are already in one
+    std::string roomCode = findRoomCode(connectionInfo);
+    Room& room = findRoom(roomCode);
+    Player player = room.findPlayer(connectionInfo.id);
+
     SPDLOG_INFO("Player:{}  Attempting to leave room", connectionInfo.id);
     try {
-        std::string roomCode = findRoomCode(connectionInfo);
-        Room& room = findRoom(roomCode);
-        Player player = room.findPlayer(connectionInfo.id);
         room.removePlayer(player);
         addToRecipients(room);
-        SPDLOG_INFO("Player has left room:{}", roomCode);
     } catch (Response exception) {
         return recipientsWrapper{recipients, exception, ResponseCode::LEFT_ROOM_FAIL};
     }
 
+    SPDLOG_INFO("Player has left room:{}", roomCode);
     PlayerLookUp.erase(connectionInfo.id);
     return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::LEFT_ROOM_SUCCESS};
 }
@@ -122,18 +125,20 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
     initRecipients();
     recipients.insert(connectionInfo);
 
+    // don't need to check for exceptions because player will not have option to start game unless they are already in one
+    std::string roomCode = findRoomCode(connectionInfo);
+    Room& room = findRoom(roomCode);
+    Player player = room.findPlayer(connectionInfo.id);
+
     SPDLOG_INFO("Player:{}  Attempting to start game", connectionInfo.id);
     try {
-        std::string roomCode = findRoomCode(connectionInfo);
-        Room& room = findRoom(roomCode);
-        Player player = room.findPlayer(connectionInfo.id);
         Response res = room.startGame(player);
         addToRecipients(room);
-        SPDLOG_INFO("Starting game in room:{}", roomCode);
     } catch (Response exception) {
         return recipientsWrapper{recipients, exception, ResponseCode::START_GAME_FAIL};
     } 
     
+    SPDLOG_INFO("Starting game in room:{}", roomCode);
     return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::START_GAME_SUCCESS};
 }
 
@@ -141,17 +146,20 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player:{}  Attempting to end game", connectionInfo.id);
+    // don't need to check for exceptions because player will not have option to start game unless they are already in one
+    std::string roomCode = findRoomCode(connectionInfo);
+    Room& room = findRoom(roomCode);
+    Player player = room.findPlayer(connectionInfo.id);
+
+    SPDLOG_INFO("Player:{}  Attempting to end game in room:{}", connectionInfo.id, roomCode);
     try {
-        std::string roomCode = findRoomCode(connectionInfo);
-        Room& room = findRoom(roomCode);
-        Player player = room.findPlayer(connectionInfo.id);
         Response res = room.endGame(player);
-        SPDLOG_INFO("Successfully ended game in room:{}", roomCode);
     } catch (Response exception) {
+        SPDLOG_ERROR("Player:{} Could not end game in room:{}", connectionInfo.id, roomCode);
         return recipientsWrapper{recipients, exception, ResponseCode::END_GAME_FAIL};
     } 
 
+    SPDLOG_INFO("Successfully ended game in room:{}", roomCode);
     return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::END_GAME_SUCCESS};
 }
 
