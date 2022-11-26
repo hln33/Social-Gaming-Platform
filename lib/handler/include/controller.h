@@ -15,7 +15,7 @@
 struct recipientsWrapper{
     std::set<networking::Connection> recipientList;
     Response data;
-    std::string actionName = "";
+    std::string responseCode;
 };
 
 

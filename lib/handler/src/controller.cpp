@@ -36,8 +36,8 @@ std::string Controller::findRoomCode(networking::Connection connectionInfo) {
     auto connectionID = connectionInfo.id;
     auto itr = PlayerLookUp.find(connectionID);
     if (itr == PlayerLookUp.end()) {
-        SPDLOG_ERROR("Player does not belong in a room");
-        throw Response{Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
+        SPDLOG_ERROR("Player:{} does not belong in a room", connectionID);
+        throw Response{PLAYER_NOT_FOUND_IN_ROOM};
     }
 
     auto roomCode = (*itr).second;
@@ -47,8 +47,8 @@ std::string Controller::findRoomCode(networking::Connection connectionInfo) {
 Room& Controller::findRoom(std::string roomCode) {
     auto roomItr = GameRoomLookUp.find(roomCode);
     if (roomItr == GameRoomLookUp.end()) {
-        SPDLOG_ERROR("Could not find room with code: {}", roomCode);
-        throw Response{Status::Fail, ROOM_NOT_FOUND};
+        SPDLOG_ERROR("Could not find room with code:{}", roomCode);
+        throw Response{ROOM_NOT_FOUND};
     }
 
     Room& room = (*roomItr).second;
@@ -75,84 +75,84 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& 
     PlayerLookUp.insert(std::pair{connectionInfo.id, newRandomCode});
 
     // 3. return the response
-    SPDLOG_INFO("Room:{} has been created with host:[{}]", newRandomCode, connectionInfo.id);
-    return recipientsWrapper{recipients, Response{Status::Success, newRandomCode}, ResponseType::CREATE_GAME_SUCCESS};
+    SPDLOG_INFO("Room:{} has been created with host:{}", newRandomCode, connectionInfo.id);
+    return recipientsWrapper{recipients, Response{newRandomCode}, ResponseCode::CREATE_GAME_SUCCESS};
 }
 
 recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player: {}  Attempting to join room", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to join room", connectionInfo.id);
     try {
         Room& room = findRoom(roomCode);
         Player newPlayer {playerTypeEnum::player, connectionInfo};
         room.addPlayer(newPlayer);
         addToRecipients(room);
-        SPDLOG_INFO("Connection:[{}] has joined room: {}", connectionInfo.id, roomCode);
+        SPDLOG_INFO("Connection:{} has joined room:{}", connectionInfo.id, roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, exception, ResponseType::JOIN_GAME_FAIL};
+        return recipientsWrapper{recipients, exception, ResponseCode::JOIN_GAME_FAIL};
     }
     
     PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
-    return recipientsWrapper{recipients, Response{Status::Success, connectionInfo.id + " joined room"}, ResponseType::JOIN_GAME_SUCCESS};
+    return recipientsWrapper{recipients, Response{connectionInfo.id + " joined room"}, ResponseCode::JOIN_GAME_SUCCESS};
 }
 
 recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player: {}  Attempting to leave room", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to leave room", connectionInfo.id);
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
         Player player = room.findPlayer(connectionInfo.id);
         room.removePlayer(player);
         addToRecipients(room);
-        SPDLOG_INFO("Player has left room: {}", roomCode);
+        SPDLOG_INFO("Player has left room:{}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, exception, ResponseType::LEFT_ROOM_FAIL};
+        return recipientsWrapper{recipients, exception, ResponseCode::LEFT_ROOM_FAIL};
     }
 
     PlayerLookUp.erase(connectionInfo.id);
-    return recipientsWrapper{recipients, Response{Status::Success, ""}, ResponseType::LEFT_ROOM_SUCCESS};
+    return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::LEFT_ROOM_SUCCESS};
 }
 
 recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player: {}  Attempting to start game", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to start game", connectionInfo.id);
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
         Player player = room.findPlayer(connectionInfo.id);
         Response res = room.startGame(player);
         addToRecipients(room);
-        SPDLOG_INFO("Starting game in room: {}", roomCode);
+        SPDLOG_INFO("Starting game in room:{}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, exception, ResponseType::START_GAME_FAIL};
+        return recipientsWrapper{recipients, exception, ResponseCode::START_GAME_FAIL};
     } 
     
-    return recipientsWrapper{recipients, Response{Status::Success, ""}, ResponseType::START_GAME_SUCCESS};
+    return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::START_GAME_SUCCESS};
 }
 
 recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
     initRecipients();
     recipients.insert(connectionInfo);
 
-    SPDLOG_INFO("Player: {}  Attempting to end game", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to end game", connectionInfo.id);
     try {
         std::string roomCode = findRoomCode(connectionInfo);
         Room& room = findRoom(roomCode);
         Player player = room.findPlayer(connectionInfo.id);
         Response res = room.endGame(player);
-        SPDLOG_INFO("Successfully ended game in room: {}", roomCode);
+        SPDLOG_INFO("Successfully ended game in room:{}", roomCode);
     } catch (Response exception) {
-        return recipientsWrapper{recipients, exception, ResponseType::END_GAME_FAIL};
+        return recipientsWrapper{recipients, exception, ResponseCode::END_GAME_FAIL};
     } 
 
-    return recipientsWrapper{recipients, Response{Status::Success, ""}, ResponseType::END_GAME_SUCCESS};
+    return recipientsWrapper{recipients, Response{NO_DATA}, ResponseCode::END_GAME_SUCCESS};
 }
 
 

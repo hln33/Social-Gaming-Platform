@@ -34,7 +34,7 @@ class CreateGameAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
 
-            recipientsWrapper res = controller.createRoom(data, sender);            
+            auto res = controller.createRoom(data, sender);            
             return res;
         }
 };
@@ -81,14 +81,14 @@ class EndGameAction : public Action {
 json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
-        return createaJSONMessage(ResponseType::ERROR, "No action found");
+        return createaJSONMessage(ResponseCode::ERROR, "No action found");
     }
 
     auto wrapper = action->second->execute(data, sender, this->controller);
     recipients = wrapper.recipientList;
 
-    SPDLOG_INFO(wrapper.actionName);
-    return createaJSONMessage(wrapper.actionName, wrapper.data.message);
+    SPDLOG_INFO(wrapper.responseCode);
+    return createaJSONMessage(wrapper.responseCode, wrapper.data.message);
 
 }
 

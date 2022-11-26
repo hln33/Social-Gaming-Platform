@@ -1,13 +1,6 @@
 #include <string>
 
-
-enum Status {
-    Success,
-    Fail,
-};
-
 struct Response {
-    Status code;
     std::string message;
 };
 
@@ -16,8 +9,9 @@ struct Response {
 const std::string PLAYER_NOT_FOUND_IN_ROOM = "Player not found in room";
 const std::string ROOM_NOT_FOUND = "Could not find roon";
 const std::string REQUIREMENTS_NOT_MET = "Does not meet requirements";
+const std::string NO_DATA = "";
 
-namespace ResponseType {
+namespace ResponseCode {
 
 const std::string CREATE_GAME_SUCCESS = "Game created";
 const std::string LEFT_ROOM_SUCCESS = "Player left";

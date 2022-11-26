@@ -14,7 +14,7 @@ void Room::addPlayer(Player& player) {
     }
 
     SPDLOG_ERROR("Failed to add player:{} into room", player.connectionID);
-    throw Response {Status::Fail, REQUIREMENTS_NOT_MET};
+    throw Response {REQUIREMENTS_NOT_MET};
 }
 
 void Room::removePlayer(Player& p) {
@@ -23,22 +23,22 @@ void Room::removePlayer(Player& p) {
         return player.connectionID == p.connectionID;
     });
     if (removeThis == players.end()) {
-        throw Response {Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
+        throw Response {PLAYER_NOT_FOUND_IN_ROOM};
     }
  
     players.erase(removeThis);
 }
 
 Response Room::startGame(Player& requester) { 
-    return Response {Status::Fail, "todo"};    
+    return Response {"todo"};    
 }
 
 Response Room::endGame(Player& requester) {
-    return Response {Status::Fail, "todo"};    
+    return Response {"todo"};    
 }
 
 Response Room::sendGameData(Player& requester) {
-    return Response {Status::Fail, "todo"};    
+    return Response {"todo"};    
 }
 
 std::vector<Player> Room::getAllPlayers() {
@@ -51,7 +51,7 @@ Player Room::findPlayer(uintptr_t connectionID) {
     });
     if (playerItr == players.end()) {
         SPDLOG_ERROR("could not find player in room");
-        throw Response {Status::Fail, PLAYER_NOT_FOUND_IN_ROOM};
+        throw Response {PLAYER_NOT_FOUND_IN_ROOM};
     }
 
     return *playerItr;
