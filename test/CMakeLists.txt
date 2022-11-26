@@ -4,6 +4,7 @@ add_executable(runAllTests
     messageProcessorTests.cpp
     handlerTests.cpp
     rulesUnitTests.cpp
+    ListObjectUnitTests.cpp
 )
 
 target_link_libraries(runAllTests

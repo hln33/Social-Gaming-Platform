@@ -12,6 +12,7 @@ add_library(${This}
         #these are broken
         #src/room.cpp
         #src/player_storage.cpp
+        src/ListObject.cpp
         )
 
 target_include_directories(${This}
