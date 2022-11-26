@@ -130,11 +130,12 @@ recipientsWrapper Controller::startGame(networking::Connection& connectionInfo) 
     Room& room = findRoom(roomCode);
     Player player = room.findPlayer(connectionInfo.id);
 
-    SPDLOG_INFO("Player:{}  Attempting to start game", connectionInfo.id);
+    SPDLOG_INFO("Player:{}  Attempting to start game in room:{}", connectionInfo.id, roomCode);
     try {
         Response res = room.startGame(player);
         addToRecipients(room);
     } catch (Response exception) {
+        SPDLOG_ERROR("Could not start game in room:{}", roomCode);
         return recipientsWrapper{recipients, exception, ResponseCode::START_GAME_FAIL};
     } 
     
