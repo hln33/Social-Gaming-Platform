@@ -78,6 +78,40 @@ private:
     std::vector<std::unique_ptr<Rule>>::iterator sentinel;
 };
 
+
+
+class RuleList : public RuleListInterface{
+public:
+    RuleList() : rules{std::vector<std::unique_ptr<Rule>>{}} { }
+    RuleList(const RuleList& r) {
+
+    }
+    RuleList(std::unique_ptr<Rule> rule) : 
+        rules{std::vector<std::unique_ptr<Rule>>{}} 
+    {
+        rules.push_back(std::move(rule));
+    }
+
+private:
+    std::vector<std::unique_ptr<Rule>> rules;
+
+    RuleIterPointer getIterImpl() override { 
+        return std::make_unique<RuleListIter>(rules.begin(), rules.end());
+    }
+
+    void appendRuleImpl(std::unique_ptr<Rule> rule) override {
+        rules.push_back(std::move(rule));
+    }
+
+    RuleIter beginImpl() override {
+        return rules.begin();
+    }
+    
+    RuleIter endImpl() override {
+        return rules.end();
+    }
+};
+
 // we also need a bookmark for the foreach rule to track the iteration of the loop
 class ForeachIter : public Iter {
 public:
@@ -161,7 +195,9 @@ public:
         std::transform(ruleList.begin(), ruleList.end(), std::back_inserter(parallelRules),
             [](std::unique_ptr<Rule>& r) { 
                 // create new rule list with 1 rule
-                auto rules = RuleList{std::move(r)};
+                RuleList rules = RuleList{std::move(r)};
+                // auto rules = RuleList{};
+
                 return InterpreterState{rules.getIter()}; 
             }
         );
@@ -216,6 +252,13 @@ private:
 class ParallelforIter : public Iter {
 public:
     ParallelforIter(std::vector<Object>& itemList, RuleListInterface* body)
+    {
+        // initialize parallel execution stacks
+        std::transform(itemList.begin(), itemList.end(), std::back_inserter(parallelRules),
+            [&body](auto x) { return InterpreterState{body->getIter()}; }
+        );
+    }
+    ParallelforIter(std::vector<Object>&& itemList, RuleListInterface* body)
     {
         // initialize parallel execution stacks
         std::transform(itemList.begin(), itemList.end(), std::back_inserter(parallelRules),
