@@ -3,11 +3,8 @@ enable_testing()
 add_executable(runAllTests
     messageProcessorTests.cpp
     handlerTests.cpp
-<<<<<<< HEAD
     controllerTests.cpp
-=======
     rulesUnitTests.cpp
->>>>>>> origin/51-combine-rule-style-with-rule-structure
 )
 
 target_link_libraries(runAllTests
