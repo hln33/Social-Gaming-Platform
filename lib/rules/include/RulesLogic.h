@@ -39,7 +39,7 @@ private:
 };
 
 
-/**
+/**RuleListInterface
 { "rule": "foreach",
   "list": <<list, list expression, or name of a list object>>,
   "element": << name for list element object within the rules below >>

@@ -69,10 +69,10 @@ recipientsWrapper Controller::createRoom(json jsonFile, networking::Connection& 
     
     // 1. generate random code
     std::string newRandomCode = generateRoomCode();
-
+    
     // 2. add the room into GameRoomLookup
     RoomConfigBuilderOptions configBuilder = extractConfig(jsonFile);
-
+    getRuleTree(jsonFile);
     Room room = Room{configBuilder, newHost};
     GameRoomLookUp.insert(std::pair{newRandomCode, std::move(room)});
     PlayerLookUp.insert(std::pair{connectionInfo.id, newRandomCode});

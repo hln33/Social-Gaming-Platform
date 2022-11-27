@@ -122,3 +122,5 @@ RoomConfigBuilderOptions extractConfig(json& text);
 // Constant extractConstant(json& text);
 
 json getJsonFromFilePath(std::string file_path);
+
+void getRuleTree(json& text);
