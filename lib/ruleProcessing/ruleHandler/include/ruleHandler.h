@@ -3,17 +3,26 @@
 #include <nlohmann/json.hpp>
 #include <unordered_map>
 #include <memory>
+#include "RulesLogic.h"
+
+
 
 using json = nlohmann::json;
 
+struct ruleHandlerWrapper{
+    // Rule rule;
+    std::string ruleName;
+    json moreRules;
+};
+
 class RuleAction {
     public:
-        void execute(json data) {
+        ruleHandlerWrapper execute(json data) {
             return executeImpl(data);
         }
 
     private:
-        virtual void executeImpl(json data) = 0;
+        virtual ruleHandlerWrapper executeImpl(json data) = 0;
 };
 
 class RuleHandler {
