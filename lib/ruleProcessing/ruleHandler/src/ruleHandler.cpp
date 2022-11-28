@@ -58,7 +58,6 @@ class GlobalMessage : public RuleAction {
             std::cout << "Global Message rule \n"; 
             
             json rules = data["rules"];
-            
             return ruleHandlerWrapper{"GlobalMessage", rules};
         }
 };
@@ -118,7 +117,7 @@ void RuleHandler::executeRuleAction(std::string ruleType, json data) {
 
     auto temp = action->second->execute(data);
     
-    // std::cout << temp.ruleName << " executeRuleAction \n" ;
+    // std::cout << data.dump() << " executeRuleAction \n" ;
 
     if(temp.moreRules != nullptr){
         processRules(temp.moreRules);
@@ -135,15 +134,13 @@ void RuleHandler::registerRuleAction(std::string ruleType, std::unique_ptr<RuleA
 void RuleHandler::init() {
     registerRuleAction("foreach", std::make_unique<ForEach>());
     registerRuleAction("scores", std::make_unique<Scores>());
-    registerRuleAction("scores", std::make_unique<GlobalMessage>());
+    registerRuleAction("global-message", std::make_unique<GlobalMessage>());
     registerRuleAction("when", std::make_unique<When>());
     registerRuleAction("extend", std::make_unique<Extend>());
     registerRuleAction("discard", std::make_unique<Discard>());
     registerRuleAction("parallelfor", std::make_unique<ParallelFor>());
     registerRuleAction("input-choice", std::make_unique<InputChoice>());
     registerRuleAction("add", std::make_unique<Add>());
-    registerRuleAction("global-message", std::make_unique<GlobalMessage>());
-
 }
 
 void RuleHandler::processRules(const json& incoming){
