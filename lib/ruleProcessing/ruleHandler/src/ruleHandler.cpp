@@ -118,9 +118,12 @@ void RuleHandler::executeRuleAction(std::string ruleType, json data) {
 
     auto temp = action->second->execute(data);
     
-    std::cout << temp.ruleName << " executeRuleAction \n" ;
+    // std::cout << temp.ruleName << " executeRuleAction \n" ;
 
-    processRules(temp.moreRules);
+    if(temp.moreRules != nullptr){
+        processRules(temp.moreRules);
+    }
+   
       
     // return rule object
 }
@@ -146,12 +149,12 @@ void RuleHandler::init() {
 void RuleHandler::processRules(const json& incoming){
     std::vector<json> individual_rules = incoming;
     // loop through each individual rule
-    std::cout << incoming.dump();
+    // std::cout << incoming.dump();
+    std::cout << "---------" << "\n";
     for (auto rule : individual_rules){
-        std::cout << "something" << "\n";
         // json parsedMessage = json::parse(rule.text);
         const std::string ruleType = rule["rule"];
-        // std::cout << ruleType << "\n";
+        
         this->executeRuleAction(ruleType, rule);
     }
 }
