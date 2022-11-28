@@ -12,6 +12,8 @@ class ForEach : public RuleAction {
     private:
         void executeImpl(json data) override{
             std::cout << "For Each rule \n"; 
+            json rules = data["rules"];
+            
             
         }
 };
@@ -19,6 +21,7 @@ class ForEach : public RuleAction {
 class InputChoice : public RuleAction {
     private:
         void executeImpl(json data) override{
+
             std::cout << "Input Choice rule \n"; 
             
         }
@@ -88,7 +91,11 @@ void RuleHandler::executeRuleAction(std::string ruleType, json data) {
         // return createaJSONMessage("Error", "No action found");
     }
 
+
     action->second->execute(data);
+    
+
+      
     // return rule object
 }
 
@@ -107,4 +114,15 @@ void RuleHandler::init() {
     registerRuleAction("input-choice", std::make_unique<InputChoice>());
     registerRuleAction("add", std::make_unique<Add>());
 
+}
+
+void RuleHandler::processRules(const json& incoming){
+    std::vector<json> individual_rules = incoming;
+    // loop through each individual rule
+    for (auto rule : individual_rules){
+        std::cout << "something" << "\n";
+        // json parsedMessage = json::parse(rule.text);
+        const std::string ruleType = rule["rule"];
+        this->executeRuleAction(ruleType, rule);
+    }
 }

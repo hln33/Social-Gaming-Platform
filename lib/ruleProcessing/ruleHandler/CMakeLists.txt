@@ -22,6 +22,8 @@ target_link_libraries(${This}
                     networking
                     spdlog::spdlog
                     nlohmann_json::nlohmann_json
+                    ruleProcessor
+                    
               
 )
 

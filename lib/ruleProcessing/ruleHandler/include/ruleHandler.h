@@ -25,10 +25,14 @@ class RuleHandler {
         }
 
         void executeRuleAction(std::string ruleType, json data);
+        void processRules(const json& incoming);
 
     private:
         std::unordered_map<std::string, RulePointer> rules;
 
         void registerRuleAction(std::string ruleType, std::unique_ptr<RuleAction>);
+
+        
         void init();
 };
+
