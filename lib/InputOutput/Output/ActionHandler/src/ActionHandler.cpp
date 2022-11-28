@@ -25,33 +25,6 @@ class CreateGameAction : public Action {
         }
 };
 
-// class ShutdownAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data) override {
-//             SPDLOG_INFO("Shutdown Action Detected");
-//             return createaJSONMessage("shutdown", "server shutting down");
-//         }
-// };
-
-// class EndGameAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data override {
-//             SPDLOG_INFO("End Game Action Detected");
-
-//             return createaJSONMessage("close game", "game ended");
-//         }
-// };
-
-// class SendChatAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data) override {
-//             SPDLOG_INFO("Send Chat Action Detected");
-         
-//             return createaJSONMessage("chat", "");
-//         }
-// };
-
-
 
 json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
