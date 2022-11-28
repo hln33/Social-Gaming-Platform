@@ -41,7 +41,9 @@ int main(int argc, char* argv[]) {
     if ("exit" == text || "quit" == text) {
       done = true;
     } else{
-      json payload = createJSONMessage("chat", text);
+      json input;
+      input["input"] = text;
+      json payload = createJSONMessage("chat", input.dump());
       client.send(payload.dump());
     }
   };
