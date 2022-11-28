@@ -1,7 +1,7 @@
-set(This ClientActionHandler)
+set(This InputMessageProcessor)
 
 add_library(${This}
-            src/ActionHandler.cpp
+            MessageProcessor.cpp
 )
 
 target_include_directories(${This}
@@ -20,11 +20,11 @@ set_target_properties(${This}
 
 target_link_libraries(${This}
                     networking
-                    nlohmann_json::nlohmann_json
                     spdlog::spdlog
-                    handler
+                    nlohmann_json::nlohmann_json
+                    InputActionHandler
 )
-
+ 
 install(TARGETS ${This}
   ARCHIVE DESTINATION lib
 )

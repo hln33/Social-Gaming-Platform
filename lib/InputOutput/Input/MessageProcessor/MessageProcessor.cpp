@@ -15,8 +15,7 @@ Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) 
     const std::string command = parsedMessage["type"];
     const std::string data = parsedMessage["message"]; 
 
-    json parsedData = json::parse(data);
-    
+    json parsedData = json::parse(data);    
 
     Connection sender = message.connection;
     json response = actionHandler.executeAction(command, parsedData, sender, this->recipients);

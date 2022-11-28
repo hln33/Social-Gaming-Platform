@@ -11,24 +11,12 @@ using networking::Connection;
 using networking::Message;
 
 
-struct Outgoing {
-  std::string result;
-  std::set<Connection> sendTo;
-  bool shouldShutdown;
-};
-
 class MessageProcessor {
   public:
     MessageProcessor() { }
 
-    Outgoing processMessages(const std::deque<Message>& incoming);
+    json processMessage(const json& message);
 
   private:
     ActionHandler actionHandler;
-    std::set<Connection> recipients;
-    std::ostringstream messageLog;
-
-    void clearRecipients() {
-      recipients.clear();
-    }
 };
