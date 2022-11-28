@@ -3,40 +3,40 @@
 #include <memory>
 #include <string>
 #include <cassert>
-
+#include <optional>
 
 #include "RuleInterface.h"
 #include "InterpreterStack.h"
 #include "RuleIter.h"
 
 
-// contains the list of rules
-class RuleList : public RuleListInterface{
-public:
-    RuleList() { }
-    RuleList(std::unique_ptr<Rule> rule) {
-        rules.push_back(std::move(rule));
-    }
+// // contains the list of rules
+// class RuleList : public RuleListInterface{
+// public:
+//     RuleList() { }
+//     RuleList(std::unique_ptr<Rule> rule) {
+//         rules.push_back(std::move(rule));
+//     }
 
-private:
-    std::vector<std::unique_ptr<Rule>> rules;
+// private:
+//     std::vector<std::unique_ptr<Rule>> rules;
 
-    RuleIterPointer getIterImpl() override { 
-        return std::make_unique<RuleListIter>(RuleListIter{rules.begin(), rules.end()});
-    }
+//     RuleIterPointer getIterImpl() override { 
+//         return std::make_unique<RuleListIter>(RuleListIter{rules.begin(), rules.end()});
+//     }
 
-    void appendRuleImpl(std::unique_ptr<Rule> rule) override {
-        rules.push_back(std::move(rule));
-    }
+//     void appendRuleImpl(std::unique_ptr<Rule> rule) override {
+//         rules.push_back(std::move(rule));
+//     }
 
-    RuleIter beginImpl() override {
-        return rules.begin();
-    }
+//     RuleIter beginImpl() override {
+//         return rules.begin();
+//     }
     
-    RuleIter endImpl() override {
-        return rules.end();
-    }
-};
+//     RuleIter endImpl() override {
+//         return rules.end();
+//     }
+// };
 
 
 /**RuleListInterface
@@ -50,21 +50,27 @@ private:
 */
 
 // TODO: parse the expression string
-struct Condition{
-    std::string expression;
-    Condition() {}
-    Condition(std::string ex){this->expression = ex;}
-    Condition(const Condition&other){this->expression = other.expression;};
-    Condition(Condition&&) = delete;
-};
+// struct Condition{
+//     std::string expression;
+//     Condition() {}
+//     Condition(std::string ex){this->expression = ex;}
+//     Condition(const Condition&other){this->expression = other.expression;};
+//     Condition(Condition&&) = delete;
+// };
 
 
 // using ObjectGenerator = std::vector<Object>::const_iterator;//custom variables
-class Expression {
+class Expression: public Rule {
     public: 
-        std::vector<Object> getResult(){}
+        std::vector<Object> getResult(){
+            return std::vector<Object>();
+        }
 
         //object evaluate();
+
+    private:
+        SignalData executeImpl(InterpreterState& interpreter) override {return SignalData{Signal::COMPLETE}; };
+        std::string getNameImpl() const override {return ""; };
 };
 
 
@@ -72,13 +78,13 @@ class Expression {
 
 class ForEachRule : public Rule{
     public:
-        ForEachRule(Expression ex, RuleList& rules) : listExpr{ex} , ruleList{rules}
+        ForEachRule(Expression& ex, RuleList& rules) : listExpr{ex} , ruleList{rules}
         { }
 
 
     private:
+        Expression& listExpr;
         RuleList ruleList;
-        Expression listExpr;
         std::string getNameImpl() const override{
             return "foreach";
         }
@@ -105,14 +111,16 @@ class ForEachRule : public Rule{
 */
 
 
-class LoopRule : public Rule{
+class LoopRule : public Rule {
     public:
-        LoopRule(RuleList& rules) : ruleList{rules}
+        LoopRule(RuleList& rules, Expression& express) : 
+            ruleList{rules}, 
+            expression{express}
         { }
 
     private:
         RuleList ruleList;
-        Condition condition;
+        Expression& expression;
 
         std::string getNameImpl() const override{
             return "loop";
@@ -122,7 +130,7 @@ class LoopRule : public Rule{
             // TODO: implement this
             // interpreter.push(std::make_unique<LoopIter>(listExpr.getResult(), &ruleList));
             
-            interpreter.push(std::make_unique<LoopIter> (&ruleList));
+            interpreter.push(std::make_unique<LoopIter>(&expression, &ruleList));
             return SignalData{Signal::COMPLETE};
         }
 };
@@ -150,7 +158,7 @@ private:
 
     SignalData executeImpl(InterpreterState& interpreter) override{
         // TODO: implement this
-        interpreter.push(std::make_unique<InparallelIter>(&ruleList));
+        interpreter.push(std::make_unique<InparallelIter>(ruleList));
         return SignalData{Signal::COMPLETE};
     }
 };
@@ -175,8 +183,8 @@ public:
     { }
 
 private:
-    Expression listExpr;
-    Expression elementDecl;
+    Expression& listExpr;
+    Expression& elementDecl;
     RuleList ruleList;
     
     std::string getNameImpl() const override{
@@ -208,7 +216,7 @@ public:
         ruleList{rules}
     { }
 private:
-    Expression condition;
+    Expression& condition;
     RuleList ruleList;
 
     std::string getNameImpl() const override{
@@ -323,15 +331,15 @@ We can figure it out on Monday.
 
 -Shawn
 */
-template <typename T>
+
     class ExtendRule : public Rule {
-    {
+    
     private:
-        std::vector<T> list;
-        std::vector<T> target;
+        std::vector<Object> target;
+        std::vector<Object> list;
     public:
-        ExtendRule :(std::vector<T>& target, std::vector<T>& list) : target{target}, list{list} {};
-        ~ExtendRule :();
+        ExtendRule(std::vector<Object>& target, std::vector<Object>& list) : target{target}, list{list} {};
+        ~ExtendRule();
 
         std::string getNameImpl() const override{
             return "extend";
@@ -342,7 +350,7 @@ template <typename T>
             return SignalData{Signal::COMPLETE};
         }
     };
-};
+
 
 /***
 Reverse
@@ -358,13 +366,12 @@ We can figure it out on Monday.
 
 -Shawn
 */
-template <typename T>
+
     class ReverseRule : public Rule {
-        {
     public:
-        ReverseRule(std::vector<T>& list) : list{list} { };
+        ReverseRule(std::vector<Object>& list) : list{list} { };
     private:
-        std::vector<T> list;
+        std::vector<Object> list;
 
         std::string getNameImpl() const override{
             return "reverse";
@@ -375,30 +382,26 @@ template <typename T>
             return SignalData{Signal::COMPLETE};
         }
     };
-};
 
 /**
 { "rule": "shuffle",
   "list": << variable name of a list to shuffle >>
 }
 */
-template <typename T>
-    class ShuffleRule : public Rule {
-        {
-    public:
-        ShuffleRule(std::vector<T>& list) : list{list} { };
-    private:
-        std::vector<T> list;
+class ShuffleRule : public Rule {
+public:
+    ShuffleRule(std::vector<Object>& list) : list{list} { };
+private:
+    std::vector<Object> list;
 
-        std::string getNameImpl() const override{
-            return "suffle";
-        }
+    std::string getNameImpl() const override{
+        return "suffle";
+    }
 
-        SignalData executeImpl(InterpreterState& interpreter) override{
-            std::random_shuffle(list.begin(), list.end());
-            return SignalData{Signal::COMPLETE};
-        }
-    };
+    SignalData executeImpl(InterpreterState& interpreter) override{
+        std::random_shuffle(list.begin(), list.end());
+        return SignalData{Signal::COMPLETE};
+    }
 };
 
 /***
@@ -414,31 +417,28 @@ Sort
   list = [10]
 }
 */
-template <typename T>
-    class SortRule : public Rule {
-    {
-    public:
-        SortRule(std::vector<T>& list) : list{list} { };
-        SortRule(std::vector<T>& list, std::vector<T>& key) : list{list}, key{key} { };
-    private:
-        std::vector<T> list;
-        std::vector<T> key;
+class SortRule : public Rule {
+public:
+    SortRule(std::vector<Object>& list) : list{list} { };
+    SortRule(std::vector<Object>& list, std::vector<Object>& key) : list{list}, key{key} { };
+private:
+    std::vector<Object> list;
+    std::vector<Object> key;
 
-        std::string getNameImpl() const override{
-            return "sort";
+    std::string getNameImpl() const override{
+        return "sort";
+    }
+
+    SignalData executeImpl(InterpreterState& interpreter) override{
+
+        if(key.empty()){
+            //std::sort(list.begin(), list.end());
         }
-
-        SignalData executeImpl(InterpreterState& interpreter) override{
-
-            if(key.empty()){
-                std::sort(list.begin(), list.end());
-            }
-            else{
-               //hold place if key is occupied
-            }
-            return SignalData{Signal::COMPLETE};
+        else{
+            //hold place if key is occupied
         }
-    };
+        return SignalData{Signal::COMPLETE};
+    }
 };
 
 /**
@@ -448,31 +448,28 @@ template <typename T>
   "count": << number of elements to deal >>
 }
 */
-template <typename T>
-    class DealRule : public Rule {
-        {
-    public:
-        DealRule(std::vector<T>& from, std::vector<T>& to, std::size_t count) : 
-            from{from},
-            to{to},
-            count{count}
-        { };
-    private:
-        std::vector<T> from;
-        std::vector<T> to;
-        std::size_t count;
+class DealRule : public Rule {
+public:
+    DealRule(std::vector<Object>& from, std::vector<Object>& to, std::size_t count) : 
+        from{from},
+        to{to},
+        count{count}
+    { };
+private:
+    std::vector<Object> from;
+    std::vector<Object> to;
+    std::size_t count;
 
-        std::string getNameImpl() const override{
-            return "deal";
-        }
+    std::string getNameImpl() const override{
+        return "deal";
+    }
 
-        SignalData executeImpl(InterpreterState& interpreter) override{
-            assert(count <= from.size());
-            
-            std::copy_n(from.begin(), count, std::back_inserter(to));
-            return SignalData{Signal::COMPLETE};
-        }
-    };
+    SignalData executeImpl(InterpreterState& interpreter) override{
+        assert(count <= from.size());
+        
+        std::copy_n(from.begin(), count, std::back_inserter(to));
+        return SignalData{Signal::COMPLETE};
+    }
 };
 
 /**
@@ -486,13 +483,12 @@ THIS DISCARDS THE LAST N ELEMENTS OF THE LIST, WE MIGHT BE INTERPRETING THIS WRO
 
 */
 
-template <typename T>
-    class DiscardRule : public Rule {
-        {
+
+class DiscardRule : public Rule {
     public:
-        DiscardRule(std::vector<T>& list, int count) : list{list}, count{count} { };
+        DiscardRule(std::vector<Object>& list, int count) : list{list}, count{count} { };
     private:
-        std::vector<T> list;
+        std::vector<Object> list;
         int count;
 
         std::string getNameImpl() const override{
@@ -503,7 +499,6 @@ template <typename T>
             list.erase(list.end() - count, list.end()); //erases from size - n to size
             return SignalData{Signal::COMPLETE};
         }
-    };
 };
 
 /**
@@ -518,15 +513,16 @@ class AddRule: public Rule {
     public:
         AddRule(Expression& to, Expression& value) : to{to}, value{value} { };
     private:
-        Expression to;
-        Expression value;
+        Expression& to;
+        Expression& value;
 
         std::string getNameImpl() const override{
             return "add";
         }
 
         SignalData executeImpl(InterpreterState& interpreter) override{
-            to.evaluate(AddVisitor{});
+            // TODO
+            // to.evaluate(AddVisitor{}); 
             return SignalData{Signal::COMPLETE};
         }
     };
@@ -549,25 +545,235 @@ Timer
 */
 
 
-template <typename T>
+
     class Timer: public Rule {
-        {
         public:
-            Timer(int seconds, std::string mode, std::vector<Rule>& rules) : seconds{seconds}, mode{mode}, rules{rules} { };
-            Timer(int seconds, std::string mode, std::vector<Rule>& rules, T& flag) : seconds{seconds}, mode{mode}, rules{rules}, flag{flag} { };
+            Timer(int seconds, std::string mode, std::vector<std::unique_ptr<Rule>>& rules) : 
+                seconds{seconds}, 
+                mode{mode}, 
+                rules{rules} 
+            { };
+            Timer(int seconds, std::string mode, std::vector<std::unique_ptr<Rule>>& rules, Object& flag) : 
+                seconds{seconds}, 
+                mode{mode}, 
+                rules{rules}, 
+                flag{flag}
+            { };
 
         private:
             int seconds;
             std::string mode;
-            std::vector<Rule> rules;
-            T flag;
+            std::vector<std::unique_ptr<Rule>>& rules;
+            Object flag;
             
             std::string getNameImpl() const override{
                 return "timer";
             }
             
             SignalData executeImpl(InterpreterState& interpreter) override{
+                // TODO
+                /*
+                send a message to the host, we dont want to call sleep as it will kill the thread
+                */
                 return SignalData{Signal::COMPLETE};
             }
     };
+
+
+/**
+{ "rule": "input-choice",
+  "to": << a single player or audience member >>,
+  "prompt": << Message to send with request, as in "output" below  >>,
+  "choices": << list or name of a list to choose from >>
+  "result": << variable name in which to store the response >>
+
+  OPTIONAL
+  "timeout": << duration to wait for a response >>
+}
+*/
+class InputChoiceRule : public Rule {
+public:
+    InputChoiceRule(
+        Expression& to, 
+        std::string& message, 
+        Expression& choices,
+        std::string& result) : 
+
+        playerExpr{to},
+        message{message},
+        listExpr{choices},
+        variableName{result}
+    { }
+
+private:
+    Expression& playerExpr;
+    std::string message;
+    Expression& listExpr;
+    std::string variableName;
+
+    std::string getNameImpl() const override{
+        return "input-choice";
+    }
+
+    SignalData executeImpl(InterpreterState& interpreter) override{
+        // send a message to the player
+        // interpreter.addVariable()
+        return SignalData{Signal::COMPLETE};
+    }
+};
+
+/**
+ Input text
+{ "rule": "input-text",
+  "to": << a single player or audience member >>,
+  "prompt": << Message to send with request, as in "output" below  >>,
+  "result": << variable name in which to store the response >>
+
+  OPTIONAL
+  "timeout": << duration to wait for a response >>
+}
+*/
+
+class InputTextRule : public Rule {
+    public:
+        InputTextRule(); //
+    private:
+        std::string getNameImpl() const override{
+            return "input-text";
+        }
+
+        SignalData executeImpl(InterpreterState& interpreter) override{
+            // TODO
+            // send a message to the player
+            // interpreter.addVariable()
+            return SignalData{Signal::COMPLETE};
+        }
+};
+
+
+
+
+/**
+{ "rule": "input-vote",
+  "to": << a list of players and/or audience members >>,
+  "prompt": << Message to send with request, as in "output" below  >>,
+  "choices": << list or name of a list to choose from >>
+  "result": << variable name in which to store a map from choices to vote counts >>
+
+  OPTIONAL
+  "timeout": << duration to wait for a response >>
+}
+*/
+class InputVoteRule : public Rule {
+    public:
+        InputVoteRule(Expression& to, std::string& prompt, Expression& choices, std::string& result) :
+            playerListExpr{to},
+            prompt{prompt},
+            listExpr{choices},
+            variableName{result}
+        { }
+        InputVoteRule(Expression& to, std::string& prompt, Expression& choices, std::string& result, int timeoutSeconds) :
+            playerListExpr{to},
+            prompt{prompt},
+            listExpr{choices},
+            variableName{result},
+            timeout{timeoutSeconds}
+        { }
+
+    private:
+        Expression& playerListExpr;
+        std::string prompt;
+        Expression& listExpr;
+        std::string variableName;
+        std::optional<int> timeout;
+
+        std::string getNameImpl() const override{
+            return "input-vote";
+        }
+
+        SignalData executeImpl(InterpreterState& interpreter) override{
+            // TODO
+            // send a message to the player
+            // interpreter.addVariable()
+            return SignalData{Signal::COMPLETE};
+        }
+};
+
+/*
+Message
+{ "rule": "message",
+  "to": << list of recipients or a single player or audience member >>,
+  "value": << Message to send. Python style {} variable accesses are permitted.
+             E.g. "Great job, {player.name}!"  >>
+}*/
+class MessageRule : public Rule {
+    public:
+        MessageRule(Expression& playerList, std::string& message) : playerList{playerList}, message{message} { }
+    private:
+        Expression& playerList;
+        std::string message;
+
+        std::string getNameImpl() const override{
+            return "message";
+        }
+        
+        SignalData executeImpl(InterpreterState& interpreter) override{
+            // TODO
+            // send a message to the player
+            return SignalData{Signal::COMPLETE};
+        }
+};
+
+/*
+Globalmessage
+{ "rule": "global-message",
+  "value": << Message to send. Python style {} variable accesses are permitted.
+             E.g. "Great job, {player.name}!"  >>
+}
+*/
+class GlobalmessageRule : public Rule {
+    public:
+        GlobalmessageRule(Expression& playerList, Expression& message) : playerList{playerList}, message{message} { }
+    private:
+        Expression& playerList;
+        Expression& message;
+
+        std::string getNameImpl() const override{
+            return "Globalmessage";
+        }
+        
+        SignalData executeImpl(InterpreterState& interpreter) override{
+            // TODO
+            // send a message to everyone
+            return SignalData{Signal::COMPLETE};
+        }
+};
+
+/**
+{ "rule": "scores",
+  "score": << Numerical attribute of players to use as score >>,
+  "ascending": << boolean attribute. True when the scores run from low to high >>
+}
+*/
+class ScoresRule : public Rule {
+public:
+    ScoresRule(Expression& players, bool ascending) :
+        players{players},
+        ascending{ascending}
+    { }
+
+private:
+    Expression& players;
+    bool ascending;
+
+    std::string getNameImpl() const override{
+        return "scores";
+    }
+
+    SignalData executeImpl(InterpreterState& interpreter) override{
+        // TODO
+        // send a message to the host
+        // interpreter.addVariable()
+        return SignalData{Signal::COMPLETE};
+    }
 };
