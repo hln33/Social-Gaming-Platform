@@ -42,6 +42,7 @@ class EqExpression;
 class NeqExpression;
 class NotExpression;
 class GtExpression;
+class LtExpression;
 class DotExpression;
 class DotProperty;
 class IndexExpression;
@@ -56,6 +57,7 @@ public:
     virtual void visit(NeqExpression& number)   = 0;
     virtual void visit(NotExpression& number)   = 0;
     virtual void visit(GtExpression& number)    = 0;
+    virtual void visit(LtExpression& number)    = 0;
     virtual void visit(DotExpression& number)   = 0;
     virtual void visit(DotProperty& number)     = 0;
     virtual void visit(IndexExpression& number) = 0;
@@ -171,6 +173,29 @@ private:
 class GtExpression : public BliniAST {
 public:
     GtExpression(BliniAST* left, BliniAST* right) :
+        left{std::unique_ptr<BliniAST>(left)},
+        right{std::unique_ptr<BliniAST>(right)}
+    { }
+
+    void evaluate(ASTVisitor& visitor) override {
+        visitor.visit(*this);
+    }
+
+    BliniAST& getLeft() const {
+        return *left;
+    }
+    BliniAST& getRight() const {
+        return *right;
+    }
+
+private:
+    std::unique_ptr<BliniAST> left;
+    std::unique_ptr<BliniAST> right;
+};
+
+class LtExpression : public BliniAST {
+public:
+    LtExpression(BliniAST* left, BliniAST* right) :
         left{std::unique_ptr<BliniAST>(left)},
         right{std::unique_ptr<BliniAST>(right)}
     { }

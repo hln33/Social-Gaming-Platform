@@ -6,7 +6,8 @@
 
 int main() {
 
-    BliniExprParser parser = BliniExprParser{"players.elements.collect(player, player.weapon == weapon.beats)"};
+    // BliniExprParser parser = BliniExprParser{"players.elements.collect(player, player.weapon == weapon.beats)"};
+    BliniExprParser parser = BliniExprParser{"player.weapon == weapon.beats"};
 
     std::unique_ptr<BliniAST> ast = parser.parse();
 

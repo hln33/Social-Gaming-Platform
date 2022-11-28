@@ -64,7 +64,6 @@ bool_expression: bool_expression T_EQ bool_expression  { $$ = new EqExpression{$
 
 dot_expression: dot_expression T_DOT dot_expression_after { $$ = new DotExpression{$1, $3};   } // dot expression
               | dot_expression T_RSB dot_expression T_LSB { $$ = new IndexExpression{$1, $3}; } // indexing
-              | T_RPAREN dot_expression T_LPAREN          { $$ = $2;                          } // parenthesis/precedence
               | T_ID                                      { $$ = new SingleVariable{$1};      } // single variable
               | constant                                  { $$ = $1;                          } // constants
               ;
