@@ -60,6 +60,11 @@
 
 
 // using ObjectGenerator = std::vector<Object>::const_iterator;//custom variables
+/***
+ * Comes in as a string
+ * Parser will look at the string and makes it into an AST (expression tree)
+ * Used a visitor pattern to return a type
+*/
 class Expression: public Rule {
     public: 
         std::vector<Object> getResult(){

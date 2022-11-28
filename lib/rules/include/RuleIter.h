@@ -84,7 +84,7 @@ class RuleList : public RuleListInterface{
 public:
     RuleList() : rules{std::vector<std::unique_ptr<Rule>>{}} { }
     RuleList(const RuleList& r) {
-
+        // need to copy the rule list if needed
     }
     RuleList(std::unique_ptr<Rule> rule) : 
         rules{std::vector<std::unique_ptr<Rule>>{}} 
