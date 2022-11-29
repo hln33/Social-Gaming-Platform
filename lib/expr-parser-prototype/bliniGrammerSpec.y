@@ -32,6 +32,7 @@ BliniAST* bliniASTResult = nullptr;
 %token T_RSB
 %token T_TRUE
 %token T_COMMA
+%token M_COLLECT
 
 %token <str> T_INTCONSTANT
 %token <str> T_ID
@@ -43,10 +44,13 @@ BliniAST* bliniASTResult = nullptr;
 %type <ast> method_args
 %type <ast> constant
 
-
 %left  T_EQ T_NEQ T_LT T_GT T_LEQ T_GEQ
 %right UnaryNot
 %left  T_DOT
+
+
+%destructor { free($$); } <ast>
+
 
 %%
 
@@ -63,20 +67,17 @@ bool_expression: bool_expression T_EQ bool_expression  { $$ = new EqExpression{$
                ;
 
 dot_expression: dot_expression T_DOT dot_expression_after { $$ = new DotExpression{$1, $3};   } // dot expression
-              | dot_expression T_RSB dot_expression T_LSB { $$ = new IndexExpression{$1, $3}; } // indexing
+              | dot_expression T_LSB dot_expression T_RSB { $$ = new IndexExpression{$1, $3}; } // indexing
               | T_ID                                      { $$ = new SingleVariable{$1};      } // single variable
               | constant                                  { $$ = $1;                          } // constants
               ;
 
 
-dot_expression_after: method_call { $$ = $1;                  } // method calls
-                    | T_ID        { $$ = new DotProperty{$1}; } // property names
+dot_expression_after: T_ID T_LPAREN method_args T_RPAREN { $$ = new MethodCall{new std::string{}, $3};               }
+           	     | T_ID T_LPAREN T_RPAREN             { $$ = new MethodCall{new std::string{}, new MethodArgs{}}; }
+                    | T_ID       			            { $$ = new DotProperty{$1}; 		                      } // property names
+
                     ;
-
-
-method_call: T_ID T_RPAREN method_args T_LPAREN { $$ = new MethodCall{$1, $3};               }
-           | T_ID T_RPAREN T_LPAREN             { $$ = new MethodCall{$1, new MethodArgs{}}; }
-           ;
 
 
 method_args: bool_expression T_COMMA method_args 
@@ -100,4 +101,3 @@ constant: T_INTCONSTANT { $$ = new NumberConstant{$1};                 }
         ;
 
 %%
-

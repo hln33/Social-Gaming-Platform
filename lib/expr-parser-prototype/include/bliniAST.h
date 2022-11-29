@@ -342,7 +342,7 @@ public:
     }
 
 private:
-     std::unique_ptr<std::string> name;
+    std::unique_ptr<std::string> name;
     std::unique_ptr<BliniAST> args;
 };
 
