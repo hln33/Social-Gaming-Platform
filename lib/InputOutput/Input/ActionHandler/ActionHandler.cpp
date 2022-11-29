@@ -1,9 +1,6 @@
 #include "ActionHandler.h"
-#include <iostream>
-// #include "controller.h" is in the header
 
 #include <spdlog/spdlog.h>
-
 
 
 json createaJSONMessage(std::string type, std::string message){
@@ -17,12 +14,8 @@ class JoinAction : public Action {
             SPDLOG_INFO("Join Action Detected");
 
             std::string roomCode = data.at("code");
-
-            SPDLOG_INFO("Connection:[{}] attempting to join room:{}", sender.id, roomCode);
-            recipientsWrapper wrapper = controller.joinRoom(roomCode, sender);
-            wrapper.actionName = "Player joined";
-
-            return wrapper;
+            auto res = controller.joinRoom(roomCode, sender);
+            return res;
         }
 };
 
@@ -31,13 +24,8 @@ class QuitAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
 
-            std::string roomcode = data.at("code");
-
-            SPDLOG_INFO("Connection:[{}] attempting to leave room:", sender.id, roomcode);
-            recipientsWrapper wrapper = controller.leaveRoom(roomcode, sender);
-            wrapper.actionName = "Quit";
-
-            return wrapper;
+            auto res = controller.leaveRoom(sender);
+            return res;
         }
 };
 
@@ -46,18 +34,18 @@ class CreateGameAction : public Action {
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
 
-            recipientsWrapper room = controller.createRoom(data, sender);            
-            if(room.data.status == Status::SUCCESS){
-                //return room code to client
-                SPDLOG_INFO("Game Created: " + room.data.message);
-                room.actionName = "Game Created";
-            }
-            else{
-                SPDLOG_ERROR("Error: room not created");
-                room.actionName = "Error";
-            }
+            auto res = controller.createRoom(data, sender);            
+            return res;
+        }
+};
 
-            return room;
+class StartGameAction : public Action {
+    private:
+        recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
+            SPDLOG_INFO("StartGame Action Detected");
+
+            auto res = controller.startGame(sender);
+            return res;
         }
 };
 
@@ -69,14 +57,15 @@ class CreateGameAction : public Action {
 //         }
 // };
 
-// class EndGameAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
-//             SPDLOG_INFO("End Game Action Detected");
+class EndGameAction : public Action {
+    private:
+        recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
+            SPDLOG_INFO("End Game Action Detected");
 
-//             return createaJSONMessage("close game", "game ended");
-//         }
-// };
+            auto res = controller.endGame(sender);
+            return res;
+        }
+};
 
 // class SendChatAction : public Action {
 //     private:
@@ -92,13 +81,14 @@ class CreateGameAction : public Action {
 json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
-        return createaJSONMessage("Error", "No action found");
+        return createaJSONMessage(ResponseCode::ERROR, "No action found");
     }
 
     auto wrapper = action->second->execute(data, sender, this->controller);
     recipients = wrapper.recipientList;
 
-    return createaJSONMessage(wrapper.actionName, wrapper.data.message);
+    SPDLOG_INFO(wrapper.responseCode);
+    return createaJSONMessage(wrapper.responseCode, wrapper.data.message);
 
 }
 
@@ -111,6 +101,6 @@ void ActionHandler::init() {
     registerAction("Quit", std::make_unique<QuitAction>());
     // registerAction("Shutdown", std::make_unique<ShutdownAction>());
     registerAction("Create", std::make_unique<CreateGameAction>());
-    // registerAction("End Game", std::make_unique<EndGameAction>());
+    registerAction("End Game", std::make_unique<EndGameAction>());
     // registerAction("Send Chat", std::make_unique<SendChatAction>());
 }

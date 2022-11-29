@@ -2,66 +2,59 @@
 #include <memory>
 #include <algorithm>
 
+#include <spdlog/spdlog.h>
+
 #include "Room.h"
 
 
-Room::Response Room::addPlayer(Player player) {
-    Response res;
-    ResponseBuilder builder{res};
-
+void Room::addPlayer(Player& player) {
     if (this->config.satisfiesJoinPolicies(player, this->players)) {
         players.push_back(player);
-
-        builder.setStatus(Status::Success, "add player ok");
-        for (auto p : players) {
-            builder.addReceiver(p, "player " + player.getName() + " joined the room");
-        }
-        return res;
+        return;
     }
-    builder.setStatus(Status::Fail, "does not meet requirements");
 
-    return res;
+    SPDLOG_ERROR("Failed to add player:{} into room", player.connectionID);
+    throw Response {REQUIREMENTS_NOT_MET};
 }
 
-Room::Response Room::removePlayer(Player p) {
-    Response res;
-    ResponseBuilder builder{res};
-
+void Room::removePlayer(Player& p) {
     auto removeThis = std::remove_if(players.begin(), players.end(), 
     [&p] (Player& player) { 
-        return player.getId() == p.getId();
+        return player.connectionID == p.connectionID;
     });
-
+    if (removeThis == players.end()) {
+        throw Response {PLAYER_NOT_FOUND_IN_ROOM};
+    }
+ 
     players.erase(removeThis);
-
-    builder.setStatus(Status::Success, "removed player " + p.getName());
-    return res;
 }
 
-Room::Response Room::startGame(Player requester) { 
-    Room::Response res = Room::Response{};
-
-    // TODO
-
-    auto builder = ResponseBuilder{res};
-    builder.setStatus(Room::Status::Fail, "todo");
-
-    return res;
+Response Room::startGame(Player& requester) { 
+    return Response {"todo"};    
 }
 
-Room::Response Room::sendGameData(Player requester) {
-    Room::Response res = Room::Response{};
+Response Room::endGame(Player& requester) {
+    return Response {"todo"};    
+}
 
-    // TODO
-
-    auto builder = ResponseBuilder{res};
-    builder.setStatus(Room::Status::Fail, "todo");
-
-    return res;
+Response Room::sendGameData(Player& requester) {
+    return Response {"todo"};    
 }
 
 std::vector<Player> Room::getAllPlayers() {
     return players;
+}
+
+Player Room::findPlayer(uintptr_t connectionID) {
+    auto playerItr = std::find_if(players.begin(), players.end(), [&connectionID](const auto& player){
+        return player.connectionID == connectionID;
+    });
+    if (playerItr == players.end()) {
+        SPDLOG_ERROR("could not find player in room");
+        throw Response {PLAYER_NOT_FOUND_IN_ROOM};
+    }
+
+    return *playerItr;
 }
 
 Player Room::getHost() {
