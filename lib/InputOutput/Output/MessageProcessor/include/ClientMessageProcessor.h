@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Server.h"
-#include "ActionHandler.h"
+#include "ClientActionHandler.h"
 
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
-using networking::Server;
-using networking::Connection;
-using networking::Message;
 
+namespace Client {
 
 class MessageProcessor {
   public:
@@ -18,5 +15,7 @@ class MessageProcessor {
     json processMessage(const json& message);
 
   private:
-    ActionHandler actionHandler;
+    Client::ActionHandler actionHandler;
 };
+
+}

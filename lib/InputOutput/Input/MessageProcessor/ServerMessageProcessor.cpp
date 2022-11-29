@@ -1,9 +1,9 @@
-#include "MessageProcessor.h"
+#include "ServerMessageProcessor.h"
 
 #include <spdlog/spdlog.h>
 
 
-Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) {
+Outgoing Server::MessageProcessor::processMessages(const std::deque<Message>& incoming) {
   std::ostringstream result;
   
   bool quit = false;

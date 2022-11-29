@@ -1,5 +1,5 @@
 #include "Server.h"
-#include "MessageProcessor.h"
+#include "ServerMessageProcessor.h"
 #include "controller.h"
 
 #include <nlohmann/json.hpp>
@@ -13,7 +13,6 @@
 #include <vector>
 
 using json = nlohmann::json;
-using networking::Server;
 using networking::Connection;
 using networking::Message;
 
@@ -62,8 +61,8 @@ int main(int argc, char* argv[]) {
   }
 
   unsigned short port = std::stoi(argv[1]);
-  Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
-  MessageProcessor MessageProcessor;
+  networking::Server server{port, getHTTPMessage(argv[2]),  onConnect, onDisconnect};
+  Server::MessageProcessor MessageProcessor;
   
   bool quit = false;
   while (!quit) {

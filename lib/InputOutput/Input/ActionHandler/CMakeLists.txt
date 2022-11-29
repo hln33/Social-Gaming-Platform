@@ -1,7 +1,7 @@
 set(This InputActionHandler)
 
 add_library(${This}
-          ActionHandler.cpp
+          ServerActionHandler.cpp
 )
 
 target_include_directories(${This}

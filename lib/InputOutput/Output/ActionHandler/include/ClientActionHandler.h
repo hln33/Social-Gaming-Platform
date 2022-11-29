@@ -8,6 +8,8 @@
 
 using json = nlohmann::json;
 
+namespace Client {
+
 enum ActionType {
   // put output action types here
 };
@@ -38,3 +40,5 @@ class ActionHandler {
         void registerAction(std::string action, std::unique_ptr<Action>);
         void init();
 };
+
+}

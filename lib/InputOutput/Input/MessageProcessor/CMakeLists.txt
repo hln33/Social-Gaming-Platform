@@ -1,7 +1,7 @@
 set(This InputMessageProcessor)
 
 add_library(${This}
-            MessageProcessor.cpp
+            ServerMessageProcessor.cpp
 )
 
 target_include_directories(${This}
