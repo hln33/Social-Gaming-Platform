@@ -311,7 +311,6 @@ class Switch : public Rule{
                 guard.execute(interpreter);
             }
             
-            SignalData signalData();
             return SignalData{Signal::COMPLETE};
         }
 
