@@ -63,18 +63,27 @@ int main(int argc, char* argv[]) {
     }
     auto response = client.receive();
     if (!response.empty()) {
-      auto parsedMessage = messageProcessor.processMessage(response);
+      // ****** new code ************************************************
+      // auto parsedMessage = messageProcessor.process(response);
+      // chatWindow.displayText(parsedMessage + "\n");
 
+      // if (messageProcessor.error) {
+      //   isError = true;
+      //   chatWindow.displayText("Disconnecting...");
+      // }
+      // *****************************************************************
+
+      // ******* old code ************************************************
       json data = json::parse(response);
       std::string message = data["message"];
 
-      //chatWindow.displayText(response+ "\n");
-      chatWindow.displayText(parsedMessage);
+      chatWindow.displayText(response + "\n");
 
       if (data["type"] == "Error") {
         isError = true;
         chatWindow.displayText("Disconnecting...");
       }
+      // ******************************************************************
     }
     chatWindow.update();
 

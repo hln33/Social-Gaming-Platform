@@ -27,12 +27,26 @@ class CreateGameAction : public Client::Action {
         }
 }; 
 
+class ErrorAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string errorMessage) override {
+            return errorMessage;
+        }
+};
+
+class RequestInputAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string instructions) override {
+            return instructions;
+        }
+};
+
 
 std::string Client::ActionHandler::executeAction(std::string type, std::string data) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
         SPDLOG_ERROR("Unknown action");
-        //return error
+        return "unknown action";
     }
 
     auto res = action->second->execute(data);

@@ -2,16 +2,9 @@
 
 #include <unordered_map>
 #include <memory>
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
-
+#include <string>
 
 namespace Client {
-
-enum ActionType {
-  // put output action types here
-};
 
 class Action {
     public:
