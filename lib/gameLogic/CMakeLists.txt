@@ -1,9 +1,7 @@
 set(This gameLogic)
 
 add_library(${This}
-        src/gameRules.cpp
         src/Player.cpp
-        src/GameObject.cpp
         src/UniqueId.cpp
         src/Room.cpp
         src/RoomConfig.cpp
