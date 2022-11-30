@@ -1,2 +1,0 @@
-add_subdirectory(MessageProcessor)
-add_subdirectory(ActionHandler)
