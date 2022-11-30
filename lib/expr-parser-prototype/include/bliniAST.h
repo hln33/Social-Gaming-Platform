@@ -313,6 +313,10 @@ public:
         this->args.push_front(std::unique_ptr<BliniAST>(arg));
     }
 
+    bool empty() {
+        return args.empty();
+    }
+
     using ArgsType = std::list<std::unique_ptr<BliniAST>>;
 
     ArgsType::iterator begin() { return this->args.begin(); }
