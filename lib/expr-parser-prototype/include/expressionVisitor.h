@@ -8,16 +8,22 @@
 
 #include <iterator>
 #include <any>
-#include <optional>
 
-#include <nlohmann/json.hpp>
+
+#include <optional>
+#include <functional>
+
+// #include <nlohmann/json.hpp>
 #include <boost/variant.hpp>
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/recursive_variant.hpp>
 
 
 #include "bliniAST.h"
 
 // do we want to use this?? or boost??
-using json = nlohmann::json;
+// using json = nlohmann::json;
 
 
 using GameDataObject = boost::make_recursive_variant<
@@ -35,13 +41,13 @@ class are_strict_equals
 public:
 
     template <typename T, typename U>
-    bool operator()( const T &, const U & )
+    bool operator()( const T &, const U & ) const
     {
         return false; // cannot compare different types
     }
 
     template <typename T>
-    bool operator()( const T & lhs, const T & rhs )
+    bool operator()( const T & lhs, const T & rhs ) const
     {
         return lhs == rhs;
     }
@@ -54,17 +60,22 @@ class are_strict_greater
 public:
 
     template <typename T, typename U>
-    bool operator()( const T &, const U & )
+    bool operator()( const T &, const U & ) const
     {
         return false; // cannot compare different types
     }
 
     template <typename T>
-    bool operator()( const T & lhs, const T & rhs )
+    bool operator()( const T & lhs, const T & rhs ) const
+    {
+        throw std::runtime_error("cannot compare lhs > rhs for non int");
+        return false;
+    }
+
+    bool operator()(const int & lhs, const int & rhs) const
     {
         return lhs > rhs;
     }
-
 };
 
 
@@ -74,17 +85,22 @@ class are_strict_less
 public:
 
     template <typename T, typename U>
-    bool operator()( const T &, const U & )
+    bool operator()( const T &, const U & ) const
     {
         return false; // cannot compare different types
     }
 
     template <typename T>
-    bool operator()( const T & lhs, const T & rhs )
+    bool operator()( const T & lhs, const T & rhs ) const
+    {
+        throw std::runtime_error("cannot compare lhs < rhs for non int");
+        return false;
+    }
+
+    bool operator()(const int & lhs, const int & rhs) const
     {
         return lhs < rhs;
     }
-
 };
 
 class is_boolean_type
@@ -92,13 +108,13 @@ class is_boolean_type
 {
 public:
 
-    bool operator()(const bool & expr) 
+    bool operator()(const bool & expr) const 
     {
         return true;
     }
 
     template <typename T>
-    bool operator()( const T & expr )
+    bool operator()( const T & expr ) const
     {
         return false;
     }
@@ -110,20 +126,23 @@ class boolean_complement
 {
 public:
 
-    bool operator()(const bool & expr) 
+    bool operator()(const bool & expr) const 
     {
         return !expr;
     }
 
     template <typename T>
-    bool operator()( const T & expr )
+    bool operator()( const T & expr ) const
     {
+        throw std::runtime_error("cannot complement non boolean");
         return false;
     }
 };
 
+using optional_game_data_object_ref = std::optional<std::reference_wrapper<const GameDataObject>>;
+
 class access_property
-    : public boost::static_visitor<GameDataObject>
+    : public boost::static_visitor<optional_game_data_object_ref>
 {
 public:
 
@@ -132,15 +151,15 @@ public:
     { }
 
     template <typename T>
-    GameDataObject& operator()( const T & obj )
+    optional_game_data_object_ref operator()( const T & obj ) const
     {
-        throw std::runtime_error("not a map type")
-        return false;
+        throw std::runtime_error("not a map type");
+        return std::nullopt;
     }
 
-    const GameDataObject& operator()( const std::unordered_map<std::string, GameDataObject> & obj )
+    optional_game_data_object_ref operator()( const std::unordered_map<std::string, GameDataObject> & obj ) const
     {
-        return obj.at(property);
+        return std::reference_wrapper<const GameDataObject>{obj.at(property)};
     }
 
 private:
@@ -148,7 +167,7 @@ private:
 };
 
 class access_index
-    : public boost::static_visitor<GameDataObject>
+    : public boost::static_visitor<optional_game_data_object_ref>
 {
 public:
 
@@ -157,13 +176,13 @@ public:
     { }
 
     template <typename T>
-    GameDataObject& operator()( const T & obj )
+    optional_game_data_object_ref operator()( const T & obj ) const
     {
-        throw std::runtime_error("not a list type")
-        return false;
+        throw std::runtime_error("not a list type");
+        return std::nullopt;
     }
 
-    const GameDataObject& operator()( const std::vector<GameDataObject> & obj )
+    optional_game_data_object_ref operator()( const std::vector<GameDataObject> & obj ) const
     {
         return obj[idx];
     }
@@ -178,6 +197,10 @@ class GameDataStore {
 public:
     GameDataObject access(std::string name) {
         return map[name];
+    }
+
+    void store(std::string key, GameDataObject value) {
+        map[key] = value;
     }
 
 private:
@@ -214,6 +237,13 @@ private:
 
 class ExpressionVisitor : public ASTVisitor {
 public:
+
+    ExpressionVisitor(GameDataStore& storage) :
+        dataStore{storage}
+    { }
+
+    virtual ~ExpressionVisitor() { }
+
     void visit(NumberConstant& number) override {
         result = number.getValue();
     }
@@ -275,7 +305,7 @@ public:
         // }
         // return map;
 
-        result = boost::apply_visitor(access_property{property}, lhs);
+        result = boost::apply_visitor(access_property{property}, lhs)->get();
     }
     void visit(DotProperty& expr) {
 
@@ -288,7 +318,7 @@ public:
         expr.getIndexExpr().evaluate(*this);
         int idx = boost::get<int>(result);
 
-        result = boost::apply_visitor(access_index{idx}, list);
+        result = boost::apply_visitor(access_index{idx}, list)->get();
     }
     void visit(SingleVariable& expr) override {
         std::string name = expr.getName();
@@ -317,6 +347,9 @@ public:
     }
 private:
     GameDataStore dataStore;
-    GameDataObject result;
     MethodMap methodMap;
+
+public:
+    GameDataObject result;
+
 };

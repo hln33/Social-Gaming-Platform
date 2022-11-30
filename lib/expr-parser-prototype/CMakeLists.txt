@@ -20,7 +20,7 @@ add_executable(main
    ${BISON_bliniParser_OUTPUTS}
    ${FLEX_bliniScanner_OUTPUTS}
 )
-target_link_libraries(main ${FLEX_LIBRARIES})
+target_link_libraries(main ${FLEX_LIBRARIES} Boost::variant)
 
 target_include_directories(main
 	PUBLIC

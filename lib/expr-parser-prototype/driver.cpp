@@ -6,6 +6,7 @@
 
 #include "bliniExpressionParser.h"
 #include "prettyPrintASTVisitor.h"
+#include "expressionVisitor.h"
 
 int main() {
 
@@ -22,9 +23,11 @@ int main() {
 
     // ast->print();
 
-    PrettyPrinter printer = PrettyPrinter{};
-
-    ast->evaluate(printer);
+    // PrettyPrinter printer = PrettyPrinter{};
+    GameDataStore datastore;
+    ExpressionVisitor visitor{datastore};
+    
+    ast->evaluate(visitor);
 
     std::cout << "\n";
 }
