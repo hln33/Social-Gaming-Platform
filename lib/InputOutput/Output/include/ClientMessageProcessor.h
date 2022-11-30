@@ -12,7 +12,7 @@ class MessageProcessor {
   public:
     MessageProcessor() { }
 
-    json processMessage(const json& message);
+    std::string processMessage(const std::string& message); // expect string to be in json format
 
   private:
     Client::ActionHandler actionHandler;

@@ -6,6 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "clientHelper.h"
+#include "ClientMessageProcessor.h"
 
 
 int main(int argc, char* argv[]) {
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]) {
   };
   
   ChatWindow chatWindow(onTextEntry);
+  Client::MessageProcessor messageProcessor;
   while (!done && !client.isDisconnected()) {
     bool isError = false;
 
@@ -61,9 +63,13 @@ int main(int argc, char* argv[]) {
     }
     auto response = client.receive();
     if (!response.empty()) {
+      auto parsedMessage = messageProcessor.processMessage(response);
+
       json data = json::parse(response);
       std::string message = data["message"];
-      chatWindow.displayText(response + "\n");
+
+      //chatWindow.displayText(response+ "\n");
+      chatWindow.displayText(parsedMessage);
 
       if (data["type"] == "Error") {
         isError = true;

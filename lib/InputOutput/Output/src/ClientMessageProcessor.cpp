@@ -3,9 +3,12 @@
 #include <spdlog/spdlog.h>
 
 
-json Client::MessageProcessor::processMessage(const json& message) {
-  std::ostringstream result;
+std::string Client::MessageProcessor::processMessage(const std::string& message) {
+  json jsonMessage = json::parse(message);
+  const std::string command = jsonMessage["type"];
+  const std::string data = jsonMessage["message"];
 
-  //json response = actionHandler.executeAction(command, parsedData);
-  //result << response.dump();  
+  std::string result = actionHandler.executeAction(command, data);
+
+  return result;
 }

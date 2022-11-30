@@ -8,27 +8,27 @@
 
 class JoinAction : public Client::Action {
     private:
-        json executeImpl(json data) override {
-           // print message to chat window
+        std::string executeImpl(std::string data) override {
+           return "";
         }
 };
 
 class QuitAction : public Client::Action {
     private:
-        json executeImpl(json data) override {
-            
+        std::string executeImpl(std::string data) override {
+            return "";
         }
 };
 
 class CreateGameAction : public Client::Action {
     private:
-        json executeImpl(json data) override {
-            
+        std::string executeImpl(std::string roomCode) override {
+            return "Game Created with Code:" + roomCode;
         }
-};
+}; 
 
 
-json Client::ActionHandler::executeAction(std::string type, json data) {    
+std::string Client::ActionHandler::executeAction(std::string type, std::string data) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
         SPDLOG_ERROR("Unknown action");

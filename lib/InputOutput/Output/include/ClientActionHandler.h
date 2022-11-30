@@ -4,9 +4,8 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
-#include "Server.h"
-
 using json = nlohmann::json;
+
 
 namespace Client {
 
@@ -16,12 +15,12 @@ enum ActionType {
 
 class Action {
     public:
-        json execute(json data) {
+        std::string execute(std::string data) {
             return executeImpl(data);
         }
 
     private:
-        virtual json executeImpl(json data) = 0;
+        virtual std::string executeImpl(std::string data) = 0;
 };
 
 class ActionHandler {
@@ -32,7 +31,7 @@ class ActionHandler {
             init();
         }
 
-        json executeAction(std::string action, json data);
+        std::string executeAction(std::string action, std::string data);
 
     private:
         std::unordered_map<std::string, ActionPointer> actions;

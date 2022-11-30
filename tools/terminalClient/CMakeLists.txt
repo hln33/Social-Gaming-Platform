@@ -31,6 +31,7 @@ find_package(Threads REQUIRED)
 target_link_libraries(terminalClient
   networking
   nlohmann_json
+  OutputMessageProcessor
   ${CURSES_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )
