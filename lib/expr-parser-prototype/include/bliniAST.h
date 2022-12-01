@@ -8,6 +8,19 @@
 
 #include <iostream>
 
+// @note
+// we use raw pointers here because bison only recognize POD types.
+// Also the pointers are dynamically allocated on the heap so dont pass 
+// a pointer that is not on the heap.
+// ** unless someone knows how to convert pointer to unique_ptr then we can do that instead **
+// For example:
+// BAD
+// std::string str = "str";
+// SingleVariable ast = SingleVarialbe{&str}; <-- DONT DO THIS
+// OK
+// std::string* str = new std::string{"str"};
+// SingleVariable ast = SingleVarialbe{str}; <-- THIS IS OK
+
 // visitor pattern
 
 /**
@@ -69,6 +82,7 @@ public:
 
 class BliniAST {
 public:
+    virtual ~BliniAST() { }
     virtual void evaluate(ASTVisitor& visitor) = 0;
 
     // remove later
@@ -78,6 +92,8 @@ public:
 // sentinel
 class SentinelNode : public BliniAST {
 public:
+    virtual ~SentinelNode() { }
+
     void evaluate(ASTVisitor& visitor) override { }
 
     void print() override { std::cout << "NOT valid\n"; }
@@ -86,6 +102,8 @@ public:
 // constants
 class NumberConstant : public BliniAST {
 public:
+    virtual ~NumberConstant() { }
+
     NumberConstant(std::string* num) : 
         str{std::unique_ptr<std::string>(num)} 
     {
@@ -108,6 +126,8 @@ private:
 // bool expression
 class EqExpression : public BliniAST {
 public:
+    virtual ~EqExpression() { }
+
     EqExpression(BliniAST* left, BliniAST* right) :
         left{std::unique_ptr<BliniAST>(left)},
         right{std::unique_ptr<BliniAST>(right)}
@@ -131,6 +151,8 @@ private:
 
 class NeqExpression : public BliniAST {
 public:
+    virtual ~NeqExpression() { }
+
     NeqExpression(BliniAST* left, BliniAST* right) :
         left{std::unique_ptr<BliniAST>(left)},
         right{std::unique_ptr<BliniAST>(right)}
@@ -154,6 +176,8 @@ private:
 
 class NotExpression : public BliniAST {
 public:
+    virtual ~NotExpression() { }
+
     NotExpression(BliniAST* expr) :
         expr{std::unique_ptr<BliniAST>(expr)}
     { }
@@ -172,6 +196,8 @@ private:
 
 class GtExpression : public BliniAST {
 public:
+    virtual ~GtExpression() { }
+
     GtExpression(BliniAST* left, BliniAST* right) :
         left{std::unique_ptr<BliniAST>(left)},
         right{std::unique_ptr<BliniAST>(right)}
@@ -195,6 +221,8 @@ private:
 
 class LtExpression : public BliniAST {
 public:
+    virtual ~LtExpression() { }
+
     LtExpression(BliniAST* left, BliniAST* right) :
         left{std::unique_ptr<BliniAST>(left)},
         right{std::unique_ptr<BliniAST>(right)}
@@ -219,6 +247,8 @@ private:
 // dot expression
 class DotExpression : public BliniAST {
 public:
+    virtual ~DotExpression() { }
+
     DotExpression(BliniAST* left, BliniAST* property) :
         left{std::unique_ptr<BliniAST>(left)},
         property{std::unique_ptr<BliniAST>(property)}
@@ -242,6 +272,8 @@ private:
 
 class DotProperty : public BliniAST {
 public:
+    virtual ~DotProperty() { }
+
     DotProperty(std::string* name) : 
         name{std::unique_ptr<std::string>(name)}
     { }
@@ -260,6 +292,8 @@ private:
 
 class IndexExpression : public BliniAST {
 public:
+    virtual ~IndexExpression() { }
+
     IndexExpression(BliniAST* listExpr, BliniAST* indexExpr) :
         list{std::unique_ptr<BliniAST>(listExpr)},
         index{std::unique_ptr<BliniAST>(indexExpr)}
@@ -283,8 +317,10 @@ private:
 
 class SingleVariable : public BliniAST {
 public:
+    virtual ~SingleVariable() { delete name; }
+
     SingleVariable(std::string* name) : 
-        name{std::unique_ptr<std::string>(name)}
+        name{name}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -296,7 +332,7 @@ public:
     }
 
 private:
-     std::unique_ptr<std::string> name;
+    std::string* name;
 };
 
 // method call

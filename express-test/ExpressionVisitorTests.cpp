@@ -10,14 +10,14 @@
 
 TEST(expressionVisitorTests, SingleVariableTest) {
     // ast
-    std::string variableName = "config";
-    SingleVariable ast = SingleVariable{&variableName};
+    std::string* variableName = new std::string{"config"};
+    SingleVariable ast = SingleVariable(variableName);
 
     // game data
     GameDataObject variableValue = 0;
     GameDataStore dataStore;
 
-    dataStore.store(variableName, variableValue);
+    dataStore.store(*variableName, variableValue);
 
     ExpressionVisitor visitor{dataStore};
     ast.evaluate(visitor);
