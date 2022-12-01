@@ -4,14 +4,13 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <exception>
+#include <utility>
 
 #include <iterator>
 #include <any>
 
-
-#include <optional>
-#include <functional>
 
 // #include <nlohmann/json.hpp>
 #include <boost/variant.hpp>
@@ -139,10 +138,8 @@ public:
     }
 };
 
-using optional_game_data_object_ref = std::optional<std::reference_wrapper<const GameDataObject>>;
-
 class access_property
-    : public boost::static_visitor<optional_game_data_object_ref>
+    : public boost::static_visitor<GameDataObject const*>
 {
 public:
 
@@ -151,15 +148,15 @@ public:
     { }
 
     template <typename T>
-    optional_game_data_object_ref operator()( const T & obj ) const
+    GameDataObject const* operator()( const T & obj ) const
     {
         throw std::runtime_error("not a map type");
-        return std::nullopt;
+        return nullptr;
     }
 
-    optional_game_data_object_ref operator()( const std::unordered_map<std::string, GameDataObject> & obj ) const
+    GameDataObject const* operator()( const std::unordered_map<std::string, GameDataObject> & obj ) const
     {
-        return std::reference_wrapper<const GameDataObject>{obj.at(property)};
+        return &obj.at(property);
     }
 
 private:
@@ -167,7 +164,7 @@ private:
 };
 
 class access_index
-    : public boost::static_visitor<optional_game_data_object_ref>
+    : public boost::static_visitor<GameDataObject const*>
 {
 public:
 
@@ -176,15 +173,15 @@ public:
     { }
 
     template <typename T>
-    optional_game_data_object_ref operator()( const T & obj ) const
+    GameDataObject const* operator()( const T & obj ) const
     {
         throw std::runtime_error("not a list type");
-        return std::nullopt;
+        return nullptr;
     }
 
-    optional_game_data_object_ref operator()( const std::vector<GameDataObject> & obj ) const
+    GameDataObject const* operator()( const std::vector<GameDataObject> & obj ) const
     {
-        return obj[idx];
+        return &obj[idx];
     }
 
 private:
@@ -305,7 +302,7 @@ public:
         // }
         // return map;
 
-        result = boost::apply_visitor(access_property{property}, lhs)->get();
+        result = *boost::apply_visitor(access_property{property}, lhs);
     }
     void visit(DotProperty& expr) {
 
@@ -318,7 +315,7 @@ public:
         expr.getIndexExpr().evaluate(*this);
         int idx = boost::get<int>(result);
 
-        result = boost::apply_visitor(access_index{idx}, list)->get();
+        result = *boost::apply_visitor(access_index{idx}, list);
     }
     void visit(SingleVariable& expr) override {
         std::string name = expr.getName();

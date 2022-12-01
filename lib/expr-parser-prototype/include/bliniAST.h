@@ -23,16 +23,16 @@
 */
 
 
-using BliniTypeContainer = std::variant<int, bool, std::string>;
+// using BliniTypeContainer = std::variant<int, bool, std::string>;
 
 
-enum BliniDataType {
-    NUMBER,
-    BOOL,
-    STRING,
-    LIST,
-    OBJECT,
-};
+// enum BliniDataType {
+//     NUMBER,
+//     BOOL,
+//     STRING,
+//     LIST,
+//     OBJECT,
+// };
 
 
 class BliniAST;
@@ -355,28 +355,28 @@ private:
 // visitors
 
 
-class Evaluator : public ASTVisitor {
-public:
+// class Evaluator : public ASTVisitor {
+// public:
 
-    void visit(NumberConstant& number) override {
-        this->result = number.getValue();
-    }
+//     void visit(NumberConstant& number) override {
+//         this->result = number.getValue();
+//     }
 
-    // TODO: fill this in later
-    void visit(EqExpression& number) override { }
-    void visit(NeqExpression& number) override { }
-    void visit(NotExpression& number) override { }
-    void visit(GtExpression& number) override { }
-    void visit(DotExpression& number) override { }
-    void visit(DotProperty& number) override { }
-    void visit(IndexExpression& number) override { }
-    void visit(SingleVariable& number) override { }
-    void visit(MethodCall& number) override { }
-    void visit(MethodArgs& number) override { }
+//     // TODO: fill this in later
+//     void visit(EqExpression& number) override { }
+//     void visit(NeqExpression& number) override { }
+//     void visit(NotExpression& number) override { }
+//     void visit(GtExpression& number) override { }
+//     void visit(DotExpression& number) override { }
+//     void visit(DotProperty& number) override { }
+//     void visit(IndexExpression& number) override { }
+//     void visit(SingleVariable& number) override { }
+//     void visit(MethodCall& number) override { }
+//     void visit(MethodArgs& number) override { }
 
-    BliniTypeContainer getResult();
+//     BliniTypeContainer getResult();
 
-private:
-    BliniTypeContainer result;
-};
+// private:
+//     BliniTypeContainer result;
+// };
 
