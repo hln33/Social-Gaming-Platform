@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "bliniAST.h"
 
@@ -30,6 +31,8 @@ public:
     std::unique_ptr<BliniAST> parse() {
         if (yyparse() >= 1) {
             // handle parse errors here
+	        std::cout << "parse error\n";
+            return nullptr;
         }
 
         // get the result
