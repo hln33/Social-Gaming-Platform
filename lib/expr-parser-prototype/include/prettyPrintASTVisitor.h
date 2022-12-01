@@ -10,6 +10,9 @@
 
 class PrettyPrinter : public ASTVisitor {
 public:
+    void visit(BooleanConstant& number) override {
+        std::cout << "Boolean(" << number.getValue() << ")";
+    }
     void visit(NumberConstant& number) override {
         std::cout << "Number(" << number.getValue() << ")";
     }
@@ -27,6 +30,28 @@ public:
     }
     void visit(NeqExpression& expr) override {
         std::cout << "NotEqualTo(";
+
+        expr.getLeft().evaluate(*this);
+
+        std::cout << ",";
+
+        expr.getRight().evaluate(*this);
+        
+        std::cout << ")";
+    }
+    void visit(GeqExpression& expr) override {
+        std::cout << "GreaterThanOrEqualTo(";
+
+        expr.getLeft().evaluate(*this);
+
+        std::cout << ",";
+
+        expr.getRight().evaluate(*this);
+        
+        std::cout << ")";
+    }
+    void visit(LeqExpression& expr) override {
+        std::cout << "LessThanOrEqualTo(";
 
         expr.getLeft().evaluate(*this);
 
@@ -97,11 +122,11 @@ public:
         std::cout << "Args(";
 
         if (margs.begin() != margs.end()) {
-            margs.begin()->get()->evaluate(*this);
+            (*(margs.begin()))->evaluate(*this);
 
             for (auto it = std::next(margs.begin()); it != margs.end(); it++) {
                 std::cout << ",";
-                it->get()->evaluate(*this);
+                (*it)->evaluate(*this);
             }
         } else {
             std::cout << "VOID";

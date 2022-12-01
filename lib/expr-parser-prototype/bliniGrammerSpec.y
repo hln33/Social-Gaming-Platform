@@ -60,9 +60,9 @@ bool_expression: bool_expression T_EQ bool_expression  { $$ = new EqExpression{$
                | bool_expression T_NEQ bool_expression { $$ = new NeqExpression{$1, $3}; }
                | T_NOT bool_expression %prec UnaryNot  { $$ = new NotExpression{$2};     }               
                | dot_expression T_GT dot_expression    { $$ = new GtExpression{$1, $3};  }
-               | dot_expression T_GEQ dot_expression   { $$ = new GtExpression{$1, $3};  } // change this
-               | dot_expression T_LEQ dot_expression   { $$ = new GtExpression{$1, $3};  } // change this
-               | dot_expression T_LT dot_expression    { $$ = new GtExpression{$1, $3};  } // change this
+               | dot_expression T_GEQ dot_expression   { $$ = new GeqExpression{$1, $3}; }
+               | dot_expression T_LEQ dot_expression   { $$ = new LeqExpression{$1, $3}; }
+               | dot_expression T_LT dot_expression    { $$ = new LtExpression{$1, $3};  }
                | dot_expression                        { $$ = $1;                        }
                ;
 
@@ -73,9 +73,9 @@ dot_expression: dot_expression T_DOT dot_expression_after { $$ = new DotExpressi
               ;
 
 
-dot_expression_after: T_ID T_LPAREN method_args T_RPAREN { $$ = new MethodCall{new std::string{}, $3};               }
-           	     | T_ID T_LPAREN T_RPAREN             { $$ = new MethodCall{new std::string{}, new MethodArgs{}}; }
-                    | T_ID       			            { $$ = new DotProperty{$1}; 		                      } // property names
+dot_expression_after: T_ID T_LPAREN method_args T_RPAREN { $$ = new MethodCall{$1, $3};               }
+           	     | T_ID T_LPAREN T_RPAREN             { $$ = new MethodCall{$1, new MethodArgs{}}; }
+                    | T_ID       			            { $$ = new DotProperty{$1};                  } // property names
 
                     ;
 
@@ -95,9 +95,9 @@ method_args: bool_expression T_COMMA method_args
            ;
 
 
-constant: T_INTCONSTANT { $$ = new NumberConstant{$1};                 }
-        | T_TRUE        { $$ = new NumberConstant{new std::string{}};  }
-        | T_FALSE       { $$ = new NumberConstant{new std::string{}};  }
+constant: T_INTCONSTANT { $$ = new NumberConstant{$1};      }
+        | T_TRUE        { $$ = new BooleanConstant{true};   }
+        | T_FALSE       { $$ = new BooleanConstant{false};  }
         ;
 
 %%

@@ -102,24 +102,6 @@ public:
     }
 };
 
-class is_boolean_type
-    : public boost::static_visitor<bool>
-{
-public:
-
-    bool operator()(const bool & expr) const 
-    {
-        return true;
-    }
-
-    template <typename T>
-    bool operator()( const T & expr ) const
-    {
-        return false;
-    }
-};
-
-
 class boolean_complement
     : public boost::static_visitor<bool>
 {
@@ -241,6 +223,9 @@ public:
 
     virtual ~ExpressionVisitor() { }
 
+    void visit(BooleanConstant& number) override {
+        result = number.getValue();
+    }
     void visit(NumberConstant& number) override {
         result = number.getValue();
     }
@@ -260,14 +245,25 @@ public:
 
         result = !boost::apply_visitor(are_strict_equals{}, lhs, rhs);
     }
+    void visit(GeqExpression& expr) override {
+        expr.getLeft().evaluate(*this);
+        GameDataObject lhs = result;
+        expr.getRight().evaluate(*this);
+        GameDataObject rhs = result;
+
+        result = !boost::apply_visitor(are_strict_equals{}, lhs, rhs);
+    }
+    void visit(LeqExpression& expr) override {
+        expr.getLeft().evaluate(*this);
+        GameDataObject lhs = result;
+        expr.getRight().evaluate(*this);
+        GameDataObject rhs = result;
+
+        result = !boost::apply_visitor(are_strict_equals{}, lhs, rhs);
+    }
     void visit(NotExpression& expr) override {
         expr.getExpr().evaluate(*this);
 
-        if (!boost::apply_visitor(is_boolean_type{}, result)) {
-            // throw error
-            throw std::runtime_error("expected a boolean");
-
-        } 
         result = boost::apply_visitor(boolean_complement{}, result);
     }
     void visit(GtExpression& expr) override {
@@ -327,7 +323,7 @@ public:
 
         if (!margs.empty()) {
             for (auto it = margs.begin(); it != margs.end(); it++) {
-                it->get()->evaluate(*this);
+                (*it)->evaluate(*this);
                 argList.push_back(result);
             }
         }

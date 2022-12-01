@@ -50,9 +50,12 @@
 
 class BliniAST;
 class SentinelNode;
+class BooleanConstant;
 class NumberConstant;
 class EqExpression;
 class NeqExpression;
+class GeqExpression;
+class LeqExpression;
 class NotExpression;
 class GtExpression;
 class LtExpression;
@@ -65,9 +68,12 @@ class MethodCall;
 
 class ASTVisitor {
 public:
+    virtual void visit(BooleanConstant& number) = 0;
     virtual void visit(NumberConstant& number)  = 0;
     virtual void visit(EqExpression& number)    = 0;
     virtual void visit(NeqExpression& number)   = 0;
+    virtual void visit(GeqExpression& number)   = 0;
+    virtual void visit(LeqExpression& number)   = 0;
     virtual void visit(NotExpression& number)   = 0;
     virtual void visit(GtExpression& number)    = 0;
     virtual void visit(LtExpression& number)    = 0;
@@ -102,10 +108,10 @@ public:
 // constants
 class NumberConstant : public BliniAST {
 public:
-    virtual ~NumberConstant() { }
+    virtual ~NumberConstant() { delete str; }
 
     NumberConstant(std::string* num) : 
-        str{std::unique_ptr<std::string>(num)} 
+        str{num} 
     {
         this->value = std::stoi(*str);
     }
@@ -120,17 +126,37 @@ public:
 
 private:
     int value;
-    std::unique_ptr<std::string> str;
+    std::string* str;
+};
+
+class BooleanConstant : public BliniAST {
+public:
+    virtual ~BooleanConstant() { }
+
+    BooleanConstant(bool val) : 
+        value{val} 
+    { }
+
+    void evaluate(ASTVisitor& visitor) override {
+        visitor.visit(*this);
+    }
+
+    bool getValue() const {
+        return this->value;
+    }
+
+private:
+    bool value;
 };
 
 // bool expression
 class EqExpression : public BliniAST {
 public:
-    virtual ~EqExpression() { }
+    virtual ~EqExpression() { delete left; delete right; }
 
     EqExpression(BliniAST* left, BliniAST* right) :
-        left{std::unique_ptr<BliniAST>(left)},
-        right{std::unique_ptr<BliniAST>(right)}
+        left{left},
+        right{right}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -145,17 +171,17 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> left;
-    std::unique_ptr<BliniAST> right;
+    BliniAST* left;
+    BliniAST* right;
 };
 
 class NeqExpression : public BliniAST {
 public:
-    virtual ~NeqExpression() { }
+    virtual ~NeqExpression() { delete left; delete right; }
 
     NeqExpression(BliniAST* left, BliniAST* right) :
-        left{std::unique_ptr<BliniAST>(left)},
-        right{std::unique_ptr<BliniAST>(right)}
+        left{left},
+        right{right}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -170,16 +196,66 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> left;
-    std::unique_ptr<BliniAST> right;
+    BliniAST* left;
+    BliniAST* right;
+};
+
+class GeqExpression : public BliniAST {
+public:
+    virtual ~GeqExpression() { delete left; delete right; }
+
+    GeqExpression(BliniAST* left, BliniAST* right) :
+        left{left},
+        right{right}
+    { }
+
+    void evaluate(ASTVisitor& visitor) override {
+        visitor.visit(*this);
+    }
+
+    BliniAST& getLeft() const {
+        return *left;
+    }
+    BliniAST& getRight() const {
+        return *right;
+    }
+
+private:
+    BliniAST* left;
+    BliniAST* right;
+};
+
+class LeqExpression : public BliniAST {
+public:
+    virtual ~LeqExpression() { delete left; delete right; }
+
+    LeqExpression(BliniAST* left, BliniAST* right) :
+        left{left},
+        right{right}
+    { }
+
+    void evaluate(ASTVisitor& visitor) override {
+        visitor.visit(*this);
+    }
+
+    BliniAST& getLeft() const {
+        return *left;
+    }
+    BliniAST& getRight() const {
+        return *right;
+    }
+
+private:
+    BliniAST* left;
+    BliniAST* right;
 };
 
 class NotExpression : public BliniAST {
 public:
-    virtual ~NotExpression() { }
+    virtual ~NotExpression() { delete expr; }
 
     NotExpression(BliniAST* expr) :
-        expr{std::unique_ptr<BliniAST>(expr)}
+        expr{expr}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -191,16 +267,16 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> expr;
+    BliniAST* expr;
 };
 
 class GtExpression : public BliniAST {
 public:
-    virtual ~GtExpression() { }
+    virtual ~GtExpression() { delete left; delete right; }
 
     GtExpression(BliniAST* left, BliniAST* right) :
-        left{std::unique_ptr<BliniAST>(left)},
-        right{std::unique_ptr<BliniAST>(right)}
+        left{left},
+        right{right}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -215,17 +291,17 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> left;
-    std::unique_ptr<BliniAST> right;
+    BliniAST* left;
+    BliniAST* right;
 };
 
 class LtExpression : public BliniAST {
 public:
-    virtual ~LtExpression() { }
+    virtual ~LtExpression() { delete left; delete right; }
 
     LtExpression(BliniAST* left, BliniAST* right) :
-        left{std::unique_ptr<BliniAST>(left)},
-        right{std::unique_ptr<BliniAST>(right)}
+        left{left},
+        right{right}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -240,18 +316,18 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> left;
-    std::unique_ptr<BliniAST> right;
+    BliniAST* left;
+    BliniAST* right;
 };
 
 // dot expression
 class DotExpression : public BliniAST {
 public:
-    virtual ~DotExpression() { }
+    virtual ~DotExpression() { delete left; delete property; }
 
     DotExpression(BliniAST* left, BliniAST* property) :
-        left{std::unique_ptr<BliniAST>(left)},
-        property{std::unique_ptr<BliniAST>(property)}
+        left{left},
+        property{property}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -266,16 +342,16 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> left;
-    std::unique_ptr<BliniAST> property;
+    BliniAST* left;
+    BliniAST* property;
 };
 
 class DotProperty : public BliniAST {
 public:
-    virtual ~DotProperty() { }
+    virtual ~DotProperty() { delete name; }
 
     DotProperty(std::string* name) : 
-        name{std::unique_ptr<std::string>(name)}
+        name{name}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -287,16 +363,16 @@ public:
     }
 
 private:
-     std::unique_ptr<std::string> name;
+     std::string* name;
 };
 
 class IndexExpression : public BliniAST {
 public:
-    virtual ~IndexExpression() { }
+    virtual ~IndexExpression() { delete list; delete index; }
 
     IndexExpression(BliniAST* listExpr, BliniAST* indexExpr) :
-        list{std::unique_ptr<BliniAST>(listExpr)},
-        index{std::unique_ptr<BliniAST>(indexExpr)}
+        list{listExpr},
+        index{indexExpr}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -311,8 +387,8 @@ public:
     }
 
 private:
-    std::unique_ptr<BliniAST> list;
-    std::unique_ptr<BliniAST> index;
+    BliniAST* list;
+    BliniAST* index;
 };
 
 class SingleVariable : public BliniAST {
@@ -338,6 +414,7 @@ private:
 // method call
 class MethodArgs : public BliniAST {
 public:
+    virtual ~MethodArgs() { for (auto x : args) { delete x; } }
 
     MethodArgs() { }
 
@@ -346,17 +423,17 @@ public:
     }
 
     void addFront(BliniAST* arg) {
-        this->args.push_front(std::unique_ptr<BliniAST>(arg));
+        this->args.push_front(arg);
     }
 
     bool empty() {
         return args.empty();
     }
 
-    using ArgsType = std::list<std::unique_ptr<BliniAST>>;
+    using ArgsType = std::list<BliniAST*>;
 
     ArgsType::iterator begin() { return this->args.begin(); }
-    ArgsType::iterator end() { return this->args.end(); }
+    ArgsType::iterator end()   { return this->args.end(); }
 
 private:
     ArgsType args;
@@ -364,9 +441,11 @@ private:
 
 class MethodCall : public BliniAST {
 public:
+    virtual ~MethodCall() { delete name; delete args; }
+
     MethodCall(std::string* name, BliniAST* args) :
-        name{std::unique_ptr<std::string>(name)},
-        args{std::unique_ptr<BliniAST>(args)}
+        name{name},
+        args{args}
     { }
 
     void evaluate(ASTVisitor& visitor) override {
@@ -382,8 +461,8 @@ public:
     }
 
 private:
-    std::unique_ptr<std::string> name;
-    std::unique_ptr<BliniAST> args;
+    std::string* name;
+    BliniAST* args;
 };
 
 
