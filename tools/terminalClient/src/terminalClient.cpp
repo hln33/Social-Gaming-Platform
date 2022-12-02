@@ -52,8 +52,6 @@ int main(int argc, char* argv[]) {
   ChatWindow chatWindow(onTextEntry);
   Client::MessageProcessor messageProcessor;
   while (!done && !client.isDisconnected()) {
-    bool isError = false;
-
     try {
       client.update();
     } catch (std::exception& e) {
@@ -61,37 +59,19 @@ int main(int argc, char* argv[]) {
       chatWindow.displayText(e.what());
       done = true;
     }
+    
     auto response = client.receive();
     if (!response.empty()) {
-      // ****** new code ************************************************
-      // auto parsedMessage = messageProcessor.process(response);
-      // chatWindow.displayText(parsedMessage + "\n");
+      auto parsedMessage = messageProcessor.process(response);
+      chatWindow.displayText(parsedMessage + "\n");
 
-      // if (messageProcessor.error) {
-      //   isError = true;
-      //   chatWindow.displayText("Disconnecting...");
-      // }
-      // *****************************************************************
-
-      // ******* old code ************************************************
-      json data = json::parse(response);
-      std::string message = data["message"];
-
-      chatWindow.displayText(response + "\n");
-
-      if (data["type"] == "Error") {
-        isError = true;
+      if (messageProcessor.error) {
         chatWindow.displayText("Disconnecting...");
+        chatWindow.update();
+        client.disconnect();
       }
-      // ******************************************************************
     }
     chatWindow.update();
-
-    //Disconnect client if game rules are not valid json
-    if (isError) {
-      sleep(2);
-      client.disconnect();
-    }
   }
 
   return 0;

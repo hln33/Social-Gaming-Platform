@@ -8,15 +8,15 @@
 
 class JoinAction : public Client::Action {
     private:
-        std::string executeImpl(std::string data) override {
-           return "";
+        std::string executeImpl(std::string playerName) override {
+           return playerName + " Successfully Joined Room";
         }
 };
 
 class QuitAction : public Client::Action {
     private:
-        std::string executeImpl(std::string data) override {
-            return "";
+        std::string executeImpl(std::string playerName) override {
+            return playerName + " Left the Room";
         }
 };
 
@@ -45,7 +45,7 @@ class RequestInputAction : public Client::Action {
 std::string Client::ActionHandler::executeAction(std::string type, std::string data) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
-        SPDLOG_ERROR("Unknown action");
+        SPDLOG_ERROR("Unknown action: {}", type);
         return "unknown action";
     }
 
