@@ -36,7 +36,7 @@ Response Room::startGame(Player& requester) {
         return Response {NO_DATA};
     }
 
-    return Response {REQUIREMENTS_NOT_MET};    
+    throw Response {REQUIREMENTS_NOT_MET};    
 }
 
 Response Room::endGame(Player& requester) {

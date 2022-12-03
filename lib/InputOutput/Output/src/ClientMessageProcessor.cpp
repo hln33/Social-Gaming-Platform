@@ -13,7 +13,7 @@ std::string Client::MessageProcessor::process(const std::string& message) {
   const std::string data = jsonMessage["message"];
 
   std::string result = actionHandler.executeAction(command, data);
-  if (command == ResponseCode::ERROR) {
+  if (command == ResponseCode::ERROR || command == ResponseCode::JOIN_GAME_FAIL) {
     error = true;
   }
   return result;

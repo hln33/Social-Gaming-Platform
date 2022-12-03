@@ -11,7 +11,17 @@ class JoinAction : public Client::Action {
         std::string executeImpl(std::string playerName) override {
             std::string message;
             message.append(playerName + " Successfully Joined Room\n");
-            message.append("Enter 'start' to start game");
+            message.append("Enter 'start' to start game\n");
+
+            return message;
+        }
+};
+
+class JoinFailAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string string) override {
+            std::string message;
+            message.append("Failed to join game\n");
 
             return message;
         }
@@ -20,7 +30,7 @@ class JoinAction : public Client::Action {
 class QuitAction : public Client::Action {
     private:
         std::string executeImpl(std::string playerName) override {
-            return playerName + " Left the Room";
+            return playerName + " Left the Room\n";
         }
 };
 
@@ -29,7 +39,7 @@ class CreateGameAction : public Client::Action {
         std::string executeImpl(std::string roomCode) override {
             std::string message;
             message.append("Game Created with Code:" + roomCode + "\n");
-            message.append("Enter 'start' to start game");
+            message.append("Enter 'start' to start game\n");
 
             return message;
         }
@@ -39,7 +49,19 @@ class StartGameAction : public Client::Action {
     private:
         std::string executeImpl(std::string string) override {
             std::string message;
-            message.append("Game has started");
+            message.append("Game has started\n");
+
+            return message;
+        }
+};
+
+class StartGameFailAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string error) override {
+            std::string message;
+            message.append("Game could not start because: ");
+            message.append(error);
+            message.append("\nPlease try again\n");
 
             return message;
         }
@@ -88,6 +110,9 @@ void Client::ActionHandler::init() {
     registerAction(ResponseCode::CREATE_GAME_SUCCESS, std::make_unique<CreateGameAction>());
     registerAction(ResponseCode::START_GAME_SUCCESS, std::make_unique<StartGameAction>());
     registerAction(ResponseCode::GAME_INPUT_SUCCESS, std::make_unique<SentInputAction>());
+
+    registerAction(ResponseCode::JOIN_GAME_FAIL, std::make_unique<JoinFailAction>());
+    registerAction(ResponseCode::START_GAME_FAIL, std::make_unique<StartGameFailAction>());
 
     registerAction(ResponseCode::ERROR, std::make_unique<ErrorAction>());
 }
