@@ -73,8 +73,6 @@ int main(int argc, char* argv[]) {
       quit = true;
     }
 
-    //SPDLOG_INFO("HERE");
-
     auto incoming = server.receive();
     auto [log, roomClients, quit] = MessageProcessor.processMessages(incoming);
 

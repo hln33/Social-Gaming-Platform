@@ -33,7 +33,7 @@ public:
 
     Response sendGameData(Player&);
 
-    Response inputChoice(json data);
+    Response inputChoice(Player&, json data);
 
     std::vector<Player> getAllPlayers();
 

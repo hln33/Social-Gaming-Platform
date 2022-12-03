@@ -39,14 +39,20 @@ int main(int argc, char* argv[]) {
 
   bool done = false;
   auto onTextEntry = [&done, &client] (std::string text) {
-    if ("exit" == text || "quit" == text) {
+    if (text == "exit" || text == "quit") {
       done = true;
-    } else{
-      json input;
-      input["input"] = text;
-      json payload = createJSONMessage("Input", input.dump());
-      client.send(payload.dump());
+      return;
+    } 
+    
+    json payload;
+    if (text == "start") {
+      json test = {"x", 1};
+      payload = createJSONMessage("Start Game", test.dump());
+    } else {
+      json input = {"input", text};
+      payload = createJSONMessage("Input", input.dump());
     }
+    client.send(payload.dump());
   };
   
   ChatWindow chatWindow(onTextEntry);
@@ -69,6 +75,7 @@ int main(int argc, char* argv[]) {
     if (messageProcessor.error) {
         chatWindow.displayText("Disconnecting...");
         chatWindow.update();
+        sleep(3);
         client.disconnect();
     }
     

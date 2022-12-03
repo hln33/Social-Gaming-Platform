@@ -9,7 +9,11 @@
 class JoinAction : public Client::Action {
     private:
         std::string executeImpl(std::string playerName) override {
-           return playerName + " Successfully Joined Room";
+            std::string message;
+            message.append(playerName + " Successfully Joined Room\n");
+            message.append("Enter 'start' to start game");
+
+            return message;
         }
 };
 
@@ -23,9 +27,23 @@ class QuitAction : public Client::Action {
 class CreateGameAction : public Client::Action {
     private:
         std::string executeImpl(std::string roomCode) override {
-            return "Game Created with Code:" + roomCode;
+            std::string message;
+            message.append("Game Created with Code:" + roomCode + "\n");
+            message.append("Enter 'start' to start game");
+
+            return message;
         }
 }; 
+
+class StartGameAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string string) override {
+            std::string message;
+            message.append("Game has started");
+
+            return message;
+        }
+};
 
 class ErrorAction : public Client::Action {
     private:
@@ -68,6 +86,7 @@ void Client::ActionHandler::init() {
     registerAction(ResponseCode::JOIN_GAME_SUCCESS, std::make_unique<JoinAction>());
     registerAction(ResponseCode::LEFT_ROOM_SUCCESS, std::make_unique<QuitAction>());
     registerAction(ResponseCode::CREATE_GAME_SUCCESS, std::make_unique<CreateGameAction>());
+    registerAction(ResponseCode::START_GAME_SUCCESS, std::make_unique<StartGameAction>());
     registerAction(ResponseCode::GAME_INPUT_SUCCESS, std::make_unique<SentInputAction>());
 
     registerAction(ResponseCode::ERROR, std::make_unique<ErrorAction>());

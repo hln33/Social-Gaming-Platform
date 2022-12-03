@@ -73,6 +73,7 @@ class GameInputAction : public Server::Action {
 json Server::ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
+        recipients.insert(sender);
         return createaJSONMessage(ResponseCode::ERROR, "No action found");
     }
 
@@ -92,6 +93,7 @@ void Server::ActionHandler::init() {
     registerAction("Quit", std::make_unique<QuitAction>());
     // registerAction("Shutdown", std::make_unique<ShutdownAction>());
     registerAction("Create", std::make_unique<CreateGameAction>());
+    registerAction("Start Game", std::make_unique<StartGameAction>());
     registerAction("End Game", std::make_unique<EndGameAction>());
     registerAction("Input", std::make_unique<GameInputAction>());
     // registerAction("Send Chat", std::make_unique<SendChatAction>());

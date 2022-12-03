@@ -30,7 +30,13 @@ void Room::removePlayer(Player& p) {
 }
 
 Response Room::startGame(Player& requester) { 
-    return Response {"todo"};    
+    if (this->config.satisfiesStartPolicies(this->players)) {
+        //start game
+
+        return Response {NO_DATA};
+    }
+
+    return Response {REQUIREMENTS_NOT_MET};    
 }
 
 Response Room::endGame(Player& requester) {
@@ -41,7 +47,7 @@ Response Room::sendGameData(Player& requester) {
     return Response {"todo"};    
 }
 
-Response Room::inputChoice(json data) {
+Response Room::inputChoice(Player& requester, json data) {
     return Response {"todo"};
 }
  

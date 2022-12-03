@@ -171,9 +171,10 @@ recipientsWrapper Controller::handleUserInput(networking::Connection& connection
 
     std::string roomCode = findRoomCode(connectionInfo);
     Room& room = findRoom(roomCode);
+    Player player = room.findPlayer(connectionInfo.id);
 
     try {
-        Response res = room.inputChoice(userInput);
+        Response res = room.inputChoice(player, userInput);
         return recipientsWrapper{recipients, res, ResponseCode::GAME_INPUT_SUCCESS};
     } catch (Response exception) {
         return recipientsWrapper{recipients, exception, ResponseCode::GAME_INPUT_FAIL};
