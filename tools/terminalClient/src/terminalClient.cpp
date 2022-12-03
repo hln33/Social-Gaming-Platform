@@ -64,13 +64,14 @@ int main(int argc, char* argv[]) {
     if (!response.empty()) {
       auto parsedMessage = messageProcessor.process(response);
       chatWindow.displayText(parsedMessage + "\n");
+    }
 
-      if (messageProcessor.error) {
+    if (messageProcessor.error) {
         chatWindow.displayText("Disconnecting...");
         chatWindow.update();
         client.disconnect();
-      }
     }
+    
     chatWindow.update();
   }
 
