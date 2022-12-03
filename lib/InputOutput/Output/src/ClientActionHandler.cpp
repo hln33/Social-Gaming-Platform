@@ -41,6 +41,13 @@ class RequestInputAction : public Client::Action {
         }
 };
 
+class SentInputAction : public Client::Action {
+    private:
+        std::string executeImpl(std::string message) override {
+            return message;
+        }
+};
+
 
 std::string Client::ActionHandler::executeAction(std::string type, std::string data) {    
     auto action = actions.find(type);
@@ -50,7 +57,6 @@ std::string Client::ActionHandler::executeAction(std::string type, std::string d
     }
 
     auto res = action->second->execute(data);
-
     return res;
 }
 
@@ -62,4 +68,7 @@ void Client::ActionHandler::init() {
     registerAction(ResponseCode::JOIN_GAME_SUCCESS, std::make_unique<JoinAction>());
     registerAction(ResponseCode::LEFT_ROOM_SUCCESS, std::make_unique<QuitAction>());
     registerAction(ResponseCode::CREATE_GAME_SUCCESS, std::make_unique<CreateGameAction>());
+    registerAction(ResponseCode::GAME_INPUT_SUCCESS, std::make_unique<SentInputAction>());
+
+    registerAction(ResponseCode::ERROR, std::make_unique<ErrorAction>());
 }

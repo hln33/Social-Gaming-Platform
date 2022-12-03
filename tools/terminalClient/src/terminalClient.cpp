@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     } else{
       json input;
       input["input"] = text;
-      json payload = createJSONMessage("chat", input.dump());
+      json payload = createJSONMessage("Input", input.dump());
       client.send(payload.dump());
     }
   };

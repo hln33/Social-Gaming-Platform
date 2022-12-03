@@ -49,14 +49,6 @@ class StartGameAction : public Server::Action {
         }
 };
 
-// class ShutdownAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
-//             SPDLOG_INFO("Shutdown Action Detected");
-//             return createaJSONMessage("shutdown", "server shutting down");
-//         }
-// };
-
 class EndGameAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
@@ -67,15 +59,15 @@ class EndGameAction : public Server::Action {
         }
 };
 
-// class SendChatAction : public Action {
-//     private:
-//         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
-//             SPDLOG_INFO("Send Chat Action Detected");
-         
-//             return createaJSONMessage("chat", "");
-//         }
-// };
+class GameInputAction : public Server::Action {
+    private:
+        recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
+            SPDLOG_INFO("Game Input Action Detected");
 
+            auto res = controller.handleUserInput(sender, data);
+            return res;
+        }
+};
 
 
 json Server::ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
@@ -89,7 +81,6 @@ json Server::ActionHandler::executeAction(std::string type, json data, Connectio
 
     SPDLOG_INFO(wrapper.responseCode);
     return createaJSONMessage(wrapper.responseCode, wrapper.data.message);
-
 }
 
 void Server::ActionHandler::registerAction(std::string type, std::unique_ptr<Action> action) {
@@ -102,5 +93,6 @@ void Server::ActionHandler::init() {
     // registerAction("Shutdown", std::make_unique<ShutdownAction>());
     registerAction("Create", std::make_unique<CreateGameAction>());
     registerAction("End Game", std::make_unique<EndGameAction>());
+    registerAction("Input", std::make_unique<GameInputAction>());
     // registerAction("Send Chat", std::make_unique<SendChatAction>());
 }
