@@ -46,8 +46,7 @@ int main(int argc, char* argv[]) {
     
     json payload;
     if (text == "start") {
-      json test = {"x", 1};
-      payload = createJSONMessage("Start Game", test.dump());
+      payload = createJSONMessage("Start Game", "{}");
     } else {
       json input = {"input", text};
       payload = createJSONMessage("Input", input.dump());

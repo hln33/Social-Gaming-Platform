@@ -59,9 +59,8 @@ class StartGameFailAction : public Client::Action {
     private:
         std::string executeImpl(std::string error) override {
             std::string message;
-            message.append("Game could not start because: ");
-            message.append(error);
-            message.append("\nPlease try again\n");
+            message.append("Game could not start because: " + error);
+            message.append("\nPlease enter 'start' to try again\n");
 
             return message;
         }
