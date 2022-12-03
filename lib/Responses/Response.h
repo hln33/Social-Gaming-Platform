@@ -18,13 +18,15 @@ const std::string LEFT_ROOM_SUCCESS = "Player left";
 const std::string START_GAME_SUCCESS = "Game started";
 const std::string END_GAME_SUCCESS = "Game ended";
 const std::string JOIN_GAME_SUCCESS = "Player joined";
+const std::string GAME_INPUT_SUCCESS = "User Input Successful";
 
 const std::string START_GAME_FAIL = "Game could not start";
 const std::string END_GAME_FAIL = "Game could not end";
 const std::string CREATE_GAME_FAIL = "Game could not be created";
 const std::string LEFT_ROOM_FAIL = "Failed to leave game";
 const std::string JOIN_GAME_FAIL = "Failed to join game";
+const std::string GAME_INPUT_FAIL = "User Input Failed";
 
-const std::string ERROR = "Error";
+const std::string ERROR = "Error"; // generic error
 
 }

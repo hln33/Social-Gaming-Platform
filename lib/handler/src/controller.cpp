@@ -165,16 +165,17 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
 }
 
 
-// recipientsWrapper Controller::handleUserInput(networking::Connection& connectionInfo, json userInput) {
-//     // send userInput to room that player is in
-//     // json data to get room code
-//     // use roomCode to lookup room
-//     // 
+recipientsWrapper Controller::handleUserInput(networking::Connection& connectionInfo, json userInput) {
+    initRecipients();
+    recipients.insert(connectionInfo);
 
-//     initRecipients();
-//     recipients.insert(connectionInfo);
+    std::string roomCode = findRoomCode(connectionInfo);
+    Room& room = findRoom(roomCode);
 
-//     //int roomCode = userInput["room_code"];
-//     //userInput["Player_info"];
-//     //userInput["data"];
-// }
+    try {
+        Response res = room.inputChoice(userInput);
+        return recipientsWrapper{recipients, res, ResponseCode::GAME_INPUT_SUCCESS};
+    } catch (Response exception) {
+        return recipientsWrapper{recipients, exception, ResponseCode::GAME_INPUT_FAIL};
+    }
+}
