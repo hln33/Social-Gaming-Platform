@@ -7,22 +7,14 @@
 
 #include "Player.h"
 #include "RoomConfig.h"
+#include "Response.h"
+
+
 // room.h
 // responsibilities:
 // - keep track of players
 // - store room info 
 // - has rules on which players can join
-
-enum Status {
-    Success,
-    Fail,
-};
-
-struct Response {
-    Status code;
-    std::string message;
-};
-
 class Room {
 public:
     Room(RoomConfigBuilderOptions roomConfig, Player& host) { 
@@ -30,9 +22,9 @@ public:
         players.push_back(host);
     }
 
-    Response addPlayer(Player&);
+    void addPlayer(Player&);
 
-    Response removePlayer(Player&);
+    void removePlayer(Player&);
 
     Response startGame(Player&);
 
