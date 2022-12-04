@@ -2,6 +2,9 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 
+
+
+
 class ForEach : public RuleAction {
     private:
         Rule* executeImpl(json data) override{
@@ -10,6 +13,7 @@ class ForEach : public RuleAction {
 
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
             ForEachRule* rule = new ForEachRule(expression, rulelist);
             
@@ -26,8 +30,9 @@ class InputChoice : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            InputChoiceRule* rule;    
+            InputChoiceRule* rule = nullptr;    
             return rule;
         }
 };
@@ -41,8 +46,9 @@ class ParallelFor : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            ParallelforRule* rule;    
+            ParallelforRule* rule = nullptr;    
             return rule;
         }
 };
@@ -56,8 +62,9 @@ class Scores : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            ScoresRule* rule;    
+            ScoresRule* rule = nullptr;    
             return rule;
         }
 };
@@ -71,8 +78,9 @@ class GlobalMessage : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            GlobalmessageRule* rule;    
+            GlobalmessageRule* rule = nullptr;    
             return rule;
         }
 };
@@ -86,8 +94,9 @@ class When : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            WhenRule* rule;    
+            WhenRule* rule = nullptr;    
             return rule;
         }
 };
@@ -101,8 +110,9 @@ class Extend : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            ExtendRule* rule;    
+            ExtendRule* rule = nullptr;    
             return rule;
         }
 };
@@ -116,8 +126,9 @@ class Discard : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
+            // processRules(rules);
 
-            DiscardRule* rule;    
+            DiscardRule* rule = nullptr;    
             return rule;
         }
 };
@@ -131,14 +142,15 @@ class Add : public RuleAction {
             
             RuleList rulelist;
             Expression expression;
-
-            AddRule* rule;    
+            // processRules(rules);
+            
+            AddRule* rule = nullptr;    
             return rule;
         }
 };
 
-
-void RuleHandler::executeRuleAction(std::string ruleType, json data) {    
+//Return a Rule obj
+Rule* RuleHandler::executeRuleAction(std::string ruleType, json data) {    
     auto action = rules.find(ruleType);
     if (action == rules.end()) {
         std::cout << "no rule found \n"; 
@@ -146,19 +158,9 @@ void RuleHandler::executeRuleAction(std::string ruleType, json data) {
     }
 
 
-    auto temp = action->second->execute(data);
+    auto rule = action->second->execute(data);
     
-    // std::cout << data.dump() << " executeRuleAction \n" ;
-
-    // if(temp.moreRules != nullptr){
-    //     processRules(temp.moreRules);
-
-    //     // call the processHelperRules
-        
-    // }
-   
-      
-    // return rule object
+    return rule;
 }
 
 void RuleHandler::registerRuleAction(std::string ruleType, std::unique_ptr<RuleAction> rule) {
@@ -175,6 +177,7 @@ void RuleHandler::init() {
     registerRuleAction("parallelfor", std::make_unique<ParallelFor>());
     registerRuleAction("input-choice", std::make_unique<InputChoice>());
     registerRuleAction("add", std::make_unique<Add>());
+    
 }
 
 //return vector of rule*, need to chenge return type

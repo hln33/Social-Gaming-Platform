@@ -33,7 +33,7 @@ class RuleHandler {
             init();
         }
 
-        void executeRuleAction(std::string ruleType, json data);
+        Rule* executeRuleAction(std::string ruleType, json data);
         void processRules(const json& incoming);
 
     private:
