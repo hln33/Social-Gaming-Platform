@@ -1,21 +1,21 @@
 #pragma once
 
 #include "Server.h"
-#include "ActionHandler.h"
+#include "ServerActionHandler.h"
 
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
-using networking::Server;
 using networking::Connection;
 using networking::Message;
-
 
 struct Outgoing {
   std::string result;
   std::set<Connection> sendTo;
-  bool shouldShutdown;
+  bool shouldQuit;
 };
+
+namespace Server {
 
 class MessageProcessor {
   public:
@@ -24,11 +24,12 @@ class MessageProcessor {
     Outgoing processMessages(const std::deque<Message>& incoming);
 
   private:
-    ActionHandler actionHandler;
+    Server::ActionHandler actionHandler;
     std::set<Connection> recipients;
-    std::ostringstream messageLog;
 
     void clearRecipients() {
       recipients.clear();
     }
 };
+
+}

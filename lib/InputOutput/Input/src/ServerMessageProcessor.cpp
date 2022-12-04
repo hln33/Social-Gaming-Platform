@@ -1,9 +1,9 @@
-#include "MessageProcessor.h"
+#include "ServerMessageProcessor.h"
 
 #include <spdlog/spdlog.h>
 
 
-Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) {
+Outgoing Server::MessageProcessor::processMessages(const std::deque<Message>& incoming) {
   std::ostringstream result;
   
   bool quit = false;
@@ -15,8 +15,7 @@ Outgoing MessageProcessor::processMessages(const std::deque<Message>& incoming) 
     const std::string command = parsedMessage["type"];
     const std::string data = parsedMessage["message"]; 
 
-    json parsedData = json::parse(data);
-    
+    json parsedData = json::parse(data);    
 
     Connection sender = message.connection;
     json response = actionHandler.executeAction(command, parsedData, sender, this->recipients);

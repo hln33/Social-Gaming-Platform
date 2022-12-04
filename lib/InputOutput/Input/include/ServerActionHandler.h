@@ -19,6 +19,8 @@ enum ActionType {
   send_chat
 };
 
+namespace Server {
+
 class Action {
     public:
         // Action() = default;
@@ -51,3 +53,5 @@ class ActionHandler {
         void registerAction(std::string action, std::unique_ptr<Action>);
         void init();
 };
+
+}

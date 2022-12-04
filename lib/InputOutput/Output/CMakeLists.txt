@@ -1,7 +1,8 @@
-set(This ClientMessageProcessor)
+set(This OutputMessageProcessor)
 
 add_library(${This}
-            src/MessageProcessor.cpp
+            src/ClientMessageProcessor.cpp
+            src/ClientActionHandler.cpp
 )
 
 target_include_directories(${This}
@@ -19,16 +20,11 @@ set_target_properties(${This}
 )
 
 target_link_libraries(${This}
-                    networking
                     spdlog::spdlog
                     nlohmann_json::nlohmann_json
-                    ClientActionHandler
+                    Responses
 )
-
+ 
 install(TARGETS ${This}
   ARCHIVE DESTINATION lib
 )
-
-# comment out to disable unit testing
-# enable_testing()
-# add_subdirectory(test)

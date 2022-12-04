@@ -1,4 +1,4 @@
-#include "ActionHandler.h"
+#include "ServerActionHandler.h"
 
 #include <spdlog/spdlog.h>
 
@@ -8,7 +8,7 @@ json createaJSONMessage(std::string type, std::string message){
   return payload;
 }
 
-class JoinAction : public Action {
+class JoinAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Join Action Detected");
@@ -19,7 +19,7 @@ class JoinAction : public Action {
         }
 };
 
-class QuitAction : public Action {
+class QuitAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("Quit Action Detected");
@@ -29,7 +29,7 @@ class QuitAction : public Action {
         }
 };
 
-class CreateGameAction : public Action {
+class CreateGameAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("CreateGame Action Detected");
@@ -39,7 +39,7 @@ class CreateGameAction : public Action {
         }
 };
 
-class StartGameAction : public Action {
+class StartGameAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("StartGame Action Detected");
@@ -57,7 +57,7 @@ class StartGameAction : public Action {
 //         }
 // };
 
-class EndGameAction : public Action {
+class EndGameAction : public Server::Action {
     private:
         recipientsWrapper executeImpl(json data, Connection sender, Controller& controller) override {
             SPDLOG_INFO("End Game Action Detected");
@@ -78,7 +78,7 @@ class EndGameAction : public Action {
 
 
 
-json ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
+json Server::ActionHandler::executeAction(std::string type, json data, Connection sender, std::set<Connection>& recipients) {    
     auto action = actions.find(type);
     if (action == actions.end()) {
         return createaJSONMessage(ResponseCode::ERROR, "No action found");
@@ -92,11 +92,11 @@ json ActionHandler::executeAction(std::string type, json data, Connection sender
 
 }
 
-void ActionHandler::registerAction(std::string type, std::unique_ptr<Action> action) {
+void Server::ActionHandler::registerAction(std::string type, std::unique_ptr<Action> action) {
     actions[type] = std::move(action);
 }
 
-void ActionHandler::init() {
+void Server::ActionHandler::init() {
     registerAction("Join", std::make_unique<JoinAction>());
     registerAction("Quit", std::make_unique<QuitAction>());
     // registerAction("Shutdown", std::make_unique<ShutdownAction>());

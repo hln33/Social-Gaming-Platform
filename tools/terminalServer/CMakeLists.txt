@@ -19,7 +19,7 @@ find_package(Threads REQUIRED)
 
 target_link_libraries(terminalServer
   networking
-  MessageProcessor
+  InputMessageProcessor
   nlohmann_json
   spdlog::spdlog
   ${CMAKE_THREAD_LIBS_INIT}
