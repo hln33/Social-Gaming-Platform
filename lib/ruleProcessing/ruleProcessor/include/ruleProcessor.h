@@ -1,7 +1,6 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include "ruleHandler.h"
-#include "helper.h"
 
 using json = nlohmann::json;
 
