@@ -9,20 +9,20 @@
 
 using json = nlohmann::json;
 
-struct ruleHandlerWrapper{
-    // Rule rule;
-    std::string ruleName;
-    json moreRules;
-};
+// struct ruleHandlerWrapper{
+//     Rule* rule;
+//     std::string ruleName;
+//     json moreRules;
+// };
 
 class RuleAction {
     public:
-        ruleHandlerWrapper execute(json data) {
+        Rule* execute(json data) {
             return executeImpl(data);
         }
 
     private:
-        virtual ruleHandlerWrapper executeImpl(json data) = 0;
+        virtual Rule* executeImpl(json data) = 0;
 };
 
 class RuleHandler {

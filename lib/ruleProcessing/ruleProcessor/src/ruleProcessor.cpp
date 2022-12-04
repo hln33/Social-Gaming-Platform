@@ -13,10 +13,11 @@ void ruleProcessor::processRules(const json& incoming) {
 //     // json response = ruleHandler.executeRuleAction(ruleType, rule);
 //     ruleHandler.executeRuleAction(ruleType, rule);
 //   }
-    ruleHandler.processRules(incoming);
+    processRules(incoming);
 
     
             // wait for business interface for create rule objects 
 
 
 }
+

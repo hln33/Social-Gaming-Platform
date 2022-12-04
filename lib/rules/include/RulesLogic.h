@@ -80,7 +80,7 @@ class ForEachRule : public Rule{
     public:
         ForEachRule(Expression& ex, RuleList& rules) : listExpr{ex} , ruleList{rules}
         { }
-
+    
 
     private:
         Expression& listExpr;
@@ -88,7 +88,7 @@ class ForEachRule : public Rule{
         std::string getNameImpl() const override{
             return "foreach";
         }
-
+        
         SignalData executeImpl(InterpreterState& interpreter) override{
             // TODO: implement this
             auto result = listExpr.getResult();
