@@ -1,6 +1,3 @@
-add_subdirectory(MessageProcessor)
-add_subdirectory(ActionHandler)
-
 add_executable(terminalClient
   src/terminalClient.cpp
   src/clientWindow.cpp
@@ -34,7 +31,7 @@ find_package(Threads REQUIRED)
 target_link_libraries(terminalClient
   networking
   nlohmann_json
-  ClientMessageProcessor
+  OutputMessageProcessor
   ${CURSES_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )

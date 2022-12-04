@@ -97,7 +97,7 @@ recipientsWrapper Controller::joinRoom(std::string roomCode, networking::Connect
 
     SPDLOG_INFO("Connection:{} has joined room:{}", connectionInfo.id, roomCode);
     PlayerLookUp.insert(std::pair{connectionInfo.id, roomCode});
-    return recipientsWrapper{recipients, Response{connectionInfo.id + " joined room"}, ResponseCode::JOIN_GAME_SUCCESS};
+    return recipientsWrapper{recipients, Response{std::to_string(connectionInfo.id)}, ResponseCode::JOIN_GAME_SUCCESS};
 }
 
 recipientsWrapper Controller::leaveRoom(networking::Connection& connectionInfo) {
@@ -166,11 +166,14 @@ recipientsWrapper Controller::endGame(networking::Connection& connectionInfo) {
 }
 
 
-// recipientsWrapper Controller::handleUserInput(json userInput) {
+// recipientsWrapper Controller::handleUserInput(networking::Connection& connectionInfo, json userInput) {
 //     // send userInput to room that player is in
 //     // json data to get room code
 //     // use roomCode to lookup room
 //     // 
+
+//     initRecipients();
+//     recipients.insert(connectionInfo);
 
 //     //int roomCode = userInput["room_code"];
 //     //userInput["Player_info"];

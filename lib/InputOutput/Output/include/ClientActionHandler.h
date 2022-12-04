@@ -1,0 +1,36 @@
+#pragma once
+
+#include <unordered_map>
+#include <memory>
+#include <string>
+
+namespace Client {
+
+class Action {
+    public:
+        std::string execute(std::string data) {
+            return executeImpl(data);
+        }
+
+    private:
+        virtual std::string executeImpl(std::string data) = 0;
+};
+
+class ActionHandler {
+    public:
+        using ActionPointer = std::unique_ptr<Action>;
+
+        ActionHandler() {
+            init();
+        }
+
+        std::string executeAction(std::string action, std::string data);
+
+    private:
+        std::unordered_map<std::string, ActionPointer> actions;
+
+        void registerAction(std::string action, std::unique_ptr<Action>);
+        void init();
+};
+
+}
