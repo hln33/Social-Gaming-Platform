@@ -37,7 +37,7 @@ public:
 
     recipientsWrapper endGame(networking::Connection& connectionInfo);
 
-    recipientsWrapper handleUserInput(json userInput);
+    recipientsWrapper handleUserInput(networking::Connection& connectionInfo, json userInput);
 
     
 private:

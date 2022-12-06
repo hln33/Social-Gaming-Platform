@@ -25,12 +25,18 @@ void Room::removePlayer(Player& p) {
     if (removeThis == players.end()) {
         throw Response {PLAYER_NOT_FOUND_IN_ROOM};
     }
- 
+  
     players.erase(removeThis);
 }
 
 Response Room::startGame(Player& requester) { 
-    return Response {"todo"};    
+    if (this->config.satisfiesStartPolicies(this->players)) {
+        //start game
+
+        return Response {NO_DATA};
+    }
+
+    throw Response {REQUIREMENTS_NOT_MET};    
 }
 
 Response Room::endGame(Player& requester) {
@@ -41,6 +47,10 @@ Response Room::sendGameData(Player& requester) {
     return Response {"todo"};    
 }
 
+Response Room::inputChoice(Player& requester, json data) {
+    return Response {"todo"};
+}
+ 
 std::vector<Player> Room::getAllPlayers() {
     return players;
 }

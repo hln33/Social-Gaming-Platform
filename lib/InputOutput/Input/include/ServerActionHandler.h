@@ -10,14 +10,6 @@
 using json = nlohmann::json;
 using networking::Connection;
 
-enum ActionType {
-  join,
-  quit,
-  shutdown,
-  create_game,
-  end_game,
-  send_chat
-};
 
 namespace Server {
 

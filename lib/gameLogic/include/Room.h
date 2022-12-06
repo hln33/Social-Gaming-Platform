@@ -9,6 +9,7 @@
 #include "RoomConfig.h"
 #include "Response.h"
 
+using json = nlohmann::json;
 
 // room.h
 // responsibilities:
@@ -31,6 +32,8 @@ public:
     Response endGame(Player&);
 
     Response sendGameData(Player&);
+
+    Response inputChoice(Player&, json data);
 
     std::vector<Player> getAllPlayers();
 
