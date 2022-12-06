@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "RoomConfig.h"
+#include "ruleProcessor.h"
 
 using json = nlohmann::json;
 
@@ -332,4 +333,24 @@ json getJsonFromFilePath(std::string file_path){
         std::cout << e.what() << "\n";
     }
     return json();
+}
+
+//    RoomConfigBuilderOptions config;
+
+//     json configuration = text.at("configuration");
+//     json playerCount = configuration.at("player count");
+    
+//     config.name = configuration.at("name");
+//     config.minPlayers = playerCount.at("min");
+//     config.maxPlayers = playerCount.at("max");
+//     config.allowAudience = configuration.at("audience");
+
+//     return config;
+
+void getRuleTree(json& text){
+    ruleProcessor processor;
+
+    json rules = text.at("rules");
+    processor.processRules(rules);
+    // return tree
 }

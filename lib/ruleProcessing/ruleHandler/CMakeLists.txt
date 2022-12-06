@@ -1,9 +1,7 @@
-set(This handler)
+set(This ruleHandler)
 
 add_library(${This}
-  src/handler.cpp
-  src/controller.cpp
-  src/handlerHelper.cpp
+            src/ruleHandler.cpp
 )
 
 target_include_directories(${This}
@@ -21,11 +19,12 @@ set_target_properties(${This}
 )
 
 target_link_libraries(${This}
-                      nlohmann_json::nlohmann_json
-                      gameLogic
-                      networking
-                      spdlog::spdlog
-                      ruleProcessor
+                    networking
+                    spdlog::spdlog
+                    nlohmann_json::nlohmann_json
+                    ruleProcessor
+                    rules
+              
 )
 
 install(TARGETS ${This}
